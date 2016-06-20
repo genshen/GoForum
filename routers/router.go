@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"beeapp/controllers"
+	"./../controllers"
 	"github.com/astaxie/beego"
 )
 

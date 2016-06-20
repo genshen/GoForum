@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"html/template"
-	"beeapp/models"
-	identify "beeapp/verify/auth"
+	"./../models"
+	identify "./../verify/auth"
 )
 
 type UserController struct {
@@ -16,7 +16,7 @@ var rules = map[string]int{
 }
 
 func (this *UserController) getRules(action string) int {
-	return rules["action"]
+	return rules[action]
 }
 
 func (this *UserController) Login() {

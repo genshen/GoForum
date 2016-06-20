@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "beeapp/routers"
+	_ "./routers"
+	"./models/database"
 	"github.com/astaxie/beego"
-	"beeapp/models/database"
 )
 
 func init() {
@@ -13,4 +13,3 @@ func init() {
 func main() {
 	beego.Run()
 }
-

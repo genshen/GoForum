@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="GOPATH &lt;beeapp&gt;">
+    <CLASSES>
+      <root url="file://D:/Program Files (x86)/GoPath/src/github.com" />
+      <root url="file://D:/Program Files (x86)/GoPath/src/GoForum" />
+      <root url="file://D:/Program Files (x86)/GoPath/src/beeapp" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <excluded>
+      <root url="file://$PROJECT_DIR$" />
+    </excluded>
+  </library>
+</component>

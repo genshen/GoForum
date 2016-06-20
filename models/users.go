@@ -7,7 +7,7 @@ import (
 	"crypto/sha1"
 	//"encoding/hex"
 	"github.com/jinzhu/gorm"
-	"beeapp/models/database"
+	"./database"
 	//"encoding/hex"
 	"encoding/hex"
 )

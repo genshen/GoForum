@@ -2,8 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	identify "beeapp/verify/auth"
-	"fmt"
+	identify "./../verify/auth"
 )
 
 const (
@@ -37,7 +36,7 @@ func (this *BaseController)isUserLogin() bool {
 	if s == nil {
 		return false
 	}
-	fmt.Println(s)
+	//fmt.Println(s)
 	return s.(bool)
 }
 
