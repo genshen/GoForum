@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"github.com/astaxie/beego/validation"
 	"io"
 	"crypto/sha1"
@@ -37,25 +36,19 @@ func (u *User) validPassword(v *validation.Validation) {
 	}
 }
 
-func (this *User)LoginVerify() bool {
+func (this *User)LoginVerify() ([]*validation.Error,bool) {
 	valid := validation.Validation{}
 	valid.Required(this.Name, "name").Message("用户名不能为空")
 	valid.Required(this.Password, "pass").Message("密码不能为空")
 	if valid.HasErrors() {
-		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
-		}
-		return false
+		return valid.Errors,false
 	}
 
 	this.validPassword(&valid); //验证密码
 	if valid.HasErrors() {
-		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
-		}
-		return false
+		return valid.Errors,false
 	}
-	return true
+	return nil,true
 }
 
 func (this *User) Logout() bool {

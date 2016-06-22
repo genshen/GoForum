@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"./../models"
 	identify "./../verify/auth"
+	"../verify/form"
 )
 
 type UserController struct {
@@ -25,8 +26,8 @@ func (this *UserController) Login() {
 		this.Redirect("/", 302)
 		return
 	}
-	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
-	this.TplName = "user/index.tpl"
+	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
+	this.TplName = "user/login.tpl"
 }
 
 func (this *UserController) Logout() {
@@ -43,14 +44,15 @@ func (this *UserController) LoginPost() {
 	username := this.GetString("username")
 	password := this.GetString("password")
 	user := models.User{Name:username, Password: password}
-	if user.LoginVerify() {
+	if errs, status := user.LoginVerify(); status {
 		//验证通过
-		this.LoginUser(user.ID, user.Name);
+		this.LoginUser(user.ID, user.Name)
 		this.Redirect("/", 302)
 		return
+	} else {
+		this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
+		s := form.NewInstant(errs, map[string]string{"name":  username, "pass": ""})
+		this.Data["form_check"] = string(s)
+		this.TplName = "user/login.tpl"
 	}
-	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
-	this.Data["username"] = username
-	this.TplName = "user/index.tpl"
-	//this.TplName = "user/index.tpl"
 }
