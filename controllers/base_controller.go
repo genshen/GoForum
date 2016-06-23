@@ -26,7 +26,7 @@ func (this *BaseController) Prepare() {
 	if app, ok := this.AppController.(Rules); ok {
 		if (app.getRules(action) & identify.Login) != 0 && !this.isUserLogin() {
 			//not login
-			this.Redirect("/account/login", 302)
+			this.Redirect("/account/signin", 302)
 		}
 	}
 }

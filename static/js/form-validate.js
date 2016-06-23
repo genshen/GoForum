@@ -24,7 +24,10 @@ $.forms = {
         });
 
         if (this.options.submitBtn != null) {
-            $(this.options.submitBtn).on("click",function () {
+            $(this.options.submitBtn).on("click", function () {
+                if($($.forms.options.submitBtn).attr("disabled") == "disabled"){
+                    return;
+                }
                 var pass = true;
                 $.forms.options.fields.forEach(function (e) {
                     var field = $(e.field);
@@ -34,10 +37,9 @@ $.forms = {
                         field.focus();
                     }
                 });
-                
-                if(pass){
+                if (pass) {
                     var form = $($.forms.options.form);
-                    if(form){
+                    if (form) {
                         form.submit();
                     }
                 }
@@ -62,6 +64,10 @@ function valid(input, rules) {
     if (rule && !validMax(value, input, rule)) {
         return false;
     }
+    rule = rules.email;
+    if (rule && !validEmail(value, input, rule)) {
+        return false;
+    }
     rule = rules.number;
     if (rules && !validNumber(value, input, rule)) {
         return false;
@@ -71,15 +77,20 @@ function valid(input, rules) {
         return false;
     }
 
-    rule = rules.customize;
-    if (rule && !validRegexp(value, input, rule)) {
+    rule = rules.same;
+    if (rule && !validSame(value, input, rule)) {
         return false;
     }
-    removeError(input);
+
+    rule = rules.customize;
+    if (rule && !validCustomize(value, input, rule)) {
+        return false;
+    }
+    clearError(input);
     return true;
 }
 
-function removeError(input) {
+function clearError(input) {
     var $formGroup = input.closest(".form-group");
     $formGroup.removeClass("has-error");
     $formGroup.find(".help-block").remove();
@@ -126,10 +137,41 @@ function validMax(value, input, rule) {
     return true;
 }
 
+function validEmail(value, input, rule) {
+    var Regex = /^(?:\w+\.?)*\w+@(?:\w+\.)*\w+$/;
+    if (Regex.test(value)) {
+        return true;
+    }
+    setError(input, rule.message);
+    return false;
+}
+
 function validNumber(value, input, rule) {
     return true;
 }
 
-function validRegexp(input, rule) {
+function validRegexp(value,input, rule) {
     return true;
+}
+
+/* rule.element must be a input ,
+and we just set one input with error when they are not the same */
+function validSame(value,input, rule) {
+    var ele = $(rule.element);
+    console.log(ele.val()+":=:"+value);
+    if(ele.val() == value){
+        clearError(ele);
+        return true;
+    }
+    setError(input, rule.message);
+    // setError(ele, rule.message);
+    return false;
+}
+
+function validCustomize(value,input, rule) {
+    if(rule.func(value,input)){
+        return true;
+    }
+    setError(input, rule.message);
+    return false;
 }

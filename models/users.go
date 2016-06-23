@@ -21,10 +21,6 @@ func (User) TableName() string {
 	return "user"
 }
 
-//func init() {// 在init中注册定义的model 高级查询必须
-//	orm.RegisterModel(new(User))
-//}
-
 func (u *User) validPassword(v *validation.Validation) {
 	h := sha1.New()
 	io.WriteString(h, u.Password)

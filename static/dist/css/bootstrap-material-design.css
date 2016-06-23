@@ -75,10 +75,16 @@ h5,
 h6 {
   font-weight: 400;
 }
+.btn,
+.btn:hover,
+.btn:focus {
+  outline: none;
+}
 a,
 a:hover,
 a:focus {
   color: #0eb400;
+  outline: none;
 }
 a .material-icons,
 a:hover .material-icons,
