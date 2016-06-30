@@ -53,3 +53,7 @@ func (this *BaseController) LogoutUser() bool {
 	this.DelSession(User_Name)
 	return true
 }
+
+func (this *BaseController) getUserId() uint {
+	return (this.GetSession(User)).(uint)
+}

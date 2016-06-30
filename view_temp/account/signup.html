@@ -36,7 +36,7 @@
                                 <label for="inputEmail" class="col-md-3 control-label">邮&emsp;箱</label>
 
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="inputEmail" name="username"
+                                    <input type="text" class="form-control" id="inputEmail" name="email"
                                            placeholder="邮箱">
                                 </div>
                             </div>
@@ -68,7 +68,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-offset-2">
-                                    <a href="javascript:void(0)" id="submit" class="btn btn-raised btn-success">注册</a>
+                                    <a href="javascript:void(0)" id="submit" class="btn btn-raised btn-primary">注册</a>
                                 </div>
                             </div>
                         </fieldset>
@@ -82,6 +82,7 @@
     </div>
 </main>
 {{template "script" .}}
+<script src="/static/js/form-validate.js"></script>
 <script>
     $.material.init({validate: false});
     $.forms.init(

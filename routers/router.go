@@ -7,8 +7,13 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
-	beego.Router("account/signup",&controllers.UserController{},"get:SignUp;post:SignUpPost")
-	beego.Router("account/signin",&controllers.UserController{},"get:SignIn;post:SignInPost")
+	beego.Router("account/signup",&controllers.UserController{},"get,post:SignUp")
+	beego.Router("account/signin",&controllers.UserController{},"get,post:SignIn")
 	beego.Router("account/signout",&controllers.UserController{},"get:SignOut")
+
+	beego.Router("post/:id([0-9]+)",&controllers.PostController{},"get:View")
+	beego.Router("post/create/jump",&controllers.PostController{},"get:CreateJump")
+	beego.Router("post/create/m",&controllers.PostController{},"get:CreateMobile;post:POST_CreateMobile")
+	beego.Router("post/create/upload_token",&controllers.PostController{},"get:UploadToken")
 	//beego.AutoRouter(&controllers.UserController{})
 }

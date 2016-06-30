@@ -12,18 +12,37 @@ const (
 )
 
 type Data struct {
-	StaticPath string
 	Title      string
 }
 
 func TestLogin(t *testing.T) {
-	d := Data{"../", "登录"}
+	d := Data{"登录"}
 	generate(view_temp + "account/signin.html",view_out+"account/signin.html",d)
 }
 
 func TestRegister(t *testing.T) {
-	d := Data{"../", "注册"}
+	d := Data{"注册"}
 	generate(view_temp + "account/signup.html",view_out+"account/signup.html",d)
+}
+
+func TestRegisterSuccess(t *testing.T) {
+	d := Data{"注册成功"}
+	generate(view_temp + "account/signup_success.html",view_out+"account/signup_success.html",d)
+}
+
+func TestPostJump(t *testing.T) {
+	d := Data{"跳转中..."}
+	generate(view_temp + "post/create_jump.html",view_out+"post/create_jump.html",d)
+}
+
+func TestPostView(t *testing.T) {
+	d := Data{"{{title}}"}
+	generate(view_temp + "post/view.html",view_out+"post/view.html",d)
+}
+
+func TestPostM(t *testing.T) {
+	d := Data{"创建帖子"}
+	generate(view_temp + "post/create_mobile.html",view_out+"post/create_mobile.html",d)
 }
 
 func generate(container string,out string,data Data){

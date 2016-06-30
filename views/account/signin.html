@@ -10,8 +10,8 @@
      <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Material Design -->
-    <link href="../static/dist/css/bootstrap-material-design.css" rel="stylesheet">
-    <link href="../static/dist/css/ripples.min.css" rel="stylesheet">
+    <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
+    <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
 </head>
 <body>
 <main id="app">
@@ -33,7 +33,7 @@
                                 <label for="inputEmail" class="col-md-3 control-label">用户名</label>
 
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="inputEmail" name="username" placeholder="手机号/邮箱">
+                                    <input type="text" class="form-control" id="inputEmail" name="username" placeholder="邮箱">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -56,7 +56,7 @@
 
                             <div class="form-group">
                                 <div class="col-md-offset-2">
-                                    <a href="javascript:void(0)" id="submit" class="btn btn-raised btn-success">登录</a>
+                                    <a href="javascript:void(0)" id="submit" class="btn btn-raised btn-primary">登录</a>
                                 </div>
                             </div>
                         </fieldset>
@@ -75,9 +75,9 @@
 <!-- Twitter Bootstrap -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <!-- Material Design for Bootstrap -->
-<script src="../static/dist/js/material.min.js"></script>
-<script src="../static/dist/js/ripples.min.js"></script>
-<script src="../static/js/form-validate.js"></script>
+<script src="/static/dist/js/material.min.js"></script>
+<script src="/static/dist/js/ripples.min.js"></script>
+<script src="/static/js/form-validate.js"></script>
 <script>
     $.material.init({validate:false});
     $.material.init({validate:false});
@@ -91,6 +91,8 @@
                         required:{
                             submitOnly:false,
                             message:"用户名不能为空!"
+                        },email:{
+                            message:"用户名格式不正确!"
                         }
                     }
                 },{

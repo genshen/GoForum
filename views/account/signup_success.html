@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册成功</title>
+    <!-- Material Design fonts -->
+    <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+     <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Material Design -->
+    <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
+    <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
+</head>
+<body>
+<main id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="alert alert-dismissible alert-success">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>Well done!</strong>&nbsp;你已成功开通账号
+                    <a href="javascript:void(0)" class="alert-link"><<<.email>>></a>.
+                </div>
+                <div class="well">
+                    <h3>注册成功</h3>
+                    <p>我们将在<span id="second">5</span>秒后转至登录页面</p>
+                    <a href="#">返回首页</a>
+                    <a href="#">进入登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<!-- Twitter Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<!-- Material Design for Bootstrap -->
+<script src="/static/dist/js/material.min.js"></script>
+<script src="/static/dist/js/ripples.min.js"></script>
+<script>
+    var second = 5;
+    var timer = setInterval(function () {
+        document.getElementById("second").innerText = second+"";
+        if (second <= 0) {
+            clearInterval(timer);
+            location.replace("signin");
+        }
+        second--;
+    }, 1000);
+</script>
+</body>
+</html>

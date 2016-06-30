@@ -1,0 +1,74 @@
+{{define "content"}}{{template "header" .}}
+
+<main id="app">
+    <div class="container">
+        <h1>Create Post</h1>
+
+        <form id="post_form" action="" method="post">
+            <<< .xsrf_token >>>
+            <input type="hidden" id="post_content" name="post_content">
+            <div class="form-group">
+                <label for="post_title" class="col-md-2 control-label">标题</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="post_title"  name="post_title" placeholder="标题">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="content-editor" class="col-md-2 control-label">内容</label>
+                <div class="col-md-10">
+                    <textarea class="form-control" id="content-editor">
+                         <p>请输入内容...</p>
+                    </textarea>
+                </div>
+                <a href="javascript:submitPost()" class="btn btn-raised btn-primary">提交</a>
+            </div>
+        </form>
+
+    </div>
+</main>
+<link type="text/css" rel="stylesheet" href="/static/css/editor/editor-mobile.min.css">
+{{template "script" .}}
+<!--minify js file-->
+<script type="text/javascript" src="/static/js/editor/lib/zepto.min.js"></script>
+<script type="text/javascript" src="/static/js/editor/lib/zepto.touch.js"></script>
+<script type="text/javascript" src="/static/js/editor/editor-mobile.js"></script>
+<!--<script src="/static/js/form-validate.js"></script>-->
+<script>
+    $.material.init();
+    upload_token = "";
+    domain = "";
+    var editor;
+
+    $(function () {
+        editor = new ___E('content-editor');
+        editor.config.uploadImgUrl = "http://up.qiniu.com";
+        editor.config.imgUploadConfig.useQiNiu = true;
+        editor.config.imgUploadConfig.domain = "http://7xtb5x.com1.z0.glb.clouddn.com/";
+        if (editor.config.uploadImgUrl) {
+            $.ajax({
+                url: "upload_token", dataType: "json", success: function (data) {
+                    editor.config.imgUploadConfig.upload_token = data.Token;
+                }
+            });
+        }
+        editor.config.menus = [
+            'head',
+            'bold',
+            'color',
+            'quote',
+            'list',
+            'img'
+            // 'happy',
+            // 'check'
+        ];
+        editor.init();
+    });
+
+    function submitPost() {
+        var content = editor.$txt.html().replace(editor.config.imgUploadConfig.domain, editor.config.imgUrlTag);
+        $("#post_content").val(content);
+        $("#post_form").submit();
+    }
+</script>
+{{template "footer" .}}
+{{end}}

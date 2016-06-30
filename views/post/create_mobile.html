@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>创建帖子</title>
+    <!-- Material Design fonts -->
+    <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+     <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Material Design -->
+    <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
+    <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
+</head>
+<body>
+
+<main id="app">
+    <div class="container">
+        <h1>Create Post</h1>
+
+        <form id="post_form" action="" method="post">
+            <<< .xsrf_token >>>
+            <input type="hidden" id="post_content" name="post_content">
+            <div class="form-group">
+                <label for="post_title" class="col-md-2 control-label">标题</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="post_title"  name="post_title" placeholder="标题">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="content-editor" class="col-md-2 control-label">内容</label>
+                <div class="col-md-10">
+                    <textarea class="form-control" id="content-editor">
+                         <p>请输入内容...</p>
+                    </textarea>
+                </div>
+                <a href="javascript:submitPost()" class="btn btn-raised btn-primary">提交</a>
+            </div>
+        </form>
+
+    </div>
+</main>
+<link type="text/css" rel="stylesheet" href="/static/css/editor/editor-mobile.min.css">
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<!-- Twitter Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<!-- Material Design for Bootstrap -->
+<script src="/static/dist/js/material.min.js"></script>
+<script src="/static/dist/js/ripples.min.js"></script>
+<!--minify js file-->
+<script type="text/javascript" src="/static/js/editor/lib/zepto.min.js"></script>
+<script type="text/javascript" src="/static/js/editor/lib/zepto.touch.js"></script>
+<script type="text/javascript" src="/static/js/editor/editor-mobile.js"></script>
+<!--<script src="/static/js/form-validate.js"></script>-->
+<script>
+    $.material.init();
+    upload_token = "";
+    domain = "";
+    var editor;
+
+    $(function () {
+        editor = new ___E('content-editor');
+        editor.config.uploadImgUrl = "http://up.qiniu.com";
+        editor.config.imgUploadConfig.useQiNiu = true;
+        editor.config.imgUploadConfig.domain = "http://7xtb5x.com1.z0.glb.clouddn.com/";
+        if (editor.config.uploadImgUrl) {
+            $.ajax({
+                url: "upload_token", dataType: "json", success: function (data) {
+                    editor.config.imgUploadConfig.upload_token = data.Token;
+                }
+            });
+        }
+        editor.config.menus = [
+            'head',
+            'bold',
+            'color',
+            'quote',
+            'list',
+            'img'
+            // 'happy',
+            // 'check'
+        ];
+        editor.init();
+    });
+
+    function submitPost() {
+        var content = editor.$txt.html().replace(editor.config.imgUploadConfig.domain, editor.config.imgUrlTag);
+        $("#post_content").val(content);
+        $("#post_form").submit();
+    }
+</script>
+</body>
+</html>
