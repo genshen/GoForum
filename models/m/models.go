@@ -43,9 +43,19 @@ type Posts struct {
 	ViewCount    int   `gorm:"default:0"`
 	Visible      bool  `gorm:"default:true"`
 	LastReplayAt time.Time
+	Comment      []Comment `gorm:"ForeignKey:PostID"`
 }
 
 func (p *Posts) GetPostById(id string) {
 	//todo string to uint
 	database.DB.First(&p, id)
+}
+
+type Comment struct {
+	gorm.Model
+	PostID  uint
+	Author  uint
+	Parent  uint `gorm:"default=0"`
+	Content string
+	Visible bool  `gorm:"default:true"`
 }

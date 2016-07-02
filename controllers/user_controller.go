@@ -21,7 +21,7 @@ func (this *UserController) getRules(action string) int {
 }
 
 func (this *UserController) SignIn() {
-	if (this.isUserLogin()) {
+	if (this.IsUserLogin()) {
 		//if has login,then go home
 		this.Redirect("/", 302)
 		return
@@ -45,7 +45,7 @@ func (this *UserController) SignIn() {
 }
 
 func (this *UserController) SignUp() {
-	if (this.isUserLogin()) {
+	if (this.IsUserLogin()) {
 		this.Redirect("/", 302)
 		return
 	}

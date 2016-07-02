@@ -17,21 +17,27 @@ type Rules interface {
 
 type BaseController struct {
 	beego.Controller
-	isLogin bool
 }
+
+type Person struct {
+	ID   uint
+	Name string
+	Head string
+}
+
 
 // Prepare implemented Prepare method for baseRouter.
 func (this *BaseController) Prepare() {
 	var _, action = this.GetControllerAndAction()
 	if app, ok := this.AppController.(Rules); ok {
-		if (app.getRules(action) & identify.Login) != 0 && !this.isUserLogin() {
+		if (app.getRules(action) & identify.Login) != 0 && !this.IsUserLogin() {
 			//not login
 			this.Redirect("/account/signin", 302)
 		}
 	}
 }
 
-func (this *BaseController)isUserLogin() bool {
+func (this *BaseController)IsUserLogin() bool {
 	s := this.GetSession(Is_Login)
 	if s == nil {
 		return false

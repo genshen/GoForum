@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="GOPATH &lt;beeapp&gt;">
     <CLASSES>
+      <root url="file://D:/Program Files (x86)/GoPath/src/golang.org" />
+      <root url="file://D:/Program Files (x86)/GoPath/src/qiniupkg.com" />
       <root url="file://D:/Program Files (x86)/GoPath/src/github.com" />
-      <root url="file://D:/Program Files (x86)/GoPath/src/GoForum" />
-      <root url="file://D:/Program Files (x86)/GoPath/src/beeapp" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -1,11 +1,332 @@
 {{define "content"}}{{template "header" .}}{{template "navbar" .}}
+<style>
+    .hr-block {
+        border-top: 1px solid #b0bbc0;
+        padding-top: 16px;
+        margin-top: 16px;
+    }
+
+    #shell-box {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: transparent;
+    }
+
+    .normal {
+        border-radius: 8px 8px 0 0;
+        background-color: #ffffff;
+        padding: 20px 30px 10px 20px;
+        min-height: 300px;
+    }
+
+    .tool-box {
+        margin-bottom: 10px;
+    }
+
+    .tool-box a, .tool-box a:active, .tool-box a:focus, .tool-box a:visited {
+        color: gray;
+        text-decoration: none;
+    }
+
+    .tool-box a:hover {
+        color: #0eb400
+    }
+
+    #editor-box {
+        width: 100%;
+        resize: none;
+        outline: none
+    }
+
+    .min-box {
+        position: absolute;
+        right: 25px;
+        bottom: 25px;
+    }
+
+    .fullscreen {
+        background-color: #ffffff;
+        padding: 20px 30px 10px 20px;
+    }
+</style>
 <main id="app">
-    <<<.data>>>
+
+    <div class="modal fade" id="discard-confirm">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">舍弃确认</h4>
+                </div>
+                <div class="modal-body">
+                    <p>你是否确认舍弃文本框中输入的内容?&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="discard-action" data-dismiss="modal">舍弃</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="container">
+        <demo-grid :post="Post" :is_login="IsLogin" :author="Author"></demo-grid>
+    </div>
+
+    <div id="shell-box">
+        <div class="container normal" style="display: none">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-xs-1 hidden-xs" style="padding-left: 0;padding-right: 0">
+                            <img class="img-responsive img-circle"
+                                 src="https://discuss.flarum.org/assets/avatars/vknletk4grtrlylm.jpg"/>
+                        </div>
+                        <div class="col-sm-11">
+                            <div class="tool-box pull-right hidden-xs">
+                                <a class="mini-cont" href="javascript:void(0)">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </a>&emsp;
+                                <a class="fullscreen-cont" href="javascript:void(0)">
+                                    <span class="glyphicon glyphicon-resize-full"></span>
+                                </a>&emsp;
+                                <a class="close-cont" href="javascript:void(0)">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
+                            </div>
+                            <div class="tool-box visible-xs">
+                                <a class="mini-cont" href="javascript:void(0)">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </a>
+                                <a href="javascript:submit()" class="pull-right">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                </a>
+                            </div>
+                            <a>My Title</a>
+                            <div class="form-group" style="margin-top: 0">
+                                <!--<label for="editor-box" class="col-md-2 control-label">Textarea</label>-->
+                                <div class="col-md-12">
+                                    <textarea class="form-control" id="editor-box" placeholder="Enter Reply"
+                                              style="height:250px"></textarea>
+                                    <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-right normal-show bottom-box hidden-xs">
+                    <a href="javascript:submit()" class="btn-success btn">提交</a>
+                </div>
+            </div>
+        </div>
+        <div class="min-box" style="display: none;">
+            <a href="javascript:normal()" class="btn btn-primary btn-fab" style="padding-top: 6px;">
+                <span class="material-icons glyphicon glyphicon-edit"></span>
+            </a>
+        </div>
+    </div>
 </main>
+<!-- component template -->
+<script type="text/x-template" id="grid-template">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>{{ "{{post.Title}}"}}</h2>
+            {{ "{{post.Content}}"}}
+        </div>
+
+        <div class="col-md-12 hr-block">
+            <a v-if="is_login" href="javascript:replyPost()" id="reply-post"
+               class="btn btn-raised btn-primary">回复</a>
+            <a v-else href="/account/signin" class="btn btn-raised btn-primary">登录以回复</a>
+            <a href="javascript:void(0)" style="color:#607fa6;"><span
+                    class="glyphicon glyphicon-comment"></span>12评论</a>
+            <a href="javascript:void(0)" style="color:#607fa6;"><span
+                    class="glyphicon glyphicon-eye-open"></span>15浏览</a>
+        </div>
+    </div>
+    <div class="row">
+        <div v-for="com in comments" class="col-md-12 hr-block">
+            <span>{{ "{{com.ID}}"}}</span>
+            <article>{{ "{{com.Content}}"}}</article>
+            <a href="javascript:reply_rep(this)">回复</a>
+        </div>
+        <p class="text-center">
+            <button @click="loadMore('btn')" :disabled="!loading_enable" class="btn btn-primary">{{ "{{load_text}}" }}
+            </button>
+        </p>
+    </div>
+</script>
+
 {{template "script" .}}
 <script src="/static/js/form-validate.js"></script>
+<script src="/static/dist/js/vue.js"></script>
 <script>
+    $.material.init();
+    var D = JSON.parse("<<<.data>>>");
+    var ID = D.Post.ID;
+    //    console.log(data);
+    //    $(document).on("click", ".reply-rep", function () {
+    //        console.log("h")
+    //    });
+    //
+    function replyPost() {
+        replyBox.discardConfirm("");
+    }
 
+    function reply_rep() {
+        replyBox.discardConfirm("@Hee#213");
+    }
+</script>
+<script>
+    Vue.component('demo-grid', {
+        template: '#grid-template',
+        props: {
+            is_login: Boolean,
+            post: JSON,
+            author: JSON
+        },
+        data: function () {
+            return {
+                start: 0,
+                id: ID,
+                comments: [],
+                load_text: "加载更多",
+                loading_enable: true
+            }
+        },
+        methods: {
+            loadMore: function (btn) {
+                var self = this;
+
+                function loadComments(start) {
+                    $.ajax({
+                        type: 'GET',
+                        url: "/comment/" + ID + "/" + start,
+                        success: function (data) {
+                            data.Comments.forEach(function (e) {
+                                self.comments.push(e);
+                                self.load_text = "加载更多";
+                                self.loading_enable = true;
+                            });
+                            self.start += data.Size;
+                        }, error: function (err) {
+                            self.load_text = "加载失败,重新加载";
+                            self.loading_enable = true;
+                            console.log(err)
+                        }
+                    });
+                }
+
+                loadComments(this.start);
+                this.load_text = "正在加载";
+                this.loading_enable = false;
+            }
+        }
+    });
+
+    new Vue({
+        el: 'html',
+        data: D
+    });
+</script>
+<script>
+    var isFull = false;
+    //全屏图标问题 关闭问题
+    replyBox = {
+        option: {
+            ele: null,
+            mini_ele: ".mini-cont",
+            full_ele: "fullscreen-cont",
+            close_ele: "close-cont",
+            text_height: 250
+        },
+        close: function (r) {
+            var editor = $("#editor-box");
+
+            function clean() {
+                //clear it
+                editor.val("");
+                replyBox.option.ele.find("div:first").css("display", "none");
+                replyBox.option.ele.children().last().css("display", "none")
+            }
+
+            if (editor.val()) {
+                replyBox.discardConfirm("", clean)
+            } else {
+                clean();
+            }
+        },
+        minial: function () {
+            this.option.ele.find("div:first").css("display", "none");
+            this.option.ele.children().last().css("display", "block");
+        },
+        normal: function () {
+            var container = this.option.ele.find("div:first");
+            container.css("display", "block");
+            container.removeClass("fullscreen");
+            container.addClass("normal container");
+            this.option.ele.children().last().css("display", "none");
+            //text!!!
+            var editor = $("#editor-box");
+            editor.height(250);
+        },
+        fullscreen: function () {
+            if (isFull) {
+                this.normal();
+                isFull = false;
+            } else {
+                var container = this.option.ele.find("div:first");
+                container.removeClass("normal container");
+                container.addClass("fullscreen");
+                $(this).text("退出全屏");
+
+                var height_top = document.getElementById("shell-box").offsetTop;
+                var editor = $("#editor-box");
+                editor.height(editor.height() + height_top);
+                isFull = true;
+            }
+        },
+        init: function (options) {
+            this.option = $.extend({}, this.option, options);
+            this.option.ele.on("click", this.option.mini_ele, function () {
+                replyBox.minial();
+            });
+            this.option.ele.on("click", this.option.full_ele, function () {
+                replyBox.fullscreen();
+            });
+            this.option.ele.on("click", this.option.close_ele, function () {
+                replyBox.close();
+            });
+        },
+        discardConfirm: function (default_text, action) {
+            replyBox.normal();
+            var editor = $("#editor-box");
+            if (editor.val()) {
+                $('#discard-confirm').modal("show");
+                var discard_btn = $("#discard-action");
+                discard_btn.off("click");
+                if (action) {
+                    discard_btn.on("click", action);
+                } else { //default action
+                    discard_btn.on("click", function () {
+                        editor.val(default_text);
+                    });
+                }
+            } else {
+                //todo clear contents before: editor.val()
+                editor.val(default_text)
+            }
+        }
+    };
+    replyBox.init({
+        ele: $("#shell-box"), mini_ele: ".mini-cont", close_ele: ".close-cont",
+        full_ele: ".fullscreen-cont"
+    });
+    function normal() {
+        replyBox.normal();
+    }
 </script>
 {{template "footer" .}}
 {{end}}

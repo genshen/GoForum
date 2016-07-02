@@ -8,10 +8,22 @@ import (
 	"./../models/m"
 	form_check "./../verify/form"
 	identify "./../verify/auth"
+	"encoding/json"
 )
 
 type PostController struct {
 	BaseController
+}
+
+type QiNiuToken struct {
+	Token string
+}
+
+/**used for Post detail */
+type PostView struct {
+	IsLogin bool
+	Post    m.Posts
+	Author  Person
 }
 
 var post_rules = map[string]int{
@@ -56,10 +68,6 @@ func (this *PostController) POST_CreateMobile() {
 	this.TplName = "post/create_mobile.html"
 }
 
-type QiNiuToken struct {
-	Token string
-}
-
 func (this *PostController) UploadToken() {
 	// 配置 AccessKey/SecretKey
 	kodo.SetMac("xuCKJvuw7zg8qbgB1-LjcbqvS2H1O3SbTvO_zy7c", "YNutXAQzWvozFxPPfWbGz03XEHgOxdcADHmcrifQ")
@@ -80,10 +88,14 @@ func (this *PostController) View() {
 	if mPost.ID != 0 {
 		mUser := m.User{}
 		mUser.GetUserById(mPost.Author) //todo query user profile
-		//this.Data["data"] = mPost.Content
-		this.Data["data"] = mUser.Password
-		this.TplName = "post/view.html"
-		return
+		person := Person{ID:mUser.ID, Name:mUser.Name, Head:""}
+		data := PostView{IsLogin:this.IsUserLogin(), Post:mPost, Author:person}
+		json, err := json.Marshal(data)
+		if err == nil {
+			this.Data["data"] = string(json)
+			this.TplName = "post/view.html"
+			return
+		}
 	}
 	this.Abort("404")
 }
