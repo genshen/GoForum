@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"time"
 	"./../database"
+	"fmt"
 )
 
 const (
@@ -51,6 +52,15 @@ func (p *Posts) GetPostById(id string) {
 	database.DB.First(&p, id)
 }
 
+func (p *Posts) Exist(id uint) bool {
+	//todo string to uint
+	database.DB.Select("id").First(&p, id)
+	if p.ID == 0 {
+		return false
+	}
+	return true
+}
+
 type Comment struct {
 	gorm.Model
 	PostID  uint
@@ -58,4 +68,23 @@ type Comment struct {
 	Parent  uint `gorm:"default=0"`
 	Content string
 	Visible bool  `gorm:"default:true"`
+}
+
+func (Comment) TableName() string {
+	return "comment"
+}
+
+func (com Comment) Create() bool {
+	database.DB.Create(&com)
+	fmt.Println(com.ID)
+	if com.ID == 0 {
+		return false
+	}
+	return true
+}
+
+func LoadComments(id int, offset int) []Comment {
+	var comments []Comment
+	database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
+	return comments
 }

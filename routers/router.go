@@ -17,5 +17,6 @@ func init() {
 	beego.Router("post/create/upload_token",&controllers.PostController{},"get:UploadToken")
 
 	beego.Router("comment/:id([0-9]+)/:start([0-9]+)",&controllers.CommentController{},"get:Comment")
+	beego.Router("comment/add/:id([0-9]+)",&controllers.CommentController{},"post:CommentAdd")
 	//beego.AutoRouter(&controllers.UserController{})
 }
