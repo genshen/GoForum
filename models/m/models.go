@@ -73,8 +73,19 @@ func (Comment) TableName() string {
 }
 
 func LoadComments(id int, offset int) []Comment {
-
 	var comments []Comment
 	database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
 	return comments
+}
+
+
+type Swipe struct {
+	gorm.Model
+	url  string
+	Content string
+	Visible bool  `gorm:"default:true"`
+}
+
+func (Swipe) TableName() string {
+	return "swipe"
 }

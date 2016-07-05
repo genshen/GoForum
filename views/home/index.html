@@ -25,14 +25,19 @@
 <!--home template-->
 <script type="text/x-template" id="home-template">
   <div class="container" v-if="home.active">
-      <h1>Home</h1>
-      <div v-for="swi in swipe">
-          {{swi}}
+      <div v-if="home.loaded">
+          <h1>Home</h1>
+          <div v-for="swi in swipe">
+              {{swi}}
+          </div>
+          <div v-for="hot in hot_posts">
+             {{hot}}
+          </div>
       </div>
-      <div v-for="hot in hot_posts">
-         {{hot}}
-      </div>
-  </div>
+      <div v-else>
+          <span>正在加载...</span>
+      </div> <!--/home.loaded-->
+  </div>  <!--/home.active-->
 </script>
 <!--discover template-->
 <script type="text/x-template" id="discover-template">
@@ -158,8 +163,6 @@
          methods: {}
      });
 
-
-
     var vue = new Vue({
         el: "html",
         data: {
@@ -169,6 +172,9 @@
             message: {loaded: false,active:false},
             me: {loaded: false,active:false},
             setting: {}
+        },
+        ready:function(){
+           //init
         },
         methods: {
           //status = 1/2/4/8 only
@@ -181,8 +187,7 @@
             greetHome: function () {
                 this.show(SHOW_HOME);
                 if (!this.home.loaded) {
-                   console.log("no data");
-                   this.home.loaded = true;
+                   requestHomeData(this);
                 }
             },
             greetDiscover: function () {
@@ -207,7 +212,27 @@
                 }
             }
         }
-    })
+    });
+
+    function requestHomeData(self){
+       self.home.loaded = true;
+       $.ajax({
+           type: 'GET',
+           url: "/home/swipe/",
+           success: function (data) {
+               if (data.Size == 0) {
+                //  未找到相关内容;
+                   return;
+               }
+              //  data.Comments.forEach(function (e) {
+              //      self.comments.push(e);
+              //  });
+           }, error: function (err) {
+              // 加载失败,重新加载"
+               console.log(err);
+           }
+       });
+    }
 </script>
 </body>
 </html>
