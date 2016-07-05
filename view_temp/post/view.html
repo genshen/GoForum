@@ -1,4 +1,4 @@
-{{define "content"}}{{template "header" .}}{{template "navbar" .}}
+{{define "content"}}{{template "header" .}}
 <style>
     .hr-block {
         border-top: 1px solid #b0bbc0;
@@ -232,7 +232,7 @@
         </p>
     </div>
 </script>
-
+{{template "tabbar" .}}
 {{template "script" .}}
 <script src="/static/js/form-validate.js"></script>
 <script src="/static/dist/js/vue.js"></script>

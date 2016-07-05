@@ -1,4 +1,12 @@
-button, html, input, select, textarea {
-    font-family:"Microsoft Yahei","Hiragino Sans GB",Helvetica,"Helvetica Neue","微软雅黑",Tahoma,Arial,sans-serif;;
-    /*font-family: Roboto,"Helvetica Neue",sans-serif;*/
-}
+/*button, html, input, select, textarea {*/
+    /*font-family:"Microsoft Yahei","Hiragino Sans GB",Helvetica,"Helvetica Neue","微软雅黑",Tahoma,Arial,sans-serif;;*/
+    /*!*font-family: Roboto,"Helvetica Neue",sans-serif;*!*/
+/*}*/
+body{background-color: #fcfcfc !important;}
+footer{position: fixed;bottom:0;right: 0;left: 0;padding:10px 0 0 0; background-color:#f8f8f8;border-top: 1px  #ebe8e8}
+.tab-bar{padding:0;}
+.tab-bar li{list-style: none;}
+.tab-bar .footer-text{font-size:12px}
+.tab-bar li a{color: gray;}
+.tab-bar .active a{color:#0eb400;}
+.tab-bar li a:hover,.tab-bar li a:active,.tab-bar li a:focus,.tab-bar li a:visited{text-decoration: none}

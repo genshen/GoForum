@@ -1,12 +1,159 @@
-{{define "content"}}{{template "header" .}}{{template "navbar" .}}
+﻿{{define "content"}}{{template "header" .}}
 <main id="app">
-
+        <home-grid :home="home"></home-grid>
+        <discover-grid :discover="discover"></discover-grid>
+        <message-grid :message="message"></message-grid>
+        <user-grid :user="me"></user-grid>
 </main>
+<!--home template-->
+<script type="text/x-template" id="home-template">
+  <div class="container" v-if="home.active">
+      <h1>Home</h1>
+      <div v-for="swi in swipe">
+          {{"{{swi}}"}}
+      </div>
+      <div v-for="hot in hot_posts">
+         {{"{{hot}}"}}
+      </div>
+  </div>
+</script>
+<!--discover template-->
+<script type="text/x-template" id="discover-template">
+  <div class="container" v-if="discover.active">
+      <h1>discover</h1>
+      <div v-for="topic in topics">
+          {{"{{topic}}"}}
+      </div>
+  </div>
+</script>
+<!--message template-->
+<script type="text/x-template" id="message-template">
+  <div class="container" v-if="message.active">
+      <h1>Nessage</h1>
+      <div v-for="msg in messages">
+          {{"{{msg}}"}}
+      </div>
+  </div>
+</script>
+<!--me template-->
+<script type="text/x-template" id="user-template">
+  <div class="container" v-if="user.active">
+      <h1>Me</h1>
+  </div>
+</script>
+
+{{template "tabbar" .}}
 {{template "script" .}}
 <script src="/static/dist/js/vue.js"></script>
 <script src="/static/dist/js/snackbar.min.js"></script>
 <script>
+  var SHOW_HOME = 1,
+   SHOW_DISCOVER = 2,
+   SHOW_MESSAGE = 4,
+   SHOW_ME = 8;
 
+    Vue.component('home-grid', {
+        template: '#home-template',
+        props: {
+            home: JSON
+        },
+        ready: function () {
+        },
+        data: function () {
+            return {}
+        },
+        methods: {}
+    });
+
+     Vue.component('discover-grid', {
+         template: '#discover-template',
+         props: {
+             discover: JSON
+         },
+         ready: function () {
+         },
+         data: function () {
+             return {}
+         },
+         methods: {}
+     });
+
+     Vue.component('message-grid', {
+         template: '#message-template',
+         props: {
+             message: JSON
+         },
+         ready: function () {
+         },
+         data: function () {
+             return {}
+         },
+         methods: {}
+     });
+
+     Vue.component('user-grid', {
+         template: '#user-template',
+         props: {
+             user: JSON
+         },
+         ready: function () {
+         },
+         data: function () {
+             return {}
+         },
+         methods: {}
+     });
+
+
+
+    var vue = new Vue({
+        el: "html",
+        data: {
+            title: "首页",
+            home: {loaded: false,active:true},
+            discover: {loaded: false,active:false},
+            message: {loaded: false,active:false},
+            me: {loaded: false,active:false},
+            setting: {}
+        },
+        methods: {
+          //status = 1/2/4/8 only
+            show:function(status){
+              this.home.active = (status&SHOW_HOME) == SHOW_HOME;
+              this.discover.active = (status&SHOW_DISCOVER) == SHOW_DISCOVER;
+              this.message.active = (status&SHOW_MESSAGE) == SHOW_MESSAGE;
+              this.me.active = (status&SHOW_ME) == SHOW_ME;
+            },
+            greetHome: function () {
+                this.show(SHOW_HOME);
+                if (!this.home.loaded) {
+                   console.log("no data");
+                   this.home.loaded = true;
+                }
+            },
+            greetDiscover: function () {
+                this.show(SHOW_DISCOVER);
+                if (!this.discover.loaded) {
+                    console.log("no data");
+                    this.discover.loaded = true;
+                }
+            },
+            greetMessage: function () {
+                this.show(SHOW_MESSAGE);
+                if (!this.message.loaded) {
+                    console.log("no data");
+                    this.message.loaded = true;
+                }
+            },
+            greetMe: function () {
+                this.show(SHOW_ME);
+                if (!this.me.loaded) {
+                   console.log("no data");
+                   this.me.loaded = true;
+                }
+            }
+        }
+    })
 </script>
 {{template "footer" .}}
 {{end}}

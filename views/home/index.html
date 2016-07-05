@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
     <meta name="theme-color" content="#db5945">
-    <title>首页</title>
+    <title></title>
     <!-- Material Design fonts -->
     <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -13,49 +13,84 @@
     <!-- Bootstrap Material Design -->
     <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
     <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
 </head>
-<body><header>
-    <div class="navbar navbar-default" style="background-color:#607fa6">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="javascript:void(0)">GoForum</a>
-            </div>
-            <div class="navbar-collapse collapse navbar-responsive-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="javascript:void(0)">首页</a></li>
-                    <li><a href="javascript:void(0)">发现</a></li>
-                </ul>
-                <form class="navbar-form navbar-left">
-                    <div class="form-group">
-                        <input type="text" class="form-control col-md-8" placeholder="Search Everywhere">
-                    </div>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/account/signin">登录</a></li>
-                    <li><a href="/account/signup">注册</a></li>
-                    <li class="dropdown"> <!--已登录-->
-                        <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
-                            HHell<b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="javascript:void(0)">个人中心</a></li>
-                            <li><a href="/account/signout">退出</a></li>
-                            <!--javascript:void(0)-->
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</header>
+<body>
 <main id="app">
-
+        <home-grid :home="home"></home-grid>
+        <discover-grid :discover="discover"></discover-grid>
+        <message-grid :message="message"></message-grid>
+        <user-grid :user="me"></user-grid>
 </main>
+<!--home template-->
+<script type="text/x-template" id="home-template">
+  <div class="container" v-if="home.active">
+      <h1>Home</h1>
+      <div v-for="swi in swipe">
+          {{swi}}
+      </div>
+      <div v-for="hot in hot_posts">
+         {{hot}}
+      </div>
+  </div>
+</script>
+<!--discover template-->
+<script type="text/x-template" id="discover-template">
+  <div class="container" v-if="discover.active">
+      <h1>discover</h1>
+      <div v-for="topic in topics">
+          {{topic}}
+      </div>
+  </div>
+</script>
+<!--message template-->
+<script type="text/x-template" id="message-template">
+  <div class="container" v-if="message.active">
+      <h1>Nessage</h1>
+      <div v-for="msg in messages">
+          {{msg}}
+      </div>
+  </div>
+</script>
+<!--me template-->
+<script type="text/x-template" id="user-template">
+  <div class="container" v-if="user.active">
+      <h1>Me</h1>
+  </div>
+</script>
+
+
+<footer>
+    <div class="container-fluid">
+        <ul class="row tab-bar text-center">
+            <li class="active col-xs-3" v-on:click="greetHome"  data-toggle="tab">
+                <a href="#home">
+                    <span class="glyphicon glyphicon-home"></span><br>
+                    <span class="footer-text">首页</span>
+                </a>
+            </li>
+            <li class="col-xs-3" v-on:click="greetDiscover"  data-toggle="tab">
+                <a href="#discover">
+                    <span class="glyphicon glyphicon-search"></span><br>
+                    <span class="footer-text">发现</span>
+                </a>
+            </li>
+            <li class="col-xs-3" v-on:click="greetMessage" data-toggle="tab">
+                <a href="#message">
+                    <span class="glyphicon glyphicon-comment"></span><br>
+                    <span class="footer-text">消息</span>
+                </a>
+            </li>
+            <li class="col-xs-3" v-on:click="greetMe" data-toggle="tab">
+                <a>
+                    <span class="glyphicon glyphicon-user"></span><br>
+                    <span class="footer-text">我</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</footer>
 <!-- jQuery -->
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
 <!-- Twitter Bootstrap -->
@@ -66,7 +101,113 @@
 <script src="/static/dist/js/vue.js"></script>
 <script src="/static/dist/js/snackbar.min.js"></script>
 <script>
+  var SHOW_HOME = 1,
+   SHOW_DISCOVER = 2,
+   SHOW_MESSAGE = 4,
+   SHOW_ME = 8;
 
+    Vue.component('home-grid', {
+        template: '#home-template',
+        props: {
+            home: JSON
+        },
+        ready: function () {
+        },
+        data: function () {
+            return {}
+        },
+        methods: {}
+    });
+
+     Vue.component('discover-grid', {
+         template: '#discover-template',
+         props: {
+             discover: JSON
+         },
+         ready: function () {
+         },
+         data: function () {
+             return {}
+         },
+         methods: {}
+     });
+
+     Vue.component('message-grid', {
+         template: '#message-template',
+         props: {
+             message: JSON
+         },
+         ready: function () {
+         },
+         data: function () {
+             return {}
+         },
+         methods: {}
+     });
+
+     Vue.component('user-grid', {
+         template: '#user-template',
+         props: {
+             user: JSON
+         },
+         ready: function () {
+         },
+         data: function () {
+             return {}
+         },
+         methods: {}
+     });
+
+
+
+    var vue = new Vue({
+        el: "html",
+        data: {
+            title: "首页",
+            home: {loaded: false,active:true},
+            discover: {loaded: false,active:false},
+            message: {loaded: false,active:false},
+            me: {loaded: false,active:false},
+            setting: {}
+        },
+        methods: {
+          //status = 1/2/4/8 only
+            show:function(status){
+              this.home.active = (status&SHOW_HOME) == SHOW_HOME;
+              this.discover.active = (status&SHOW_DISCOVER) == SHOW_DISCOVER;
+              this.message.active = (status&SHOW_MESSAGE) == SHOW_MESSAGE;
+              this.me.active = (status&SHOW_ME) == SHOW_ME;
+            },
+            greetHome: function () {
+                this.show(SHOW_HOME);
+                if (!this.home.loaded) {
+                   console.log("no data");
+                   this.home.loaded = true;
+                }
+            },
+            greetDiscover: function () {
+                this.show(SHOW_DISCOVER);
+                if (!this.discover.loaded) {
+                    console.log("no data");
+                    this.discover.loaded = true;
+                }
+            },
+            greetMessage: function () {
+                this.show(SHOW_MESSAGE);
+                if (!this.message.loaded) {
+                    console.log("no data");
+                    this.message.loaded = true;
+                }
+            },
+            greetMe: function () {
+                this.show(SHOW_ME);
+                if (!this.me.loaded) {
+                   console.log("no data");
+                   this.me.loaded = true;
+                }
+            }
+        }
+    })
 </script>
 </body>
 </html>

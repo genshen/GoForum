@@ -51,7 +51,7 @@ func TestPostM(t *testing.T) {
 }
 
 func generate(container string, out string, data Data) {
-	s1, _ := template.ParseFiles(view_temp + "layouts/header.html", view_temp + "layouts/navbar.html",
+	s1, _ := template.ParseFiles(view_temp + "layouts/header.html", view_temp + "layouts/tabbar.html",
 		container, view_temp + "layouts/center_script.html",
 		view_temp + "layouts/footer.html")
 	file, _ := os.Create(out);
