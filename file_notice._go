@@ -1,0 +1,90 @@
+// Copyright 2012 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+// +build !plan9
+
+package main
+
+import (
+	"log"
+	"os"
+	"strings"
+	"text/template"
+	"github.com/fsnotify/fsnotify"
+)
+
+const (
+	jb_tem = "___jb_tmp___"
+	view_temp = "goforum/view_temp/"
+	view_out = "goforum/views/"
+)
+
+type Data struct {
+	Title string
+}
+
+var template_map = map[string]Data{
+	//用户
+	"account/signin.html":Data{"登录"},
+	"account/signup.html":Data{"注册"},
+	"account/signup_success.html":Data{"注册成功"},
+	//首页
+	"home/index.html":Data{"首页"},
+	//帖子
+	"post/create_jump.html":Data{"跳转中..."},
+	"post/view.html":Data{"X Froum--{{Post.Title}}"},
+	"post/create_mobile.html":Data{"创建帖子"},
+}
+
+func main() {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case event := <-watcher.Events:
+			//log.Println("event:", event)
+				if event.Op & fsnotify.Write == fsnotify.Write {
+					generateTemplate(event)
+				}
+			case err := <-watcher.Errors:
+				log.Println("error:", err)
+			}
+		}
+	}()
+
+	err = watcher.Add(view_temp+"account")
+	err = watcher.Add(view_temp+"home")
+	err = watcher.Add(view_temp+"post")
+	if err != nil {
+		log.Fatal(err)
+	}
+	<-done
+}
+
+func generateTemplate(event fsnotify.Event) {
+	//filter jb
+	if strings.Contains(event.Name,jb_tem){
+		return
+	}
+	var filePath string = strings.Replace(event.Name, "\\", "/", -1)
+	log.Println("modified file:", filePath)
+	fileName := strings.Replace(filePath, view_temp, "", 1)
+	//fileName = strings.Replace(fileName, jb_tem, "", 1)
+	generate(filePath, view_out + fileName, template_map["fileName"])
+	log.Println("released file: ", fileName)
+}
+
+func generate(container string, out string, data Data) {
+	s1, _ := template.ParseFiles(view_temp + "layouts/header.html", view_temp + "layouts/tabbar.html",
+		container, view_temp + "layouts/center_script.html",
+		view_temp + "layouts/footer.html")
+	file, _ := os.Create(out);
+	s1.ExecuteTemplate(file, "content", data)
+}
