@@ -78,10 +78,10 @@ func LoadComments(id int, offset int) []Comment {
 	return comments
 }
 
-
 type Swipe struct {
 	gorm.Model
 	url  string
+	img  string
 	Content string
 	Visible bool  `gorm:"default:true"`
 }
