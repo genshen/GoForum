@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <meta name="theme-color" content="#db5945">
     <title>X Froum--{{Post.Title}}</title>
     <!-- Material Design fonts -->
     <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
@@ -22,22 +23,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="javascript:void(0)">Brand</a>
+                <a class="navbar-brand" href="javascript:void(0)">GoForum</a>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="javascript:void(0)">Active</a></li>
-                    <li><a href="javascript:void(0)">Link</a></li>
-                    <li><a href="javascript:void(0)">Link</a></li>
+                    <li class="active"><a href="javascript:void(0)">首页</a></li>
+                    <li><a href="javascript:void(0)">发现</a></li>
                 </ul>
                 <form class="navbar-form navbar-left">
                     <div class="form-group">
-                        <input type="text" class="form-control col-md-8" placeholder="Search">
+                        <input type="text" class="form-control col-md-8" placeholder="Search Everywhere">
                     </div>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="javascript:void(0)">登录</a></li>
-                    <li><a href="javascript:void(0)">注册</a></li>
+                    <li><a href="/account/signin">登录</a></li>
+                    <li><a href="/account/signup">注册</a></li>
                     <li class="dropdown"> <!--已登录-->
                         <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
                             HHell<b class="caret"></b>
@@ -240,10 +240,10 @@
                                               style="height:250px"></textarea>
                                     <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </div>  <!--/form-group-->
+                        </div>   <!--col-sm-11-->
+                    </div>   <!--row-->
+                </div>  <!--/col-md-12-->
                 <div class="col-md-12 text-right normal-show bottom-box hidden-xs">
                     <a href="javascript:submit()" class="btn-success btn">提交</a>
                 </div>
@@ -269,16 +269,16 @@
                class="btn btn-raised btn-primary">回复</a>
             <a v-else href="/account/signin" class="btn btn-raised btn-primary">登录以回复</a>
             <a href="javascript:void(0)" style="color:#607fa6;"><span
-                    class="glyphicon glyphicon-comment"></span>12评论</a>
+                    class="glyphicon glyphicon-comment"></span>{{post.CommentCount}}评论</a>
             <a href="javascript:void(0)" style="color:#607fa6;"><span
-                    class="glyphicon glyphicon-eye-open"></span>15浏览</a>
+                    class="glyphicon glyphicon-eye-open"></span>{{post.ViewCount}}浏览</a>
         </div>
     </div>
     <div class="row">
         <div v-for="com in comments" class="col-md-12 hr-block">
             <span>{{com.ID}}</span>
             <article>{{com.Content}}</article>
-            <a href="javascript:reply_rep(this)">回复</a>
+            <a href="javascript:replyRep(this)">回复</a>
         </div>
         <p class="text-center">
             <button @click="loadMore('btn')" :disabled="!loading_enable" class="btn btn-primary">{{load_text}}
@@ -303,18 +303,18 @@
     var ID = D.Post.ID;
 
     $.material.init();
-    var login_options = {content: "请<a href='/account/signin?next=/post/" + ID + "'>登录</a>后回复", timeout: 4000};
-    var error_options = {content: "出了点错误,请<a href='/post/" + ID + "'>刷新</a>重试", timeout: 4000};
+    var loginOptions = {content: "请<a href='/account/signin?next=/post/" + ID + "'>登录</a>后回复", timeout: 4000};
+    var errorOptions = {content: "出了点错误,请<a href='/post/" + ID + "'>刷新</a>重试", timeout: 4000};
 
     function replyPost() {
         replyBox.discardConfirm("");
     }
 
-    function reply_rep() {
+    function replyRep() {
         if (D.IsLogin) {
             replyBox.discardConfirm("@Hee#213 ");
         } else {
-            $.snackbar(login_options);
+            $.snackbar(loginOptions);
         }
     }
 
@@ -327,7 +327,7 @@
                 try { //cookie may be null or something else bad data
                     xsrf = base64_decode(Cookies.get('_xsrf').split("|")[0]);
                 } catch (err) {
-                    $.snackbar(error_options);
+                    $.snackbar(errorOptions);
                     return
                 }
                 $.ajax({
@@ -338,7 +338,7 @@
                         try {
                             switch (data.Status) { //1 for success,0 for not login,2 for article have deleted!
                                 case 0:
-                                    $.snackbar(login_options);
+                                    $.snackbar(loginOptions);
                                     break;
                                 case 1:
                                     var options = {content: "发布成功", timeout: 2000};
@@ -356,15 +356,15 @@
                                     break;
                             }
                         } catch (err) {
-                            $.snackbar(error_options);
+                            $.snackbar(errorOptions);
                         }
                     },
                     error: function (err) {
-                        $.snackbar(error_options);
+                        $.snackbar(errorOptions);
                     }
                 });
             } else {  //not login
-                $.snackbar(login_options);
+                $.snackbar(loginOptions);
             }
         } else {
             var options = {content: "回复内容不能为空", timeout: 2000};

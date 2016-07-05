@@ -75,7 +75,7 @@ func (this *SignUpForm)validOrSave(v *validation.Validation) {
 	}
 }
 
-func (this *PostCreateForm)Valid() ([]*validation.Error){
+func (this *PostCreateForm)Valid() ([]*validation.Error) {
 	valid := validation.Validation{}
 	valid.Required(this.Title, "title").Message("标题不能为空")
 	valid.Required(this.Content, "conten").Message("内容不能为空")
@@ -85,9 +85,44 @@ func (this *PostCreateForm)Valid() ([]*validation.Error){
 	return nil
 }
 
-func (this *PostCreateForm)Save(userID uint) uint{
+func (this *PostCreateForm)Save(userID uint) uint {
 	//todo check user account first
 	post := m.Posts{Topic:1, Author:userID, Title:this.Title, Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
 	database.DB.Create(&post)
 	return post.ID
+}
+
+type CommentCreateForm struct {
+	PostID  uint
+	Content string
+}
+
+type CommentAddResult struct {
+	Status   int
+	Error    string
+	Addition interface{}
+}
+
+func (this *CommentCreateForm)Create(user_id uint)(result CommentAddResult) {
+	p := m.Posts{}
+	// use transaction
+	tx := database.DB.Begin()
+	if (p.Exist(this.PostID) ) {
+		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
+		if err := database.DB.Create(&comment).Error;err !=nil{
+			tx.Rollback();
+			result = CommentAddResult{Status:2, Addition:0}
+			return
+		}
+		if err :=database.DB.Model(&p).UpdateColumn("CommentCount", p.CommentCount + 1).Error; err != nil{
+			tx.Rollback();
+			result = CommentAddResult{Status:2, Addition:0}
+			return
+		}
+		result = CommentAddResult{Status:1, Addition:0}
+	} else {
+		result = CommentAddResult{Status:3, Error:"对应文章不存在"}
+	}
+	tx.Commit()
+	return
 }

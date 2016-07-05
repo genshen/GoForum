@@ -4,7 +4,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"time"
 	"./../database"
-	"fmt"
 )
 
 const (
@@ -53,8 +52,7 @@ func (p *Posts) GetPostById(id string) {
 }
 
 func (p *Posts) Exist(id uint) bool {
-	//todo string to uint
-	database.DB.Select("id").First(&p, id)
+	database.DB.Select("id,comment_count").First(&p, id)
 	if p.ID == 0 {
 		return false
 	}
@@ -74,16 +72,8 @@ func (Comment) TableName() string {
 	return "comment"
 }
 
-func (com Comment) Create() bool {
-	database.DB.Create(&com)
-	fmt.Println(com.ID)
-	if com.ID == 0 {
-		return false
-	}
-	return true
-}
-
 func LoadComments(id int, offset int) []Comment {
+
 	var comments []Comment
 	database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
 	return comments

@@ -30,6 +30,11 @@ func TestRegisterSuccess(t *testing.T) {
 	generate(view_temp + "account/signup_success.html", view_out + "account/signup_success.html", d)
 }
 
+func TestHomeIndex(t *testing.T){
+	d := Data{"首页"}
+	generate(view_temp + "home/index.html", view_out + "home/index.html", d)
+}
+
 func TestPostJump(t *testing.T) {
 	d := Data{"跳转中..."}
 	generate(view_temp + "post/create_jump.html", view_out + "post/create_jump.html", d)

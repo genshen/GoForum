@@ -186,10 +186,10 @@
                                               style="height:250px"></textarea>
                                     <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </div>  <!--/form-group-->
+                        </div>   <!--col-sm-11-->
+                    </div>   <!--row-->
+                </div>  <!--/col-md-12-->
                 <div class="col-md-12 text-right normal-show bottom-box hidden-xs">
                     <a href="javascript:submit()" class="btn-success btn">提交</a>
                 </div>
@@ -215,16 +215,16 @@
                class="btn btn-raised btn-primary">回复</a>
             <a v-else href="/account/signin" class="btn btn-raised btn-primary">登录以回复</a>
             <a href="javascript:void(0)" style="color:#607fa6;"><span
-                    class="glyphicon glyphicon-comment"></span>12评论</a>
+                    class="glyphicon glyphicon-comment"></span>{{ "{{post.CommentCount}}"}}评论</a>
             <a href="javascript:void(0)" style="color:#607fa6;"><span
-                    class="glyphicon glyphicon-eye-open"></span>15浏览</a>
+                    class="glyphicon glyphicon-eye-open"></span>{{ "{{post.ViewCount}}"}}浏览</a>
         </div>
     </div>
     <div class="row">
         <div v-for="com in comments" class="col-md-12 hr-block">
             <span>{{ "{{com.ID}}"}}</span>
             <article>{{ "{{com.Content}}"}}</article>
-            <a href="javascript:reply_rep(this)">回复</a>
+            <a href="javascript:replyRep(this)">回复</a>
         </div>
         <p class="text-center">
             <button @click="loadMore('btn')" :disabled="!loading_enable" class="btn btn-primary">{{ "{{load_text}}" }}
@@ -243,18 +243,18 @@
     var ID = D.Post.ID;
 
     $.material.init();
-    var login_options = {content: "请<a href='/account/signin?next=/post/" + ID + "'>登录</a>后回复", timeout: 4000};
-    var error_options = {content: "出了点错误,请<a href='/post/" + ID + "'>刷新</a>重试", timeout: 4000};
+    var loginOptions = {content: "请<a href='/account/signin?next=/post/" + ID + "'>登录</a>后回复", timeout: 4000};
+    var errorOptions = {content: "出了点错误,请<a href='/post/" + ID + "'>刷新</a>重试", timeout: 4000};
 
     function replyPost() {
         replyBox.discardConfirm("");
     }
 
-    function reply_rep() {
+    function replyRep() {
         if (D.IsLogin) {
             replyBox.discardConfirm("@Hee#213 ");
         } else {
-            $.snackbar(login_options);
+            $.snackbar(loginOptions);
         }
     }
 
@@ -267,7 +267,7 @@
                 try { //cookie may be null or something else bad data
                     xsrf = base64_decode(Cookies.get('_xsrf').split("|")[0]);
                 } catch (err) {
-                    $.snackbar(error_options);
+                    $.snackbar(errorOptions);
                     return
                 }
                 $.ajax({
@@ -278,7 +278,7 @@
                         try {
                             switch (data.Status) { //1 for success,0 for not login,2 for article have deleted!
                                 case 0:
-                                    $.snackbar(login_options);
+                                    $.snackbar(loginOptions);
                                     break;
                                 case 1:
                                     var options = {content: "发布成功", timeout: 2000};
@@ -296,15 +296,15 @@
                                     break;
                             }
                         } catch (err) {
-                            $.snackbar(error_options);
+                            $.snackbar(errorOptions);
                         }
                     },
                     error: function (err) {
-                        $.snackbar(error_options);
+                        $.snackbar(errorOptions);
                     }
                 });
             } else {  //not login
-                $.snackbar(login_options);
+                $.snackbar(loginOptions);
             }
         } else {
             var options = {content: "回复内容不能为空", timeout: 2000};

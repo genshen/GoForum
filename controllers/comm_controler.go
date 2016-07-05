@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"../models/m"
+	"../models/forms"
 	"strconv"
 )
 
@@ -43,33 +44,18 @@ func (this *CommentController) Comment() {
 	this.ServeJSON()
 }
 
-type CommentAddResult struct {
-	Status   int
-	Error    string
-	Addition interface{}
-}
 //post only
 // 0 for no login;2 for article deleted; 1 feo success
 func (this *CommentController) CommentAdd() {
-	var result CommentAddResult
+	var result forms.CommentAddResult
 	if !this.IsUserLogin() {
-		result = CommentAddResult{Status:0, Error:"用户未登录"}
+		result = forms.CommentAddResult{Status:0, Error:"用户未登录"}
 	} else {
-		mPost := m.Posts{}
 		id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
 		post_id := uint(id);
 		content := this.GetString("content")
-		if (mPost.Exist(post_id) ) {
-			//save it
-			comment := m.Comment{PostID:post_id, Author:this.getUserId(), Content:content}
-			if comment.Create() {
-				result = CommentAddResult{Status:1, Addition:0}
-			} else {
-				result = CommentAddResult{Status:2, Addition:0}
-			}
-		} else {
-			result = CommentAddResult{Status:3, Error:"对应文章不存在"}
-		}
+		ccf := forms.CommentCreateForm{PostID:post_id,Content:content}
+		result  = ccf.Create(this.getUserId())
 	}
 	this.Data["json"] = &result
 	this.ServeJSON()
