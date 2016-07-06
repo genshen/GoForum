@@ -1,22 +1,26 @@
 package controllers
 
-import ()
+import (
+	"../models/m"
+	"strconv"
+)
 
 type HomeController struct {
 	BaseController
 }
 
 func (this *HomeController) Get() {
-	this.Data["Website"] = "beego.me"
-	this.Data["Email"] = "astaxie@gmail.com"
 	this.TplName = "home/index.html"
 }
 
-type  SwipeData struct {
-
+func (this *HomeController) LoadSwipe() {
+	swipes_form := m.LoadSwipes()
+	this.Data["json"] = swipes_form
+	this.ServeJSON()
 }
 
-func (this *HomeController) LoadSwipe(){
-	this.Data["json"] =
+func (this *HomeController) Hot() {
+	start,_ := strconv.Atoi(this.Ctx.Input.Param(":start"))
+	this.Data["json"] = m.GetHotPosts(start)
 	this.ServeJSON()
 }

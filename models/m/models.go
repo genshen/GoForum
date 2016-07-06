@@ -59,6 +59,11 @@ func (p *Posts) Exist(id uint) bool {
 	return true
 }
 
+func GetHotPosts(offset int) (hot []Posts) {
+	database.DB.Where("visible = ?", true).Offset(uint(offset)).Limit(20).Find(&hot);
+	return
+}
+
 type Comment struct {
 	gorm.Model
 	PostID  uint
@@ -80,12 +85,17 @@ func LoadComments(id int, offset int) []Comment {
 
 type Swipe struct {
 	gorm.Model
-	url  string
-	img  string
+	Url     string
+	Img     string
 	Content string
 	Visible bool  `gorm:"default:true"`
 }
 
 func (Swipe) TableName() string {
 	return "swipe"
+}
+
+func LoadSwipes() (swipes []Swipe) {
+	database.DB.Where("visible = ?", true).Limit(8).Find(&swipes)
+	return
 }

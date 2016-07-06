@@ -103,18 +103,18 @@ type CommentAddResult struct {
 	Addition interface{}
 }
 
-func (this *CommentCreateForm)Create(user_id uint)(result CommentAddResult) {
+func (this *CommentCreateForm)Create(user_id uint) (result CommentAddResult) {
 	p := m.Posts{}
 	// use transaction
 	tx := database.DB.Begin()
 	if (p.Exist(this.PostID) ) {
 		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
-		if err := database.DB.Create(&comment).Error;err !=nil{
+		if err := database.DB.Create(&comment).Error; err != nil {
 			tx.Rollback();
 			result = CommentAddResult{Status:2, Addition:0}
 			return
 		}
-		if err :=database.DB.Model(&p).UpdateColumn("CommentCount", p.CommentCount + 1).Error; err != nil{
+		if err := database.DB.Model(&p).UpdateColumn("CommentCount", p.CommentCount + 1).Error; err != nil {
 			tx.Rollback();
 			result = CommentAddResult{Status:2, Addition:0}
 			return

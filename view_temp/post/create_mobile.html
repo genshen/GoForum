@@ -1,4 +1,6 @@
 {{define "content"}}{{template "header" .}}
+<link type="text/css" rel="stylesheet" href="/static/css/editor/editor-mobile.min.css">
+{{template "header_foo" .}}
 <main id="app">
     <div class="container">
         <h1>Create Post</h1>
@@ -25,7 +27,6 @@
 
     </div>
 </main>
-<link type="text/css" rel="stylesheet" href="/static/css/editor/editor-mobile.min.css">
 {{template "script" .}}
 <!--minify js file-->
 <script type="text/javascript" src="/static/js/editor/lib/zepto.min.js"></script>

@@ -1,5 +1,7 @@
 ﻿{{define "content"}}{{template "header" .}}
-<main id="app">
+<link type="text/css" rel="stylesheet" href="/static/dist/css/snackbar.css">
+{{template "header_foo" .}}
+<main id="app" style="margin-bottom:72px"> <!--footer:60px-->
         <home-grid :home="home"></home-grid>
         <discover-grid :discover="discover"></discover-grid>
         <message-grid :message="message"></message-grid>
@@ -10,12 +12,15 @@
   <div class="container" v-if="home.active">
       <div v-if="home.loaded">
           <h1>Home</h1>
-          <div v-for="swi in swipe">
-              {{"{{swi}}"}}
+          <div v-for="swipe in home.swipes">
+              <a v-bind:href="{{"swipe.Url"}}" target="_blank">
+                  <img class="img-responsive" alt="Loading" v-bind:src="{{"swipe.Img"}}"/>
+              </a>
+          </div>  <!--ends home.swipes-->
+          <div v-for="hot in home.hot_posts">
+               {{"{{hot.Title}}"}}
           </div>
-          <div v-for="hot in hot_posts">
-             {{"{{hot}}"}}
-          </div>
+          <a @click="loadMore('btn')" :disabled="!home.loading_enable">{{"{{home.hot_loading_text}}"}}</a>
       </div>
       <div v-else>
           <span>正在加载...</span>
@@ -113,7 +118,7 @@
         el: "html",
         data: {
             title: "首页",
-            home: {loaded: false,active:true},
+            home: {loaded: false,active:true,swipes:[],hot_posts:[],hot_start:0,hot_loading_text:"加载更多",hot_loading_enable:true},
             discover: {loaded: false,active:false},
             message: {loaded: false,active:false},
             me: {loaded: false,active:false},
@@ -160,25 +165,59 @@
         }
     });
 
+    //第一次加载失败(swipt 与 hot),可以通过点击首页重试
     function requestHomeData(self){
-       self.home.loaded = true;
        $.ajax({
            type: 'GET',
            url: "/home/swipe/",
            success: function (data) {
-               if (data.Size == 0) {
-                //  未找到相关内容;
-                   return;
+               if (data.length == 0) { //todo
+                   //  未找到相关内容;
                }
-              //  data.Comments.forEach(function (e) {
-              //      self.comments.push(e);
-              //  });
+                self.home.swipes = []; //防止重试加载时会数据重叠
+               data.forEach(function (e) {
+                   self.home.swipes.push(e);
+               });
+               self.home.hot_loading_text = "正在加载";
+               self.home.hot_loading_enable = false;
+               requestHotPosts(self,self.home.hot_start);
            }, error: function (err) {
-              // 加载失败,重新加载"
-               console.log(err);
+              // 加载失败,重新加载
+               var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
+               $.snackbar(options);
+              //  console.log(err);
            }
        });
     }
+
+    //请求热门帖子的数据
+    //第一次由父组件调用,以后加载更多及失败的重试都由子组件负责
+    function requestHotPosts(self,start){
+      $.ajax({
+          type: 'GET',
+          url: "/home/hot/"+start,
+          success: function (data) { //todo use try catch: data may be not json format
+              if (data.length == 0) { //todo
+                  self.home.hot_loading_enable = false;
+                  self.home.hot_loading_text = "没有更多内容了";
+                  return;
+              }
+              data.forEach(function (e) {
+                  self.home.hot_posts.push(e);
+              });
+              self.home.loaded = true;
+              self.home.hot_loading_text = "加载更多";
+              self.home.hot_loading_enable = true;
+          }, error: function (err) {
+              self.home.hot_loading_enable = true;
+              self.home.hot_loading_text = "加载失败,请重试";
+              var options = {content: "加载失败,请重试", timeout: 2000};
+              $.snackbar(options);
+              // console.log(err);
+          }
+      });
+    }
+
 </script>
 {{template "footer" .}}
 {{end}}
