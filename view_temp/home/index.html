@@ -17,8 +17,21 @@
                   <img class="img-responsive" alt="Loading" v-bind:src="{{"swipe.Img"}}"/>
               </a>
           </div>  <!--ends home.swipes-->
-          <div v-for="hot in home.hot_posts">
-               {{"{{hot.Title}}"}}
+          <div v-for="hot in home.hot_posts"  class="list-group">
+              <div class="list-group-item">
+                    <div class="row-picture">
+                          <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
+                    </div>
+                    <div class="row-content">
+                       <span> {{"{{hot.Name}}"}}</span> <!--class="list-group-item-heading"-->
+                       <span class="glyphicon glyphicon-eye-open"></span><span>{{"{{hot.ViewCount}}"}}</span>
+                       <span class="glyphicon glyphicon-dashboard"></span><span>{{"{{hot.CommentCount}}"}}</span>
+                       <p class="list-group-item-text">
+                            <a v-bind:href="'/post/'+hot.PostID">{{"{{hot.Title}}"}}</a>
+                       </p>
+                    </div>
+               </div>
+               <div class="list-group-separator"></div>
           </div>
           <a @click="loadMore('btn')" :disabled="!home.loading_enable">{{"{{home.hot_loading_text}}"}}</a>
       </div>

@@ -6,6 +6,7 @@ import (
 	"../m"
 	"github.com/astaxie/beego/validation"
 	"time"
+	"fmt"
 )
 
 type SignInForm struct {
@@ -87,7 +88,7 @@ func (this *PostCreateForm)Valid() ([]*validation.Error) {
 
 func (this *PostCreateForm)Save(userID uint) uint {
 	//todo check user account first
-	post := m.Posts{Topic:1, Author:userID, Title:this.Title, Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
+	post := m.Posts{Topic:1, AuthorID:userID, Title:this.Title, Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
 	database.DB.Create(&post)
 	return post.ID
 }
@@ -103,7 +104,7 @@ type CommentAddResult struct {
 	Addition interface{}
 }
 
-func (this *CommentCreateForm)Create(user_id uint) (result CommentAddResult) {
+func (this *CommentCreateForm)Create(user_id uint) (result *CommentAddResult) {
 	p := m.Posts{}
 	// use transaction
 	tx := database.DB.Begin()
@@ -111,17 +112,18 @@ func (this *CommentCreateForm)Create(user_id uint) (result CommentAddResult) {
 		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
 		if err := database.DB.Create(&comment).Error; err != nil {
 			tx.Rollback();
-			result = CommentAddResult{Status:2, Addition:0}
+			result = &CommentAddResult{Status:2, Addition:0}
 			return
 		}
 		if err := database.DB.Model(&p).UpdateColumn("CommentCount", p.CommentCount + 1).Error; err != nil {
 			tx.Rollback();
-			result = CommentAddResult{Status:2, Addition:0}
+			result = &CommentAddResult{Status:2, Addition:0}
 			return
 		}
-		result = CommentAddResult{Status:1, Addition:0}
+		fmt.Println(comment)
+		result = &CommentAddResult{Status:1, Addition:comment.ID}
 	} else {
-		result = CommentAddResult{Status:3, Error:"对应文章不存在"}
+		result = &CommentAddResult{Status:3, Error:"对应文章不存在"}
 	}
 	tx.Commit()
 	return

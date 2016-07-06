@@ -66,7 +66,6 @@
         padding: 20px 30px 10px 20px;
     }
 </style>
-
 </head>
 <body>
 <main id="app">
@@ -233,7 +232,7 @@
                                 case 1:
                                     var options = {content: "发布成功", timeout: 2000};
                                     $.snackbar(options);
-                                    D.Comments.push({Content: value, ID: 0});
+                                    D.Comments.push({Content: value, ID: data.Addition});
                                     replyBox.close(false);
                                     break;
                                 case 2:
@@ -291,17 +290,17 @@
                         type: 'GET',
                         url: "/comment/" + ID + "/" + start,
                         success: function (data) {
-                            if (data.Size == 0) {
+                            if (data.length == 0) {
                                 self.load_text = "没有更多内容了";
                                 self.loading_enable = false;
                                 return;
                             }
-                            data.Comments.forEach(function (e) {
+                            data.forEach(function (e) {
                                 self.comments.push(e);
                             });
                             self.load_text = "加载更多";
                             self.loading_enable = true;
-                            self.start += data.Size;
+                            self.start += data.length;
                         }, error: function (err) {
                             self.load_text = "加载失败,重新加载";
                             self.loading_enable = true;

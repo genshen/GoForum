@@ -19,7 +19,6 @@ type User struct {
 	AuthKey    string  `gorm:"column:auth_key"`
 	ResetToken string  `gorm:"column:password_reset_token"`
 	Status     int     `gorm:"default:10"`
-	Posts      []Posts `gorm:"ForeignKey:Author"`
 }
 
 func (User) TableName() string {
@@ -34,7 +33,8 @@ func (u *User) GetUserById(id uint) {
 type Posts struct {
 	gorm.Model
 	Topic        uint
-	Author       uint
+	AuthorID     uint
+	Author       User `gorm:"ForeignKey:AuthorID"`
 	Title        string
 	Content      string
 	IsMobile     bool // 1 for mobile,0 for desktop
@@ -60,7 +60,7 @@ func (p *Posts) Exist(id uint) bool {
 }
 
 func GetHotPosts(offset int) (hot []Posts) {
-	database.DB.Where("visible = ?", true).Offset(uint(offset)).Limit(20).Find(&hot);
+	database.DB.Where("visible = ?", true).Offset(uint(offset)).Limit(20).Preload("Author").Find(&hot);
 	return
 }
 

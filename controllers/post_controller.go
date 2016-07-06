@@ -9,6 +9,7 @@ import (
 	form_check "./../verify/form"
 	identify "./../verify/auth"
 	"encoding/json"
+	"time"
 )
 
 type PostController struct {
@@ -17,13 +18,6 @@ type PostController struct {
 
 type QiNiuToken struct {
 	Token string
-}
-
-/**used for Post detail */
-type PostView struct {
-	IsLogin bool
-	Post    m.Posts
-	Author  Person
 }
 
 var post_rules = map[string]int{
@@ -82,14 +76,50 @@ func (this *PostController) UploadToken() {
 	this.ServeJSON()
 }
 
+/**used for Post detail */
+type PostDetail struct {
+	ID           uint
+	//Topic
+	Title        *string
+	Content      *string
+	IsMobile     bool
+	Sticky       bool
+	CommentCount int
+	ViewCount    int
+	LastReplayAt *time.Time
+	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
+}
+
+func (this *PostDetail) NewInstant(p *m.Posts) {
+	this.ID = p.ID
+	this.Title = &p.Title
+	this.Content = &p.Content
+	this.IsMobile = p.IsMobile
+	this.Sticky = p.Sticky
+	this.CommentCount = p.CommentCount
+	this.ViewCount = p.ViewCount
+	this.LastReplayAt = &p.LastReplayAt
+	this.CreatedAt = &p.CreatedAt
+	this.UpdatedAt = &p.UpdatedAt
+}
+
+type PostView struct {
+	IsLogin bool
+	Post    PostDetail
+	Author  Person
+}
+
 func (this *PostController) View() {
 	mPost := m.Posts{}
 	mPost.GetPostById(this.Ctx.Input.Param(":id"))
 	if mPost.ID != 0 {
+		mPostDetail := PostDetail{}
+		mPostDetail.NewInstant(&mPost)
 		mUser := m.User{}
-		mUser.GetUserById(mPost.Author) //todo query user profile
+		mUser.GetUserById(mPost.AuthorID) //todo query user profile,do not show Author(in mPost) information
 		person := Person{ID:mUser.ID, Name:mUser.Name, Head:""}
-		data := PostView{IsLogin:this.IsUserLogin(), Post:mPost, Author:person}
+		data := PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
 		json, err := json.Marshal(data)
 		if err == nil {
 			this.Data["data"] = string(json)
