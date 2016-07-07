@@ -9,7 +9,6 @@ import (
 	form_check "./../verify/form"
 	identify "./../verify/auth"
 	"encoding/json"
-	"time"
 )
 
 type PostController struct {
@@ -74,40 +73,6 @@ func (this *PostController) UploadToken() {
 	up_token := c.MakeUptoken(policy)
 	this.Data["json"] = &QiNiuToken{Token:up_token}
 	this.ServeJSON()
-}
-
-/**used for Post detail */
-type PostDetail struct {
-	ID           uint
-	//Topic
-	Title        *string
-	Content      *string
-	IsMobile     bool
-	Sticky       bool
-	CommentCount int
-	ViewCount    int
-	LastReplayAt *time.Time
-	CreatedAt    *time.Time
-	UpdatedAt    *time.Time
-}
-
-func (this *PostDetail) NewInstant(p *m.Posts) {
-	this.ID = p.ID
-	this.Title = &p.Title
-	this.Content = &p.Content
-	this.IsMobile = p.IsMobile
-	this.Sticky = p.Sticky
-	this.CommentCount = p.CommentCount
-	this.ViewCount = p.ViewCount
-	this.LastReplayAt = &p.LastReplayAt
-	this.CreatedAt = &p.CreatedAt
-	this.UpdatedAt = &p.UpdatedAt
-}
-
-type PostView struct {
-	IsLogin bool
-	Post    PostDetail
-	Author  Person
 }
 
 func (this *PostController) View() {

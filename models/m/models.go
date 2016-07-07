@@ -32,7 +32,9 @@ func (u *User) GetUserById(id uint) {
 //User         User `gorm:"ForeignKey:Author"`
 type Posts struct {
 	gorm.Model
-	Topic        uint
+	TopicID      uint
+	Topic        Topic `gorm:"ForeignKey:TopicID"`
+	Tags         []Tag `gorm:"many2many:post_tag;"`
 	AuthorID     uint
 	Author       User `gorm:"ForeignKey:AuthorID"`
 	Title        string
@@ -81,6 +83,31 @@ func LoadComments(id int, offset int) []Comment {
 	var comments []Comment
 	database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
 	return comments
+}
+
+type Topic struct {
+	gorm.Model
+	Name     string
+	Describe string
+	Slug     string
+	Visible  bool  `gorm:"default:true"`
+	Color    string
+}
+
+func (Topic) TableName() string {
+	return "topic"
+}
+
+type Tag struct {
+	gorm.Model
+	Name     string
+	Describe string
+	Visible  bool  `gorm:"default:true"`
+	Color    string
+}
+
+func (Tag) TableName() string {
+	return "tag"
 }
 
 type Swipe struct {

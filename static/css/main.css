@@ -10,3 +10,11 @@ footer{position: fixed;bottom:0;right: 0;left: 0;padding:10px 0 0 0; background-
 .tab-bar li a{color: gray;}
 .tab-bar .active a{color:#0eb400;}
 .tab-bar li a:hover,.tab-bar li a:active,.tab-bar li a:focus,.tab-bar li a:visited{text-decoration: none}
+
+.tag{
+  background-color: #607D8B;
+  padding: 0.6em;
+  border-radius: 0.4em;
+  color: white
+}
+.tag:hover,.tag:focus,.tag.visited,.tag.active{text-decoration: none;color:white}

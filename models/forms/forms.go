@@ -6,7 +6,6 @@ import (
 	"../m"
 	"github.com/astaxie/beego/validation"
 	"time"
-	"fmt"
 )
 
 type SignInForm struct {
@@ -67,7 +66,7 @@ func (this *SignUpForm)Valid() ([]*validation.Error, bool) {
 
 func (this *SignUpForm)validOrSave(v *validation.Validation) {
 	u := m.User{};
-	database.DB.Where("email = ?", this.Password).First(&u)
+	database.DB.Where("email = ?", this.Email).First(&u)
 	if u.ID != 0 {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
@@ -88,7 +87,7 @@ func (this *PostCreateForm)Valid() ([]*validation.Error) {
 
 func (this *PostCreateForm)Save(userID uint) uint {
 	//todo check user account first
-	post := m.Posts{Topic:1, AuthorID:userID, Title:this.Title, Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
+	post := m.Posts{TopicID:1, AuthorID:userID, Title:this.Title, Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
 	database.DB.Create(&post)
 	return post.ID
 }
@@ -120,7 +119,6 @@ func (this *CommentCreateForm)Create(user_id uint) (result *CommentAddResult) {
 			result = &CommentAddResult{Status:2, Addition:0}
 			return
 		}
-		fmt.Println(comment)
 		result = &CommentAddResult{Status:1, Addition:comment.ID}
 	} else {
 		result = &CommentAddResult{Status:3, Error:"对应文章不存在"}

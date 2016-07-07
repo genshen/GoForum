@@ -3,9 +3,12 @@
 {{template "header_foo" .}}
 <main id="app" style="margin-bottom:72px"> <!--footer:60px-->
         <home-grid :home="home"></home-grid>
-        <discover-grid :discover="discover"></discover-grid>
+        <category-grid :category="category"></category-grid>
         <message-grid :message="message"></message-grid>
         <user-grid :user="me"></user-grid>
+        <a href="javascript:void(0)" class="btn btn-primary btn-fab" style="position:fixed;right:15px;bottom:75px;padding-top: 13px;">
+            <span class="glyphicon glyphicon-refresh" title="刷新"></span>
+        </a>
 </main>
 <!--home template-->
 <script type="text/x-template" id="home-template">
@@ -40,14 +43,25 @@
       </div> <!--/home.loaded-->
   </div>  <!--/home.active-->
 </script>
-<!--discover template-->
-<script type="text/x-template" id="discover-template">
-  <div class="container" v-if="discover.active">
-      <h1>discover</h1>
-      <div v-for="topic in topics">
-          {{"{{topic}}"}}
+<!--category template-->
+<script type="text/x-template" id="category-template">
+  <div class="container" v-if="category.active">
+      <div v-if="category.loaded">
+          <h1>category</h1>
+          <h4>热门标签</h4>
+          <div v-for="tag in category.tags">
+              <a class="tag" v-bind:style="{background:tag.Color}">{{"{{tag.Name}}"}}</a>
+          </div>
+          <h4>话题</h4>
+          <div v-for="topic in category.topics">
+              <a v-bind:href=""></a>
+              <div  v-bind:style="{background:tag.Color}">{{"{{topic.Name}}"}}</div>
+          </div>
       </div>
-  </div>
+      <div v-else>
+          <span>正在加载...</span>
+      </div> <!--/category.loaded-->
+    </div> <!--/category.active-->
 </script>
 <!--message template-->
 <script type="text/x-template" id="message-template">
@@ -71,7 +85,7 @@
 <script src="/static/dist/js/snackbar.min.js"></script>
 <script>
   var SHOW_HOME = 1,
-   SHOW_DISCOVER = 2,
+   SHOW_CATEGORY = 2,
    SHOW_MESSAGE = 4,
    SHOW_ME = 8;
 
@@ -88,10 +102,10 @@
         methods: {}
     });
 
-     Vue.component('discover-grid', {
-         template: '#discover-template',
+     Vue.component('category-grid', {
+         template: '#category-template',
          props: {
-             discover: JSON
+             category: JSON
          },
          ready: function () {
          },
@@ -132,7 +146,7 @@
         data: {
             title: "首页",
             home: {loaded: false,active:true,swipes:[],hot_posts:[],hot_start:0,hot_loading_text:"加载更多",hot_loading_enable:true},
-            discover: {loaded: false,active:false},
+            category: {loaded: false,active:false,tags:[],topics:[]},
             message: {loaded: false,active:false},
             me: {loaded: false,active:false},
             setting: {}
@@ -144,7 +158,7 @@
           //status = 1/2/4/8 only
             show:function(status){
               this.home.active = (status&SHOW_HOME) == SHOW_HOME;
-              this.discover.active = (status&SHOW_DISCOVER) == SHOW_DISCOVER;
+              this.category.active = (status&SHOW_CATEGORY) == SHOW_CATEGORY;
               this.message.active = (status&SHOW_MESSAGE) == SHOW_MESSAGE;
               this.me.active = (status&SHOW_ME) == SHOW_ME;
             },
@@ -154,11 +168,10 @@
                    requestHomeData(this);
                 }
             },
-            greetDiscover: function () {
-                this.show(SHOW_DISCOVER);
-                if (!this.discover.loaded) {
-                    console.log("no data");
-                    this.discover.loaded = true;
+            greetCategory: function () {
+                this.show(SHOW_CATEGORY);
+                if (!this.category.loaded) {
+                    requestCategoryData(this);
                 }
             },
             greetMessage: function () {
@@ -219,6 +232,7 @@
                   self.home.hot_posts.push(e);
               });
               self.home.loaded = true;
+              console.log("hi");
               self.home.hot_loading_text = "加载更多";
               self.home.hot_loading_enable = true;
           }, error: function (err) {
@@ -231,6 +245,30 @@
       });
     }
 
+  //请求发现页面的数据
+   function requestCategoryData(self){
+     $.ajax({
+         type: 'GET',
+         url: "/home/category/",
+         success: function (data) {
+             //todo if length ==0 未找到相关内容;
+             self.category.tags = []; //防止重试加载时会数据重叠
+             self.category.topic = [];
+             data.Tags.forEach(function (e) {
+                 self.category.tags.push(e);
+             });
+             data.Topics.forEach(function (e) {
+                 self.category.topics.push(e);
+             });
+             self.category.loaded = true;
+         }, error: function (err) {
+            // 加载失败,重新加载
+             var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
+             $.snackbar(options);
+            //  console.log(err);
+         }
+     });
+   }
 </script>
 {{template "footer" .}}
 {{end}}

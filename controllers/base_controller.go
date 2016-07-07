@@ -19,13 +19,6 @@ type BaseController struct {
 	beego.Controller
 }
 
-type Person struct {
-	ID   uint
-	Name string
-	Head string
-}
-
-
 // Prepare implemented Prepare method for baseRouter.
 func (this *BaseController) Prepare() {
 	var _, action = this.GetControllerAndAction()

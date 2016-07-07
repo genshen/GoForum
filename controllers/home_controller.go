@@ -19,14 +19,6 @@ func (this *HomeController) LoadSwipe() {
 	this.ServeJSON()
 }
 
-type HotPost struct {
-	Person
-	PostID       uint
-	Title        string
-	ViewCount    int
-	CommentCount int
-}
-
 func (this *HomeController) Hot() {
 	start, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
 	dbHotPosts := m.GetHotPosts(start)
@@ -37,5 +29,12 @@ func (this *HomeController) Hot() {
 			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Head:""}});
 	}
 	this.Data["json"] = &mHotPosts
+	this.ServeJSON()
+}
+
+func (this *HomeController)Category() {
+	mCategory := Category{}
+	mCategory.NewInstant()
+	this.Data["json"] = &mCategory
 	this.ServeJSON()
 }

@@ -9,6 +9,7 @@ func init() {
 	beego.Router("/", &controllers.HomeController{})
 	beego.Router("home/swipe", &controllers.HomeController{},"get:LoadSwipe")
 	beego.Router("home/hot/:start([0-9]+)", &controllers.HomeController{},"get:Hot")
+	beego.Router("home/category", &controllers.HomeController{},"get:Category")
 
 	beego.Router("account/signup",&controllers.UserController{},"get,post:SignUp")
 	beego.Router("account/signin",&controllers.UserController{},"get,post:SignIn")
