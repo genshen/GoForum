@@ -12,14 +12,24 @@
 </main>
 <!--home template-->
 <script type="text/x-template" id="home-template">
-  <div class="container" v-if="home.active">
-      <div v-if="home.loaded">
+  <div class="container" v-show="home.active">
+      <div v-show="home.loaded">
           <h1>Home</h1>
-          <div v-for="swipe in home.swipes">
-              <a v-bind:href="{{"swipe.Url"}}" target="_blank">
-                  <img class="img-responsive" alt="Loading" v-bind:src="{{"swipe.Img"}}"/>
-              </a>
-          </div>  <!--ends home.swipes-->
+          <div class="row">
+            <!-- Carousel Card -->
+            <div id="home-owl" class="owl-carousel">
+              <div v-for="swipe in home.swipes" >
+                  <a v-bind:href="{{"swipe.Url"}}" target="_blank">
+                    <img v-bind:src="{{"swipe.Img"}}" alt="Awesome Image">
+                    <div class="carousel-caption">
+                      <h4><i class="material-icons">location_on</i> Yellowstone National Park, United States</h4>
+                    </div>
+                  </a>
+              </div>
+            </div>  <!--owl-carousel-->
+        </div>  <!--/row--->
+
+
           <div v-for="hot in home.hot_posts"  class="list-group">
               <div class="list-group-item">
                     <div class="row-picture">
@@ -38,28 +48,32 @@
           </div>
           <a @click="loadMore('btn')" :disabled="!home.loading_enable">{{"{{home.hot_loading_text}}"}}</a>
       </div>
-      <div v-else>
+      <div v-show="!home.loaded">
           <span>正在加载...</span>
       </div> <!--/home.loaded-->
   </div>  <!--/home.active-->
 </script>
 <!--category template-->
 <script type="text/x-template" id="category-template">
-  <div class="container" v-if="category.active">
-      <div v-if="category.loaded">
+  <div class="container" v-show="category.active">
+      <div v-show="category.loaded">
           <h1>category</h1>
           <h4>热门标签</h4>
-          <div v-for="tag in category.tags">
-              <a class="tag" v-bind:style="{background:tag.Color}">{{"{{tag.Name}}"}}</a>
+          <div class="tag-container">
+              <a v-for="tag in category.tags" class="category-tag" v-bind:style="{background:tag.Color}">
+                 {{"{{tag.Name}}"}}
+              </a>
           </div>
           <h4>话题</h4>
-          <div v-for="topic in category.topics">
-              <a v-bind:href=""></a>
-              <div  v-bind:style="{background:tag.Color}">{{"{{topic.Name}}"}}</div>
+          <div class="topic-container">
+              <div v-for="topic in category.topics" class="col-md-3 col-md-4 col-sm-6 category-topic" v-bind:style="{background:topic.Color}">
+                  <h4><a href="#">{{"{{topic.Name}}"}}</a></h4>
+                  <span class="text-info">{{"{{topic.Describe}}"}}</span>
+              </div>
           </div>
       </div>
-      <div v-else>
-          <span>正在加载...</span>
+      <div v-show="!category.loaded">
+          <span v-bind:click="loadMore">正在加载...</span>
       </div> <!--/category.loaded-->
     </div> <!--/category.active-->
 </script>
@@ -82,6 +96,7 @@
 {{template "tabbar" .}}
 {{template "script" .}}
 <script src="/static/dist/js/vue.js"></script>
+<script src="/static/dist/js/owl.carousel.min.js"></script>
 <script src="/static/dist/js/snackbar.min.js"></script>
 <script>
   var SHOW_HOME = 1,
@@ -99,7 +114,12 @@
         data: function () {
             return {}
         },
-        methods: {}
+        methods: {
+          loadMore:function(){
+             console.log(this.home.hot_start);
+             requestHotPosts(this,this.home.hot_start);
+          }
+        }
     });
 
      Vue.component('category-grid', {
@@ -231,10 +251,11 @@
               data.forEach(function (e) {
                   self.home.hot_posts.push(e);
               });
+              self.home.hot_start += data.length;
               self.home.loaded = true;
-              console.log("hi");
               self.home.hot_loading_text = "加载更多";
               self.home.hot_loading_enable = true;
+              $("#home-owl").owlCarousel({autoplay:true,autoplayTimeout:5000,autoplayHoverPause:true,loop:true,paginationSpeed:400,items:1});   //初始化轮播图
           }, error: function (err) {
               self.home.hot_loading_enable = true;
               self.home.hot_loading_text = "加载失败,请重试";
