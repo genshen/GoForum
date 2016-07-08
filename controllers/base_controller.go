@@ -56,3 +56,6 @@ func (this *BaseController) LogoutUser() bool {
 func (this *BaseController) getUserId() uint {
 	return (this.GetSession(User)).(uint)
 }
+func (this *BaseController) getUsername() string {
+	return (this.GetSession(User_Name)).(string)
+}

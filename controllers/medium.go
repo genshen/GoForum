@@ -42,6 +42,12 @@ func (this *Category)NewInstant() {
 	database.DB.Where("visible = ?", true).Find(&this.Tags)
 }
 // </structs for Category >
+//  </struct for me >
+type UserStatus struct {
+	Person
+	IsLogin bool
+}
+//< /struct for me page >
 
 /**<used for Post detail> */
 type PostDetail struct {

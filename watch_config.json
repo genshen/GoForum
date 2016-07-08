@@ -1,0 +1,36 @@
+{
+  "template": {
+    "account/signin.html": {
+      "title": "登录"
+    },
+    "account/signup.html": {
+      "title": "注册"
+    },
+    "account/signup_success.html": {
+      "title": "注册成功"
+    },
+    "home/index.html": {
+      "title": "首页"
+    },
+    "post/create_jump.html": {
+      "title": "跳转中..."
+    },
+    "post/view.html": {
+      "title": "X Froum--{{Post.Title}}"
+    },
+    "post/create_mobile.html": {
+      "title": "创建帖子"
+    }
+  },
+  "watched_folder": [
+    {
+      "folder": "home"
+    },
+    {
+      "folder": "account"
+    },
+    {
+      "folder": "post"
+    }
+  ]
+}

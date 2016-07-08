@@ -38,3 +38,16 @@ func (this *HomeController)Category() {
 	this.Data["json"] = &mCategory
 	this.ServeJSON()
 }
+
+func (this *HomeController)Me() {
+	var me UserStatus
+	if this.IsUserLogin() {
+		me.IsLogin = false
+	} else {
+		me.IsLogin = true
+		me.ID = this.getUserId()
+		me.Name = this.getUsername()
+	}
+	this.Data["json"] = &me
+	this.ServeJSON()
+}
