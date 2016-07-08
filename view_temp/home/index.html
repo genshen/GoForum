@@ -255,7 +255,8 @@
               self.home.loaded = true;
               self.home.hot_loading_text = "加载更多";
               self.home.hot_loading_enable = true;
-              $("#home-owl").owlCarousel({autoplay:true,autoplayTimeout:5000,autoplayHoverPause:true,loop:true,paginationSpeed:400,items:1});   //初始化轮播图
+              $("#home-owl").owlCarousel({slideSpeed:300,loop: true,paginationSpeed:400,singleItem:true});   //初始化轮播图
+              // $("#home-owl").owlCarousel({autoplay:true,autoplayTimeout:5000,autoplayHoverPause:true,center: true,loop:true,autoWidth:true,items:1});   //2.0初始化轮播图
           }, error: function (err) {
               self.home.hot_loading_enable = true;
               self.home.hot_loading_text = "加载失败,请重试";
