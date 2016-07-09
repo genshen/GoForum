@@ -21,10 +21,10 @@ type QiNiuToken struct {
 
 var post_rules = map[string]int{
 	"View":   0,
-	"CreateJump": identify.Login,
-	"CreateMobile": identify.Login,
-	"POST_CreateMobile": identify.Login,
-	//UploadToken
+	"CreateJump": identify.Login | identify.JumpBack,
+	"CreateMobile": identify.Login | identify.JumpBack,
+	"POST_CreateMobile": identify.Login | identify.JumpBack,
+	"UploadToken":identify.Login,
 }
 
 func (this *PostController) getRules(action string) int {
@@ -54,7 +54,7 @@ func (this *PostController) POST_CreateMobile() {
 		}
 	} else {
 		//todo set error
-		s := form_check.NewInstant(errs, map[string]string{"title":  title, "content": ""})
+		s := form_check.NewInstantToByte(errs, map[string]string{"title":  title, "content": ""})
 		this.Data["form_check"] = string(s)
 	}
 	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())

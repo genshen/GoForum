@@ -6,6 +6,8 @@
 # Folders
 _obj
 _test
+.idea
+temp
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -23,5 +25,3 @@ _testmain.go
 *.exe
 *.test
 *.prof
-
-temp

@@ -2,8 +2,8 @@ package form
 
 import (
 	"github.com/astaxie/beego/validation"
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 type Err struct {
@@ -16,7 +16,7 @@ type Field struct {
 	Errors []Err
 }
 
-func NewInstant(Errors []*validation.Error, f map[string]string) []byte {
+func NewInstant(Errors []*validation.Error, f map[string]string) map[string]Field {
 	var fields = make(map[string]Field)
 	var F Field
 	var ok bool
@@ -28,7 +28,11 @@ func NewInstant(Errors []*validation.Error, f map[string]string) []byte {
 		F.Errors = append(F.Errors, Err{err.Key, err.Message})
 		fields[err.Key] = F
 	}
-	b, err := json.Marshal(fields)
+	return fields
+}
+
+func NewInstantToByte(Errors []*validation.Error, f map[string]string) []byte {
+	b, err := json.Marshal(NewInstant(Errors, f))
 	if err != nil {
 		fmt.Println("json err:", err) //todo err return
 	}

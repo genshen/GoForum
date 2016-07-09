@@ -41,7 +41,7 @@ func (this *HomeController)Category() {
 
 func (this *HomeController)Me() {
 	var me UserStatus
-	if this.IsUserLogin() {
+	if !this.IsUserLogin() {
 		me.IsLogin = false
 	} else {
 		me.IsLogin = true

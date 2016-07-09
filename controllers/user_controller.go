@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"html/template"
-	form_check "../verify/form"
+	"github.com/astaxie/beego"
 	"./../models/forms"
+	form_check "../verify/form"
 	identify "./../verify/auth"
 )
 
@@ -16,6 +17,11 @@ var rules = map[string]int{
 	"Logout": identify.Login,
 }
 
+type SignResult struct {
+	Next   string `json:"next"`
+	Status bool   `json:"status"`
+}
+
 func (this *UserController) getRules(action string) int {
 	return rules[action]
 }
@@ -26,22 +32,31 @@ func (this *UserController) SignIn() {
 		this.Redirect("/", 302)
 		return
 	}
-	if this.Ctx.Request.Method == "POST" {
-		username := this.GetString("username")
-		password := this.GetString("password")
-		sign_in_form := forms.SignInForm{Username:username, Password: password}
-		if errs, status, userID := sign_in_form.LoginVerify(); status {
-			//验证通过
-			this.LoginUser(userID, username)
-			this.Redirect("/", 302)
-			return
-		} else {
-			s := form_check.NewInstant(errs, map[string]string{"email":  username, "pass": ""})
-			this.Data["form_check"] = string(s)
-		}
-	}
 	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
 	this.TplName = "account/signin.html"
+}
+
+func (this *UserController) POST_SignIn() {
+	if (this.IsUserLogin()) {
+		this.Redirect("/", 302)
+		return
+	}
+	username := this.GetString("username")
+	password := this.GetString("password")
+	sign_in_form := forms.SignInForm{Username:username, Password: password}
+	if errs, status, userID := sign_in_form.LoginVerify(); status {
+		//验证通过
+		this.LoginUser(userID, username)
+		next := this.GetString("next")
+		if len(next) > 0 && next[0] != '/' {
+			next = "/" + next
+		}
+		this.Data["json"] = &SignResult{Status:true, Next:next}
+	} else {
+		s := form_check.NewInstant(errs, map[string]string{"name":  username, "pass": ""})
+		this.Data["json"] = &s
+	}
+	this.ServeJSON()
 }
 
 func (this *UserController) SignUp() {
@@ -49,21 +64,38 @@ func (this *UserController) SignUp() {
 		this.Redirect("/", 302)
 		return
 	}
-	if this.Ctx.Request.Method == "POST" {
-		email := this.GetString("email")
-		password := this.GetString("password")
-		sign_up_form := forms.SignUpForm{Email:email, Password: password}
-		if errs, status := sign_up_form.Valid(); status {
-			this.Data["email"] = email
-			this.TplName = "account/signup_success.html"
-			return
-		} else {
-			s := form_check.NewInstant(errs, map[string]string{"email":  email, "password": ""})
-			this.Data["form_check"] = string(s)
-		}
-	}
 	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
 	this.TplName = "account/signup.html"
+}
+
+func (this *UserController) POST_SignUp() {
+	if (this.IsUserLogin()) {
+		this.Redirect("/", 302)
+		return
+	}
+	email := this.GetString("email")
+	password := this.GetString("password")
+	sign_up_form := forms.SignUpForm{Email:email, Password: password}
+	if errs, status := sign_up_form.Valid(); status {
+		this.Data["json"] = &SignResult{Status:true}
+		flash := beego.NewFlash()
+		flash.Success(email)
+		flash.Store(&this.Controller)
+	} else {
+		s := form_check.NewInstant(errs, map[string]string{"email":  email, "password": ""})
+		this.Data["json"] = &s
+	}
+	this.ServeJSON()
+}
+
+func (this *UserController) SignUpSuccess() {
+	flash := beego.ReadFromRequest(&this.Controller)
+	if s, ok := flash.Data["success"]; ok {
+		this.Data["email"] = s
+		this.TplName = "account/signup_success.html"
+	} else {
+		this.Abort("404")
+	}
 }
 
 func (this *UserController) SignOut() {

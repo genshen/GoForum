@@ -20,13 +20,7 @@
     <div>
         <div class="container">
             <div class="row">
-                <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-dismissible alert-danger" style="margin-bottom:0;">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        <strong>Oh snap!</strong>
-                        <a href="javascript:void(0)" class="alert-link">Change a few things up</a> and try submitting
-                        again.
-                    </div>
+                <div id="sign-up-box" class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
                     <div style="height:25px;"></div>
                     <form class="form-horizontal well" id="login-form" action="#" method="post">
                         <fieldset>
@@ -83,12 +77,46 @@
 </main>
 {{template "script" .}}
 <script src="/static/js/form-validate.js"></script>
+<script src="/static/dist/js/jquery.cookie.js"></script>
 <script>
+    var ERROR_MESSAGE = "出了点问题，请<a href='javascript:window.location.reload();' class='alert-link'>刷新</a>重试.";
     $.material.init({validate: false});
     $.forms.init(
             {
                 form: "#login-form",
                 submitBtn: "#submit",
+                onSubmit: function (subBtn) {  //the date has passed the check rules!
+                    var xsrf;
+                    try { //cookie may be null or something else bad data
+                        xsrf = base64_decode(Cookies.get('_xsrf').split("|")[0]);
+                    } catch (err) {
+                        setErrorAlert(ERROR_MESSAGE);
+                        return
+                    }
+                    subBtn.attr("disabled", "disabled");
+                    subBtn.text("注册中...");
+                    $.ajax({
+                        type: 'POST',
+                        data: {_xsrf: xsrf, email: $("#inputEmail").val(), password: $("#inputPassword").val()},
+                        success: function (data) {
+                            subBtn.text("注册");
+                            subBtn.removeAttr("disabled");
+                            if (data.email && data.email.Errors.length > 0) {
+                                setErrorAlert(data.email.Errors[0].Message)
+                            } else if (data.password && data.password.Errors.length > 0) {
+                                setErrorAlert(data.password.Errors[0].Message)
+                            } else if(data.status){ //no error
+                                window.location.replace("/account/signup/success");
+                            }else{
+                                setErrorAlert(ERROR_MESSAGE);
+                            }
+                        }, error: function (err) {
+                            subBtn.text("注册");
+                            subBtn.removeAttr("disabled");
+                            setErrorAlert(ERROR_MESSAGE);
+                        }
+                    });
+                },
                 fields: [{
                     field: "#inputEmail",
                     rules: {
@@ -135,6 +163,13 @@
             }
     );
 
+    function setErrorAlert(insertHtml) {
+        $("#sign-up-box").prepend("<div class='alert alert-dismissible alert-danger' style='margin-bottom:0;'>" +
+                "<button type='button' class='close' data-dismiss='alert'>×</button>" +
+                "<strong>Oh snap!</strong>" + insertHtml + "</div>"
+        )
+    }
+
     function acceptOrReject(t){
         var checked = $(t).find("input")[0].checked;
         if(checked){
@@ -143,7 +178,6 @@
             $("#submit").attr("disabled","disabled");
         }
     }
-    var form = <<< .form_check >>>;
 </script>
 {{template "footer" .}}
 {{end}}

@@ -23,9 +23,14 @@ type BaseController struct {
 func (this *BaseController) Prepare() {
 	var _, action = this.GetControllerAndAction()
 	if app, ok := this.AppController.(Rules); ok {
-		if (app.getRules(action) & identify.Login) != 0 && !this.IsUserLogin() {
-			//not login
-			this.Redirect("/account/signin", 302)
+		rule := app.getRules(action)
+		if ((rule & identify.Login) == identify.Login) && !this.IsUserLogin() {
+			if rule & identify.JumpBack == identify.JumpBack {
+				//"&query=" + this.Ctx.Request.URL.RawQuery
+				this.Redirect("/account/signin?next=" + this.Ctx.Request.URL.Path, 302)
+			} else {
+				this.Redirect("/account/signin", 302)
+			}
 		}
 	}
 }

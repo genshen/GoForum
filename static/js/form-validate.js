@@ -5,6 +5,7 @@ $.forms = {
     "options": {
         form: null,
         submitBtn: null,
+        onSubmit: null,
         fields: []
     },
     "addValid": function (e) {
@@ -24,8 +25,9 @@ $.forms = {
         });
 
         if (this.options.submitBtn != null) {
-            $(this.options.submitBtn).on("click", function () {
-                if($($.forms.options.submitBtn).attr("disabled") == "disabled"){
+            var subBtn = $(this.options.submitBtn);
+            subBtn.on("click", function () {
+                if (subBtn.attr("disabled") == "disabled") {
                     return;
                 }
                 var pass = true;
@@ -38,9 +40,13 @@ $.forms = {
                     }
                 });
                 if (pass) {
-                    var form = $($.forms.options.form);
-                    if (form) {
-                        form.submit();
+                    if ($.forms.options.onSubmit) {
+                        $.forms.options.onSubmit(subBtn)
+                    } else {
+                        var form = $($.forms.options.form);
+                        if (form) {
+                            form.submit();
+                        }
                     }
                 }
             });
@@ -150,16 +156,15 @@ function validNumber(value, input, rule) {
     return true;
 }
 
-function validRegexp(value,input, rule) {
+function validRegexp(value, input, rule) {
     return true;
 }
 
 /* rule.element must be a input ,
-and we just set one input with error when they are not the same */
-function validSame(value,input, rule) {
+ and we just set one input with error when they are not the same */
+function validSame(value, input, rule) {
     var ele = $(rule.element);
-    console.log(ele.val()+":=:"+value);
-    if(ele.val() == value){
+    if (ele.val() == value) {
         clearError(ele);
         return true;
     }
@@ -168,8 +173,8 @@ function validSame(value,input, rule) {
     return false;
 }
 
-function validCustomize(value,input, rule) {
-    if(rule.func(value,input)){
+function validCustomize(value, input, rule) {
+    if (rule.func(value, input)) {
         return true;
     }
     setError(input, rule.message);
@@ -177,7 +182,7 @@ function validCustomize(value,input, rule) {
 }
 
 //tools
-function base64_decode (encodedData) {
+function base64_decode(encodedData) {
     if (typeof window !== 'undefined') {
         if (typeof window.atob !== 'undefined') {
             return decodeURIComponent(unescape(window.atob(encodedData)))
@@ -187,7 +192,7 @@ function base64_decode (encodedData) {
     }
 
     var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-    var o1,o2,o3,h1,h2,h3,h4,bits;
+    var o1, o2, o3, h1, h2, h3, h4, bits;
     var i = 0;
     var ac = 0;
     var dec = '';

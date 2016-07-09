@@ -11,8 +11,8 @@
                 <div class="well">
                     <h3>注册成功</h3>
                     <p>我们将在<span id="second">5</span>秒后转至登录页面</p>
-                    <a href="#">返回首页</a>
-                    <a href="#">进入登录</a>
+                    <a href="/">返回首页</a>
+                    <a href="/account/signin">进入登录</a>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
         document.getElementById("second").innerText = second+"";
         if (second <= 0) {
             clearInterval(timer);
-            location.replace("signin");
+            location.replace("/account/signin");
         }
         second--;
     }, 1000);

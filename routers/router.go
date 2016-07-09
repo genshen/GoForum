@@ -12,8 +12,9 @@ func init() {
 	beego.Router("home/category", &controllers.HomeController{},"get:Category")
 	beego.Router("home/me", &controllers.HomeController{},"get:Me")
 
-	beego.Router("account/signup",&controllers.UserController{},"get,post:SignUp")
-	beego.Router("account/signin",&controllers.UserController{},"get,post:SignIn")
+	beego.Router("account/signup",&controllers.UserController{},"get:SignUp;post:POST_SignUp")
+	beego.Router("account/signup/success",&controllers.UserController{},"get:SignUpSuccess")
+	beego.Router("account/signin",&controllers.UserController{},"get:SignIn;post:POST_SignIn")
 	beego.Router("account/signout",&controllers.UserController{},"get:SignOut")
 
 	beego.Router("post/:id([0-9]+)",&controllers.PostController{},"get:View")
