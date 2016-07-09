@@ -246,3 +246,40 @@ footer{position: fixed;bottom:0;right: 0;left: 0;padding:10px 0 0 0; background-
 }
 .category-tag:hover,.category-tag:focus,.category-tag.visited,.category-tag.active{text-decoration: none;color:white}
 .category-topic{border-radius: 4px;min-height:64px;padding:8px}
+
+
+/*  me  css     */
+.Me-menue-list{
+	background: rgb(250,250,250);
+	margin-top:20px;
+}
+.Me-menue-list .glyphicon-chevron-right{
+	font-size: 12px;
+}
+.list-login{
+	padding: 10px 10px;
+	background: rgb(255,255,255) ;
+}
+.list-login .circle{
+	border-radius: 100%;
+}
+.list-login .glyphicon-chevron-right{
+	margin-top:20px;
+}
+.list-info{
+	padding: 10px 10px;
+	background: rgb(255,255,255) ;
+}
+.list-info a{
+	font-size:16px;
+	color: rgb(102,102,102);
+}
+.list-info .glyphicon-left{
+	margin-right:10px;
+}
+hr{
+	margin: 0px;
+}
+.large-hr{
+	height:25px;
+}

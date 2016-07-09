@@ -11,6 +11,7 @@
         <span class="glyphicon glyphicon-refresh" title="刷新"></span>
     </a>
 </main>
+
 <!--home template-->
 <script type="text/x-template" id="home-template">
     <div class="container" v-show="home.active">
@@ -86,10 +87,68 @@
 </script>
 <!--me template-->
 <script type="text/x-template" id="user-template">
-    <div class="container" v-if="user.active">
-        <h1>Me</h1>
-        <
-    </div>
+  <div class="container" v-if="user.active" style="color: rgb(102,102,102);padding: 0px;">
+      <ul class="Me-menue-list list-unstyled">
+          <li class="list-login">
+              <a herf="#">
+                  <span class="row-picture">
+                      <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon"/>
+                  </span>
+                  <span>尚未登陆</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+          <li class="list-info">
+              <a herf="#">
+                  <span class="glyphicon glyphicon-home glyphicon-left"></span>
+                  <span>我的帖子</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+          <li class="list-info">
+              <a herf="#">
+                  <span class="glyphicon glyphicon-user glyphicon-left"></span>
+                  <span>关注的人</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+          <li class="list-info">
+              <a herf="#">
+                  <span class="glyphicon glyphicon-heart-empty glyphicon-left"></span>
+                  <span>我的粉丝</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+          <li class="list-info">
+              <a herf="#">
+                  <span class="glyphicon glyphicon-star-empty glyphicon-left"></span>
+                  <span>我的收藏</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+          <li class="list-info">
+              <a herf="#">
+                  <span class="glyphicon glyphicon-cog glyphicon-left"></span>
+                  <span>设置</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+          <li class="list-info">
+              <a herf="#">
+                  <span class="glyphicon glyphicon-info-sign glyphicon-left"></span>
+                  <span>关于我们</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+          <li class="list-info">
+              <a herf="#">
+                  <span class="glyphicon glyphicon-phone-alt glyphicon-left"></span>
+                  <span>意见反馈</span>
+                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+              </a>
+          </li>
+      </ul>
+  </div>
 </script>
 {{template "tabbar" .}}
 {{template "script" .}}
