@@ -78,7 +78,7 @@
 </script>
 <!--message template-->
 <script type="text/x-template" id="message-template">
-    <div class="container" v-if="message.active">
+    <div class="container" v-show="message.active">
         <h1>Nessage</h1>
         <div v-for="msg in messages">
             {{"{{msg}}"}}
@@ -87,68 +87,29 @@
 </script>
 <!--me template-->
 <script type="text/x-template" id="user-template">
-  <div class="container" v-if="user.active" style="color: rgb(102,102,102);padding: 0px;">
-      <ul class="Me-menue-list list-unstyled">
-          <li class="list-login">
-              <a herf="#">
-                  <span class="row-picture">
-                      <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon"/>
-                  </span>
-                  <span>尚未登陆</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-          <li class="list-info">
-              <a herf="#">
-                  <span class="glyphicon glyphicon-home glyphicon-left"></span>
-                  <span>我的帖子</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-          <li class="list-info">
-              <a herf="#">
-                  <span class="glyphicon glyphicon-user glyphicon-left"></span>
-                  <span>关注的人</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-          <li class="list-info">
-              <a herf="#">
-                  <span class="glyphicon glyphicon-heart-empty glyphicon-left"></span>
-                  <span>我的粉丝</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-          <li class="list-info">
-              <a herf="#">
-                  <span class="glyphicon glyphicon-star-empty glyphicon-left"></span>
-                  <span>我的收藏</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-          <li class="list-info">
-              <a herf="#">
-                  <span class="glyphicon glyphicon-cog glyphicon-left"></span>
-                  <span>设置</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-          <li class="list-info">
-              <a herf="#">
-                  <span class="glyphicon glyphicon-info-sign glyphicon-left"></span>
-                  <span>关于我们</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-          <li class="list-info">
-              <a herf="#">
-                  <span class="glyphicon glyphicon-phone-alt glyphicon-left"></span>
-                  <span>意见反馈</span>
-                  <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-              </a>
-          </li>
-      </ul>
-  </div>
+    <div class="container" v-show="user.active">
+        <ul class="row me-menu-list list-unstyled">
+            <li class="me-profile withripple" @click="toProfile">
+                <div class="me-list-container me-split-line-ignore">
+                    <a>
+                        <img class="img-circle" src="http://lorempixel.com/56/56/people/1" alt="正在加载"/>
+                        <span class="me-profile-username">{{"{{user.name}}"}}</span>
+                        <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+                    </a>
+                </div>
+            </li>
+            <li v-for="list in lists" v-bind:class="{ 'me-white-space':list.is_space,'list-info':!list.is_space,'withripple':!list.is_space }">
+                <div v-if="!list.is_space" v-bind:class="{'me-split-line-ignore':list.islast}"
+                     v-bind:onclick="'jumpDelay(\''+list.link+'\')'" class="me-list-container">
+                    <a herf="#">
+                        <span v-bind:class="list.icon" class="me-list-icon-left glyphicon glyphicon-left"></span>
+                        <span class="me-list-name">{{"{{list.name}}"}}</span>
+                        <!--<span class="glyphicon glyphicon-chevron-right pull-right"></span>-->
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
 </script>
 {{template "tabbar" .}}
 {{template "script" .}}
@@ -156,6 +117,7 @@
 <script src="/static/dist/js/owl.carousel.min.js"></script>
 <script src="/static/dist/js/snackbar.min.js"></script>
 <script>
+    $.material.init();
     var SHOW_HOME = 1,
             SHOW_CATEGORY = 2,
             SHOW_MESSAGE = 4,
@@ -213,9 +175,27 @@
         ready: function () {
         },
         data: function () {
-            return {}
+            return {
+                lists: [
+                    {is_space: true},
+                    {is_space: false, islast: false, name: "我的帖子", icon: "glyphicon-home", link: "#1"},
+                    {is_space: false, islast: false, name: "我的粉丝", icon: "glyphicon-heart-empty", link: "#1"},
+                    {is_space: false, islast: true, name: "我的收藏", icon: "glyphicon-star-empty", link: "#1"},
+                    {is_space: true},
+                    {is_space: false, islast: false, name: "设置", icon: "glyphicon-cog", link: "#1"},
+                    {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "#1"},
+                    {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "#1"}]
+            }
         },
-        methods: {}
+        methods: {
+            toProfile:function(){
+                if (this.user.isLogin){
+                     jumpDelay("/account/profile");
+                }else{
+                    jumpDelay("/account/signin");
+                }
+            }
+        }
     });
 
     var vue = new Vue({
@@ -233,7 +213,7 @@
             },
             category: {loaded: false, active: false, tags: [], topics: []},
             message: {loaded: false, active: false},
-            me: {loaded: false, active: false,id:0,isLogin:false,name:"点击登录",head:"default.png"},
+            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", head: "default.png"},
             setting: {}
         },
         ready: function () {
@@ -370,18 +350,24 @@
             url: "/home/me/",
             success: function (data) {
                 self.me.isLogin = data.IsLogin;
-                if(data.IsLogin){
+                if (data.IsLogin) {
                     self.me.id = data.ID;
                     self.me.name = data.Name;
                     self.me.head = data.Head;
                 }
-
                 self.me.loaded = true;
+                $.material.ripples('.withripple'); //set ripple
             }, error: function (err) {
                 var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
                 $.snackbar(options);
             }
         });
+    }
+
+    function jumpDelay(url){
+        window.setTimeout(function(){
+            window.location.href = url;
+        },300);
     }
 </script>
 {{template "footer" .}}
