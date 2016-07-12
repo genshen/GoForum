@@ -357,3 +357,39 @@ footer {
     background-color: #fcfcfc;
     height: 2.5em;
 }
+
+
+/****************hot _ item*******************/
+.list-group{
+    background: #FFFFFF;
+    margin:10px -8px !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+}
+.list-group-item{
+    padding: 6px 12px 0px !important;
+
+}
+.row-picture{
+    float:left;
+    margin-right:13px;
+}
+.row-picture img {
+    width: 39px !important;
+    height: 39px !important;
+}
+.row-content {
+    width: -webkit-calc(100% - 73px) !important;
+    width: calc(100% - 70px) !important;
+}
+small{
+    color:#A0A0A0 !important;
+    margin-right: 5px;
+}
+.list-group-item-text a{
+    color: #4C4C4C !important;
+    font-size: 16px;
+}
+.list-group-item-date{
+    margin-bottom:3px;
+
+}
