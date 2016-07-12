@@ -48,21 +48,34 @@
             </div>  <!--/row--->
 
             <div v-for="hot in home.hot_posts" class="list-group">
-                <div class="list-group-item">
+                <div class="list-group-item"  >
                     <div class="row-picture">
                         <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
                     </div>
-                    <div class="row-content">
-                        <span> {{hot.Name}}</span> <!--class="list-group-item-heading"-->
-                        <span class="glyphicon glyphicon-eye-open"></span><span>{{hot.ViewCount}}</span>
-                        <span class="glyphicon glyphicon-dashboard"></span><span>{{hot.CommentCount}}</span>
-                        <p class="list-group-item-text">
-                            <a v-bind:href="'/post/'+hot.PostID">{{hot.Title}}</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="list-group-separator"></div>
-            </div>
+                    <div class="row-content" >
+                        <div>
+                            <small>{{hot.Name}}</small><!--class="list-group-item-heading"-->
+                            <small class="pull-right">
+                                <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{hot.CommentCount}}&nbsp;&nbsp;</span>
+                            </small>
+                            <small class="pull-right">
+                                <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{hot.ViewCount}}&nbsp;&nbsp;</span>
+                            </small>
+                        </div>
+                        <div class="list-group-item-date">
+                            <small>2016.7.11</small>
+                        </div>
+                        <div>
+                            <p class="list-group-item-text">
+                                <a v-bind:href="'/post/'+hot.PostID">{{hot.Title}}</a>
+                            </p>
+                        </div>
+                    </div><!--class="row-content"-->
+                </div><!--class="list-group-item"-->
+
+            </div><!--calss="list-group"-->
+
+
             <a @click="loadMore('btn')" :disabled="!home.loading_enable">{{home.hot_loading_text}}</a>
         </div>
         <div v-show="!home.loaded">
