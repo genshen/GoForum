@@ -12,6 +12,9 @@
     "home/index.html": {
       "title": "首页"
     },
+    "topic/index.html": {
+      "title": "X Froum--{{slug}}"
+    },
     "post/create_jump.html": {
       "title": "跳转中..."
     },
@@ -31,6 +34,9 @@
     },
     {
       "folder": "post"
+    },
+    {
+      "folder": "topic"
     }
   ]
 }

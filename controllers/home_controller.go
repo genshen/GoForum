@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"../models/m"
+	"../models/database"
 	"strconv"
 )
 
@@ -21,14 +22,10 @@ func (this *HomeController) LoadSwipe() {
 
 func (this *HomeController) Hot() {
 	start, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
-	dbHotPosts := m.GetHotPosts(start)
-	mHotPosts := make([]HotPost, 0, len(dbHotPosts))  //m.Comments to Comments
-	for _, db_hot := range dbHotPosts {
-		mHotPosts = append(mHotPosts, HotPost{PostID:db_hot.ID, Title:db_hot.Title,
-			ViewCount:db_hot.ViewCount, CommentCount:db_hot.CommentCount,
-			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Head:""}});
-	}
-	this.Data["json"] = &mHotPosts
+	dbHotPosts :=  []m.Posts{}
+	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Find(&dbHotPosts);
+	mHot := DBHotPostsConvert(&dbHotPosts)
+	this.Data["json"] = mHot
 	this.ServeJSON()
 }
 

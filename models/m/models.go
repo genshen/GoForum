@@ -61,11 +61,6 @@ func (p *Posts) Exist(id uint) bool {
 	return true
 }
 
-func GetHotPosts(offset int) (hot []Posts) {
-	database.DB.Where("visible = ?", true).Offset(uint(offset)).Limit(20).Preload("Author").Find(&hot);
-	return
-}
-
 type Comment struct {
 	gorm.Model
 	PostID  uint

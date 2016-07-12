@@ -17,6 +17,8 @@ func init() {
 	beego.Router("account/signin",&controllers.UserController{},"get:SignIn;post:POST_SignIn")
 	beego.Router("account/signout",&controllers.UserController{},"get:SignOut")
 
+	beego.Router("topic/:slug([\\w]+)",&controllers.TopicController{},"get:Get")  //topic and tag
+
 	beego.Router("post/:id([0-9]+)",&controllers.PostController{},"get:View")
 	beego.Router("post/create/jump",&controllers.PostController{},"get:CreateJump")
 	beego.Router("post/create/m",&controllers.PostController{},"get:CreateMobile;post:POST_CreateMobile")

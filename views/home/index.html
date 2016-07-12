@@ -10,7 +10,7 @@
     <title>首页</title>
     <!-- Material Design fonts -->
     <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">  -->
-     <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css">
+     <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css" rel="stylesheet">
      <!-- Bootstrap -->
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Material Design -->
@@ -26,11 +26,10 @@
     <message-grid :message="message"></message-grid>
     <user-grid :user="me"></user-grid>
     <a href="javascript:void(0)" class="btn btn-primary btn-fab"
-       style="position:fixed;right:15px;bottom:75px;padding-top: 14px;">
+       style="position:fixed;right:20px;bottom:80px;padding-top: 14px;">
         <span class="glyphicon glyphicon-refresh" title="刷新"></span>
     </a>
 </main>
-
 <!--home template-->
 <script type="text/x-template" id="home-template">
     <div class="container" v-show="home.active">
@@ -85,10 +84,10 @@
             <div class="topic-container">
                 <div v-for="topic in category.topics" v-bind:style="{background:topic.Color}"
                      class="col-md-3 col-md-4 col-sm-6 category-topic">
-                    <h4><a v-bind:href="'/topic/'+topic.Sulg">{{topic.Name}}</a></h4>
+                    <h4><a v-bind:href="'/topic/'+topic.Slug">{{topic.Name}}</a></h4>
                     <span class="text-info">{{topic.Describe}}</span>
                 </div>
-            </div> <!--/topic-container-->
+            </div>  <!--/topic-container-->
         </div>
         <div v-show="!category.loaded">
             <button v-bind:click="loadMore">正在加载...</button>

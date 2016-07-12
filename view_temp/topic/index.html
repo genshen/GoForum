@@ -1,0 +1,51 @@
+{{define "content"}}{{template "header" .}}{{template "header_foo" .}}
+<main id="app">
+    <h2>Slug</h2>
+    <posts-grid :posts="posts"></posts-grid>
+    <a href="/post/create/jump" class="btn btn-warning btn-fab"  style="position:fixed;right:20px;bottom:20px;">
+        <i class="material-icons">add</i>
+    </a>
+</main>
+<script type="text/x-template" id="posts-template">
+    <div class="container">
+        <div v-for="post in posts" class="list-group">
+            <div class="list-group-item">
+                <div class="row-picture">
+                    <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
+                </div>
+                <div class="row-content">
+                    <span> {{"{{post.Name}}"}}</span> <!--class="list-group-item-heading"-->
+                    <span class="glyphicon glyphicon-eye-open"></span><span>{{"{{post.ViewCount}}"}}</span>
+                    <span class="glyphicon glyphicon-dashboard"></span><span>{{"{{post.CommentCount}}"}}</span>
+                    <p class="list-group-item-text">
+                        <a v-bind:href="'/post/'+post.PostID">{{"{{post.Title}}"}}</a>
+                    </p>
+                </div>
+            </div>
+            <div class="list-group-separator"></div>
+        </div>
+        <a href="javascript:void(0)" class="btn btn-primary">
+            <span>加载更多</span>
+        </a>
+    </div>
+</script>
+{{template "script" .}}
+<script src="/static/dist/js/vue.js"></script>
+<script>
+    var posts = JSON.parse("<<<.post_items>>>");
+//    var slug = "<<<.slug>>>";
+    Vue.component('posts-grid', {
+        template: '#posts-template',
+        props: {
+            posts: JSON
+        }
+    });
+    var vue = new Vue({
+        el: "html",
+        data: {
+            posts: posts
+        }
+    });
+</script>
+{{template "footer" .}}
+{{end}}
