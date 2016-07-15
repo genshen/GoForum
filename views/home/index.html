@@ -47,11 +47,11 @@
             </div>  <!--/row--->
 
             <div v-for="hot in home.hot_posts" class="list-group">
-                <div class="list-group-item"  >
+                <div class="list-group-item">
                     <div class="row-picture">
                         <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
                     </div>
-                    <div class="row-content" >
+                    <div class="row-content">
                         <div>
                             <small>{{hot.Name}}</small><!--class="list-group-item-heading"-->
                             <small class="pull-right">
@@ -73,7 +73,6 @@
                 </div><!--class="list-group-item"-->
 
             </div><!--calss="list-group"-->
-
 
             <a @click="loadMore('btn')" :disabled="!home.loading_enable">{{home.hot_loading_text}}</a>
         </div>
@@ -129,7 +128,8 @@
                     </a>
                 </div>
             </li>
-            <li v-for="list in lists" v-bind:class="{ 'me-white-space':list.is_space,'list-info':!list.is_space,'withripple':!list.is_space }">
+            <li v-for="list in lists"
+                v-bind:class="{ 'me-white-space':list.is_space,'list-info':!list.is_space,'withripple':!list.is_space }">
                 <div v-if="!list.is_space" v-bind:class="{'me-split-line-ignore':list.islast}"
                      v-bind:onclick="'jumpDelay(\''+list.link+'\')'" class="me-list-container">
                     <a herf="#">
@@ -146,25 +146,25 @@
 <footer>
     <div class="container-fluid">
         <ul class="row tab-bar text-center">
-            <li class="active col-xs-3" v-on:click="greetHome"  data-toggle="tab">
+            <li class="col-xs-3" v-bind:class="{'active':home.active}" v-on:click="greetHome"  data-toggle="tab">
                 <a href="#home">
                     <span class="glyphicon glyphicon-home"></span><br>
                     <span class="footer-text">首页</span>
                 </a>
             </li>
-            <li class="col-xs-3" v-on:click="greetCategory"  data-toggle="tab">
+            <li class="col-xs-3" v-bind:class="{'active':category.active}" v-on:click="greetCategory"  data-toggle="tab">
                 <a href="#category">
                     <span class="glyphicon glyphicon-search"></span><br>
                     <span class="footer-text">发现</span>
                 </a>
             </li>
-            <li class="col-xs-3" v-on:click="greetMessage" data-toggle="tab">
+            <li class="col-xs-3"  v-bind:class="{'active':message.active}" v-on:click="greetMessage" data-toggle="tab">
                 <a href="#message">
                     <span class="glyphicon glyphicon-comment"></span><br>
                     <span class="footer-text">消息</span>
                 </a>
             </li>
-            <li class="col-xs-3" v-on:click="greetMe" data-toggle="tab">
+            <li class="col-xs-3"  v-bind:class="{'active':me.active}" v-on:click="greetMe" data-toggle="tab">
                 <a>
                     <span class="glyphicon glyphicon-user"></span><br>
                     <span class="footer-text">我</span>
@@ -256,10 +256,10 @@
             }
         },
         methods: {
-            toProfile:function(){
-                if (this.user.isLogin){
-                     jumpDelay("/account/profile");
-                }else{
+            toProfile: function () {
+                if (this.user.isLogin) {
+                    jumpDelay("/account/profile");
+                } else {
                     jumpDelay("/account/signin");
                 }
             }
@@ -285,9 +285,26 @@
             setting: {}
         },
         ready: function () {
-            //init
+            var hash = window.location.hash;
+            var self = this;
+            this.initByHash(hash, false);
+            $(window).on("popstate", function (event) {
+                console.log(window.location.hash);
+                self.initByHash(window.location.hash, true);
+            });
         },
         methods: {
+            initByHash: function (hash, ispop) {
+                if (hash == "" || hash == "#home") {
+                    this.greetHome(ispop);
+                } else if (hash == "#category") {
+                    this.greetCategory(ispop);
+                } else if (hash == "#message") {
+                    this.greetMessage(ispop);
+                } else if (hash == "#me") {
+                    this.greetMe(ispop);
+                }
+            },
             //status = 1/2/4/8 only
             show: function (status) {
                 this.home.active = (status & SHOW_HOME) == SHOW_HOME;
@@ -295,26 +312,39 @@
                 this.message.active = (status & SHOW_MESSAGE) == SHOW_MESSAGE;
                 this.me.active = (status & SHOW_ME) == SHOW_ME;
             },
-            greetHome: function () {
+            //初始化与点击tab时,history.pushState;
+            greetHome: function (ispop) {
+                if(ispop !== true){
+                    history.pushState(null,"home","#home");
+                }
                 this.show(SHOW_HOME);
                 if (!this.home.loaded) {
                     requestHomeData(this);
                 }
             },
-            greetCategory: function () {
+            greetCategory: function (ispop) {
+                if(ispop !== true){
+                    history.pushState(null,"home","#category");
+                }
                 this.show(SHOW_CATEGORY);
                 if (!this.category.loaded) {
                     requestCategoryData(this);
                 }
             },
-            greetMessage: function () {
+            greetMessage: function (ispop) {
+                if(ispop !== true){
+                    history.pushState(null,"home","#message");
+                }
                 this.show(SHOW_MESSAGE);
                 if (!this.message.loaded) {
                     console.log("no data");
                     this.message.loaded = true;
                 }
             },
-            greetMe: function () {
+            greetMe: function (ispop) {
+                if(ispop !== true){
+                    history.pushState(null,"home","#me");
+                }
                 this.show(SHOW_ME);
                 if (!this.me.loaded) {
                     getUserStatus(this);
@@ -432,10 +462,10 @@
         });
     }
 
-    function jumpDelay(url){
-        window.setTimeout(function(){
+    function jumpDelay(url) {
+        window.setTimeout(function () {
             window.location.href = url;
-        },300);
+        }, 300);
     }
 </script>
 </body>

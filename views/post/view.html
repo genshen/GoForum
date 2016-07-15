@@ -93,7 +93,7 @@
     </div><!-- /.modal -->
 
     <div class="container">
-        <demo-grid :post="Post" :is_login="IsLogin" :author="Author" :start="start" :comments="Comments"></demo-grid>
+        <demo-grid :post="Post" :is_login="IsLogin" :author="Author" :start.sync="start" :comments="Comments"></demo-grid>
     </div>
 
     <div id="shell-box">
@@ -236,6 +236,7 @@
                                     var options = {content: "发布成功", timeout: 2000};
                                     $.snackbar(options);
                                     D.Comments.push({Content: value, ID: data.Addition});
+                                    D.start++;
                                     replyBox.close(false);
                                     break;
                                 case 2:
