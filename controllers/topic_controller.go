@@ -17,7 +17,7 @@ func (this *TopicController) getRules(action string) int {
 	return post_rules[action]
 }
 
-func (this *TopicController) Get() {
+func (this *TopicController) Slug() {
 	slug := this.Ctx.Input.Param("slug")
 	start := 0
 	dbPosts :=  []m.Posts{}

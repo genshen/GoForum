@@ -70,7 +70,8 @@ func (this *SignUpForm)validOrSave(v *validation.Validation) {
 	if u.ID != 0 {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
-		user := m.User{Email:this.Email, Name:"", Password:security.Hash(this.Password), Status:m.STATUS_ACTIVE}
+		user := m.User{Email:this.Email, Name:"", Password:security.Hash(this.Password), Status:m.STATUS_ACTIVE,
+			Profile:m.Profile{Head:"deaf.png",Coins:9}}
 		database.DB.Create(&user)
 	}
 }

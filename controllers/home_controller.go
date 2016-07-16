@@ -23,7 +23,7 @@ func (this *HomeController) LoadSwipe() {
 func (this *HomeController) Hot() {
 	start, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
 	dbHotPosts :=  []m.Posts{}
-	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Find(&dbHotPosts);
+	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Preload("Author.Profile").Find(&dbHotPosts);
 	mHot := DBHotPostsConvert(&dbHotPosts)
 	this.Data["json"] = mHot
 	this.ServeJSON()

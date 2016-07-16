@@ -19,6 +19,18 @@ type User struct {
 	AuthKey    string  `gorm:"column:auth_key"`
 	ResetToken string  `gorm:"column:password_reset_token"`
 	Status     int     `gorm:"default:10"`
+	Profile    Profile `gorm:"ForeignKey:UserRefer"`
+}
+
+type Profile struct {
+	//ID uint `gorm:"primary_key"`
+	UserRefer uint
+	Head      string `gorm:"default:'default.png'"`
+	Coins     int    `gorm:"default:0"`
+}
+
+func (Profile) TableName() string {
+	return "profile"
 }
 
 func (User) TableName() string {
@@ -26,7 +38,7 @@ func (User) TableName() string {
 }
 
 func (u *User) GetUserById(id uint) {
-	database.DB.First(&u, id)
+	database.DB.Preload("Profile").First(&u, id)
 }
 
 //User         User `gorm:"ForeignKey:Author"`

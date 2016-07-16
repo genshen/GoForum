@@ -23,7 +23,7 @@ type Comment struct {
 	ID      uint
 }
 
-/*show 20 comment ordered by submit time of one post
+/*show 20 comments ordered by submit time of one post
 id post id;  start:comment offset  */
 func (this *CommentController) Comment() {
 	//todo ([]m.Comment) to []Comment

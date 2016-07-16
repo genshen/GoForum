@@ -49,7 +49,7 @@
             <div v-for="hot in home.hot_posts" class="list-group">
                 <div class="list-group-item">
                     <div class="row-picture">
-                        <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
+                        <img class="circle" v-bind:src="hot.Head" alt="icon">
                     </div>
                     <div class="row-content">
                         <div>

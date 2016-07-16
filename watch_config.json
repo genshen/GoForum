@@ -9,6 +9,9 @@
     "account/signup_success.html": {
       "title": "注册成功"
     },
+    "account/profile.html": {
+      "title": "我—{{me}}"
+    },
     "home/index.html": {
       "title": "首页"
     },

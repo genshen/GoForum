@@ -26,7 +26,7 @@ func DBHotPostsConvert(dbHotPosts *[]m.Posts)(* []PostItem){
 	for _, db_hot := range *dbHotPosts {
 		postItems = append(postItems, PostItem{PostID:db_hot.ID, Title:db_hot.Title,
 			ViewCount:db_hot.ViewCount, CommentCount:db_hot.CommentCount,
-			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Head:""}});
+			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Head:db_hot.Author.Profile.Head}});
 	}
 	return &postItems
 }

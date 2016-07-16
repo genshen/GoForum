@@ -102,3 +102,9 @@ func (this *UserController) SignOut() {
 	this.LogoutUser()
 	this.Redirect("/account/signin", 302)
 }
+
+//profile below
+func (this *UserController) Profile() {
+	this.LogoutUser()
+	this.TplName = "account/profile.html";
+}
