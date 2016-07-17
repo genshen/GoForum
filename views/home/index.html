@@ -49,7 +49,7 @@
             <div v-for="hot in home.hot_posts" class="list-group">
                 <div class="list-group-item">
                     <div class="row-picture">
-                        <img class="circle" v-bind:src="hot.Head" alt="icon">
+                        <img class="circle" v-bind:src="hot.Cover" alt="icon">
                     </div>
                     <div class="row-content">
                         <div>
@@ -71,7 +71,6 @@
                         </div>
                     </div><!--class="row-content"-->
                 </div><!--class="list-group-item"-->
-
             </div><!--calss="list-group"-->
 
             <a @click="loadMore('btn')" :disabled="!home.loading_enable">{{home.hot_loading_text}}</a>
@@ -122,7 +121,7 @@
             <li class="me-profile withripple" @click="toProfile">
                 <div class="me-list-container me-split-line-ignore">
                     <a>
-                        <img class="img-circle" src="http://lorempixel.com/56/56/people/1" alt="正在加载"/>
+                        <img class="img-circle" v-bind:src="user.cover" alt="正在加载"/>
                         <span class="me-profile-username">{{user.name}}</span>
                         <span class="glyphicon glyphicon-chevron-right pull-right"></span>
                     </a>
@@ -203,7 +202,6 @@
         },
         methods: {
             loadMore: function () {
-                console.log(this.home.hot_start);
                 requestHotPosts(this, this.home.hot_start);
             }
         }
@@ -247,18 +245,17 @@
                 lists: [
                     {is_space: true},
                     {is_space: false, islast: false, name: "我的帖子", icon: "glyphicon-home", link: "#1"},
-                    {is_space: false, islast: false, name: "我的粉丝", icon: "glyphicon-heart-empty", link: "#1"},
-                    {is_space: false, islast: true, name: "我的收藏", icon: "glyphicon-star-empty", link: "#1"},
+                    {is_space: false, islast: false, name: "我的粉丝", icon: "glyphicon-heart-empty", link: "/profile/followed"},
+                    {is_space: false, islast: true, name: "我的收藏", icon: "glyphicon-star-empty", link: "/profile/collection"},
                     {is_space: true},
                     {is_space: false, islast: false, name: "设置", icon: "glyphicon-cog", link: "#1"},
                     {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "#1"},
                     {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "#1"}]
             }
-        },
-        methods: {
+        }, methods: {
             toProfile: function () {
                 if (this.user.isLogin) {
-                    jumpDelay("/account/profile");
+                    jumpDelay("/person/" + this.user.id);
                 } else {
                     jumpDelay("/account/signin");
                 }
@@ -281,7 +278,7 @@
             },
             category: {loaded: false, active: false, tags: [], topics: []},
             message: {loaded: false, active: false},
-            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", head: "default.png"},
+            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", cover: "default.png"},
             setting: {}
         },
         ready: function () {
@@ -314,8 +311,8 @@
             },
             //初始化与点击tab时,history.pushState;
             greetHome: function (ispop) {
-                if(ispop !== true){
-                    history.pushState(null,"home","#home");
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#home");
                 }
                 this.show(SHOW_HOME);
                 if (!this.home.loaded) {
@@ -323,8 +320,8 @@
                 }
             },
             greetCategory: function (ispop) {
-                if(ispop !== true){
-                    history.pushState(null,"home","#category");
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#category");
                 }
                 this.show(SHOW_CATEGORY);
                 if (!this.category.loaded) {
@@ -332,8 +329,8 @@
                 }
             },
             greetMessage: function (ispop) {
-                if(ispop !== true){
-                    history.pushState(null,"home","#message");
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#message");
                 }
                 this.show(SHOW_MESSAGE);
                 if (!this.message.loaded) {
@@ -342,8 +339,8 @@
                 }
             },
             greetMe: function (ispop) {
-                if(ispop !== true){
-                    history.pushState(null,"home","#me");
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#me");
                 }
                 this.show(SHOW_ME);
                 if (!this.me.loaded) {
@@ -451,7 +448,7 @@
                 if (data.IsLogin) {
                     self.me.id = data.ID;
                     self.me.name = data.Name;
-                    self.me.head = data.Head;
+                    self.me.cover = data.Cover;
                 }
                 self.me.loaded = true;
                 $.material.ripples('.withripple'); //set ripple

@@ -7,9 +7,22 @@ import (
 )
 
 type Person struct {
-	ID   uint
+	ID    uint
+	Name  string
+	Cover string
+}
+
+type Profile struct {
+	m.Profile
 	Name string
-	Head string
+	Edit bool
+}
+
+func GetProfileById(uid uint, can_edit bool) (profile Profile) {
+	user := m.User{}
+	database.DB.Preload("Profile").First(&user, uid)
+	profile = Profile{Name:user.Name, Profile:user.Profile, Edit:can_edit}
+	return
 }
 
 //<post item >
@@ -21,12 +34,12 @@ type PostItem struct {
 	CommentCount int
 }
 
-func DBHotPostsConvert(dbHotPosts *[]m.Posts)(* []PostItem){
+func DBHotPostsConvert(dbHotPosts *[]m.Posts) (*[]PostItem) {
 	postItems := make([]PostItem, 0, len(*dbHotPosts))  //dbHotPosts to mHotPosts
 	for _, db_hot := range *dbHotPosts {
 		postItems = append(postItems, PostItem{PostID:db_hot.ID, Title:db_hot.Title,
 			ViewCount:db_hot.ViewCount, CommentCount:db_hot.CommentCount,
-			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Head:db_hot.Author.Profile.Head}});
+			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Cover:db_hot.Author.Profile.Cover}});
 	}
 	return &postItems
 }

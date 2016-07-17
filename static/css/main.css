@@ -325,8 +325,12 @@ footer {
     font-size: 15px;
     margin-left: 12px;
 }
+.me-profile .img-circle{
+    width:64px;
+    height:64px;
+}
 .me-profile .glyphicon-chevron-right {
-    margin-top: 20px;
+    margin-top: 22px;
 }
 
 .list-info {
@@ -357,7 +361,6 @@ footer {
     background-color: #fcfcfc;
     height: 2.5em;
 }
-
 
 /****************hot _ item*******************/
 .list-group{

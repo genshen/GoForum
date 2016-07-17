@@ -58,9 +58,20 @@ func (this *BaseController) LogoutUser() bool {
 	return true
 }
 
+//get user's id. returns user's id if has signed in,or 0 otherwise
 func (this *BaseController) getUserId() uint {
-	return (this.GetSession(User)).(uint)
+	u := this.GetSession(User)
+	if u == nil {
+		return 0
+	}
+	return u.(uint)
 }
+
+//get username if has signed in,or "" otherwise
 func (this *BaseController) getUsername() string {
-	return (this.GetSession(User_Name)).(string)
+	name := this.GetSession(User_Name)
+	if (name == nil) {
+		return ""
+	}
+	return name.(string)
 }

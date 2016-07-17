@@ -1,0 +1,65 @@
+{{define "content"}}{{template "header" .}}{{template "header_foo" .}}
+<style>
+    /*sm*/
+    @media (max-width: 768px) {
+        .profile-box {
+            text-align: center;
+            color: white;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .profile-box {
+            text-align: left;
+            color: white;
+        }
+
+        .profile-box .profile-cover {
+            float: left;
+            margin-right: 20px;
+        }
+    }
+
+    .profile-username a, .profile-username a:hover, .profile-username a:active, .profile-username a:visited, .profile-username a:focus {
+        color: white
+    }
+
+    .profile-cover {
+        width: 135px;
+        height: 135px;
+    }
+</style>
+<main id="app" style="background-color:#4CAF50">
+    <div class="container">
+        <p style="height:20px"></p>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 profile-box">
+                <div class="profile-header row">
+                    <a><img class="profile-cover img-circle img-thumbnail" v-bind:src="Cover" alt="..."></a>
+                    <h2 class="profile-username"><a href="#">{{"{{Name}}"}}</a></h2>
+                    <p class="profile-bio">个人简介:{{"{{Bio}}"}}</p>
+                    <p class="profile-join">
+                        <span class="glyphicon glyphicon-time"></span>2016年6月15日 加入
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn btn-success btn-raised">{{"{{PostCount}}"}} 帖子</button>
+                <button class="btn btn-success btn-raised">{{"{{CommentCount}}"}} 评论</button>
+                <button class="btn btn-success btn-raised">{{"{{FollowedCount}}"}} 粉丝</button>
+                <button class="btn btn-success btn-raised">{{"{{FollowingCount}}"}} 关注</button>
+            </div>
+        </div>
+        <h1> user id:{{"{{ID}}"}}</h1>
+    </div>
+</main>
+{{template "script" .}}
+<script src="/static/dist/js/vue.js"></script>
+<script type="text/javascript">
+    var profile = JSON.parse("<<<.person>>>");
+    new Vue({el: "html", data: profile})
+</script>
+{{template "footer" .}}
+{{end}}

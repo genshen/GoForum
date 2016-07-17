@@ -54,6 +54,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="nickName" class="col-md-3 control-label">昵&emsp;称</label>
+
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="nickName" name="nickname" placeholder="取个好听的昵称吧">
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="inputPassword" class="col-md-3 control-label">密&emsp;码</label>
 
                                 <div class="col-md-9">
@@ -122,7 +129,7 @@
                     subBtn.text("注册中...");
                     $.ajax({
                         type: 'POST',
-                        data: {_xsrf: xsrf, email: $("#inputEmail").val(), password: $("#inputPassword").val()},
+                        data: {_xsrf: xsrf, email: $("#inputEmail").val(),nickname: $("#nickName").val(), password: $("#inputPassword").val()},
                         success: function (data) {
                             subBtn.text("注册");
                             subBtn.removeAttr("disabled");
@@ -130,6 +137,8 @@
                                 setErrorAlert(data.email.Errors[0].Message)
                             } else if (data.password && data.password.Errors.length > 0) {
                                 setErrorAlert(data.password.Errors[0].Message)
+                            } else if (data.nickname && data.nickname.Errors.length > 0) {
+                                setErrorAlert(data.nickname.Errors[0].Message)
                             } else if(data.status){ //no error
                                 window.location.replace("/account/signup/success");
                             }else{
@@ -150,6 +159,14 @@
                             message: "邮箱不能为空!"
                         },email: {
                             message: "邮箱格式不正确!"
+                        }
+                    }
+                },{
+                    field: "#nickName",
+                    rules: {
+                        required: {
+                            submitOnly: false,
+                            message: "昵称不能为空!"
                         }
                     }
                 }, {

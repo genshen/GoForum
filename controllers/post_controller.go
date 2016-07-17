@@ -83,7 +83,7 @@ func (this *PostController) View() {
 		mPostDetail.NewInstant(&mPost)
 		mUser := m.User{}
 		mUser.GetUserById(mPost.AuthorID) //todo query user profile,do not show Author(in mPost) information
-		person := Person{ID:mUser.ID, Name:mUser.Name, Head:mUser.Profile.Head}
+		person := Person{ID:mUser.ID, Name:mUser.Name, Cover:mUser.Profile.Cover}
 		data := PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
 		json, err := json.Marshal(data)
 		if err == nil {

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <meta name="theme-color" content="#1ba10f">
+    <title>{{Name}}</title>
+    <!-- Material Design fonts -->
+    <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">  -->
+     <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css" rel="stylesheet">
+     <!-- Bootstrap -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Material Design -->
+    <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
+    <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet"></head>
+<body>
+<style>
+    /*sm*/
+    @media (max-width: 768px) {
+        .profile-box {
+            text-align: center;
+            color: white;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .profile-box {
+            text-align: left;
+            color: white;
+        }
+
+        .profile-box .profile-cover {
+            float: left;
+            margin-right: 20px;
+        }
+    }
+
+    .profile-username a, .profile-username a:hover, .profile-username a:active, .profile-username a:visited, .profile-username a:focus {
+        color: white
+    }
+
+    .profile-cover {
+        width: 135px;
+        height: 135px;
+    }
+</style>
+<main id="app" style="background-color:#4CAF50">
+    <div class="container">
+        <p style="height:20px"></p>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 profile-box">
+                <div class="profile-header row">
+                    <a><img class="profile-cover img-circle img-thumbnail" v-bind:src="Cover" alt="..."></a>
+                    <h2 class="profile-username"><a href="#">{{Name}}</a></h2>
+                    <p class="profile-bio">个人简介:{{Bio}}</p>
+                    <p class="profile-join">
+                        <span class="glyphicon glyphicon-time"></span>2016年6月15日 加入
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn btn-success btn-raised">{{PostCount}} 帖子</button>
+                <button class="btn btn-success btn-raised">{{CommentCount}} 评论</button>
+                <button class="btn btn-success btn-raised">{{FollowedCount}} 粉丝</button>
+                <button class="btn btn-success btn-raised">{{FollowingCount}} 关注</button>
+            </div>
+        </div>
+        <h1> user id:{{ID}}</h1>
+    </div>
+</main>
+<!-- jQuery -->
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
+<!-- Twitter Bootstrap -->
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<!-- Material Design for Bootstrap -->
+<script src="/static/dist/js/material.min.js"></script>
+<script src="/static/dist/js/ripples.min.js"></script>
+<script src="/static/dist/js/vue.js"></script>
+<script type="text/javascript">
+    var profile = JSON.parse("<<<.person>>>");
+    new Vue({el: "html", data: profile})
+</script>
+</body>
+</html>

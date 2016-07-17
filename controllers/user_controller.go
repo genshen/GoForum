@@ -44,9 +44,9 @@ func (this *UserController) POST_SignIn() {
 	username := this.GetString("username")
 	password := this.GetString("password")
 	sign_in_form := forms.SignInForm{Username:username, Password: password}
-	if errs, status, userID := sign_in_form.LoginVerify(); status {
+	if errs, userID := sign_in_form.LoginVerify(); errs == nil {
 		//验证通过
-		this.LoginUser(userID, username)
+		this.LoginUser(userID, sign_in_form.Username)
 		next := this.GetString("next")
 		if len(next) > 0 && next[0] != '/' {
 			next = "/" + next
@@ -74,8 +74,9 @@ func (this *UserController) POST_SignUp() {
 		return
 	}
 	email := this.GetString("email")
+	nickname := this.GetString("nickname")
 	password := this.GetString("password")
-	sign_up_form := forms.SignUpForm{Email:email, Password: password}
+	sign_up_form := forms.SignUpForm{Email:email, Nickname:nickname, Password: password}
 	if errs, status := sign_up_form.Valid(); status {
 		this.Data["json"] = &SignResult{Status:true}
 		flash := beego.NewFlash()
@@ -101,10 +102,4 @@ func (this *UserController) SignUpSuccess() {
 func (this *UserController) SignOut() {
 	this.LogoutUser()
 	this.Redirect("/account/signin", 302)
-}
-
-//profile below
-func (this *UserController) Profile() {
-	this.LogoutUser()
-	this.TplName = "account/profile.html";
 }

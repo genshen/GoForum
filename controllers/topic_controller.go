@@ -21,7 +21,7 @@ func (this *TopicController) Slug() {
 	slug := this.Ctx.Input.Param("slug")
 	start := 0
 	dbPosts :=  []m.Posts{}
-	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Find(&dbPosts);
+	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Preload("Author.Profile").Find(&dbPosts);
 	mItems := DBHotPostsConvert(&dbPosts)
 	this.Data["slug"] = slug
 	json,err := json.Marshal(mItems)

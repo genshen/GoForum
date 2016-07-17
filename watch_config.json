@@ -9,8 +9,8 @@
     "account/signup_success.html": {
       "title": "注册成功"
     },
-    "account/profile.html": {
-      "title": "我—{{me}}"
+    "profile/person.html": {
+      "title": "{{Name}}"
     },
     "home/index.html": {
       "title": "首页"
@@ -34,6 +34,9 @@
     },
     {
       "folder": "account"
+    },
+    {
+      "folder": "profile"
     },
     {
       "folder": "post"

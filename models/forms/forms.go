@@ -15,6 +15,7 @@ type SignInForm struct {
 
 type SignUpForm struct {
 	Email    string
+	Nickname string
 	Password string
 }
 
@@ -23,19 +24,19 @@ type PostCreateForm struct {
 	Content string
 }
 
-func (this *SignInForm)LoginVerify() ([]*validation.Error, bool, uint) {
+func (this *SignInForm)LoginVerify() ([]*validation.Error, uint) {
 	valid := validation.Validation{}
 	valid.Required(this.Username, "name").Message("用户名不能为空")
 	valid.Required(this.Password, "pass").Message("密码不能为空")
 	if valid.HasErrors() {
-		return valid.Errors, false, 0
+		return valid.Errors, 0
 	}
 
 	id := this.validPassword(&valid); //验证密码
 	if valid.HasErrors() {
-		return valid.Errors, false, 0
+		return valid.Errors, 0
 	}
-	return nil, true, id
+	return nil, id
 }
 
 func (this *SignInForm) validPassword(v *validation.Validation) uint {
@@ -44,6 +45,8 @@ func (this *SignInForm) validPassword(v *validation.Validation) uint {
 	if u.ID == 0 {
 		v.SetError("name", "用户名或密码错误")
 		v.SetError("pass", "用户名或密码错误")
+	} else {
+		this.Username = u.Name  //use name to replace email or tel
 	}
 	return u.ID
 }
@@ -52,6 +55,7 @@ func (this *SignUpForm)Valid() ([]*validation.Error, bool) {
 	valid := validation.Validation{}
 	valid.Required(this.Email, "email").Message("邮箱不能为空")
 	valid.Email(this.Email, "email").Message("邮箱格式不正确")
+	valid.Required(this.Nickname, "nickname").Message("昵称不能为空")
 	valid.Required(this.Password, "pass").Message("密码不能为空")
 	valid.MinSize(this.Password, 6, "pass").Message("密码长度不能小于6")
 	if valid.HasErrors() {
@@ -70,8 +74,8 @@ func (this *SignUpForm)validOrSave(v *validation.Validation) {
 	if u.ID != 0 {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
-		user := m.User{Email:this.Email, Name:"", Password:security.Hash(this.Password), Status:m.STATUS_ACTIVE,
-			Profile:m.Profile{Head:"deaf.png",Coins:9}}
+		user := m.User{Email:this.Email, Name:this.Nickname, Password:security.Hash(this.Password), Status:m.STATUS_ACTIVE,
+			Profile:m.Profile{Cover:"/static/img/default.png"}}
 		database.DB.Create(&user)
 	}
 }
