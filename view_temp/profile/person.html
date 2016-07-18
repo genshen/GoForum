@@ -24,9 +24,29 @@
         color: white
     }
 
-    .profile-cover {
-        width: 135px;
-        height: 135px;
+    .profile-cover img {
+        width: 136px;
+        height: 136px;
+    }
+
+    .follow-action {
+        display: inline-block;
+        box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        padding: 2px;
+        background-color: #0eb400;
+        border-radius: 50%;
+        color: white;
+        position: relative;
+        left: -34px;
+        top: 40px;
+    }
+
+    .follow-action:hover, .follow-action:visited {
+        color: white;
+    }
+
+    .follow-action:active, .follow-action:focus {
+        color: white;
     }
 </style>
 <main id="app" style="background-color:#4CAF50">
@@ -35,7 +55,12 @@
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 profile-box">
                 <div class="profile-header row">
-                    <a><img class="profile-cover img-circle img-thumbnail" v-bind:src="Cover" alt="..."></a>
+                    <div class="profile-cover">
+                        <a href="#">
+                            <img class="img-circle img-thumbnail" v-bind:src="Cover" alt="...">
+                        </a>
+                        <a href="javascript:void(0)" class="follow-action withripple"><i class="material-icons">add</i></a>
+                    </div>
                     <h2 class="profile-username"><a href="#">{{"{{Name}}"}}</a></h2>
                     <p class="profile-bio">个人简介:{{"{{Bio}}"}}</p>
                     <p class="profile-join">
@@ -58,8 +83,15 @@
 {{template "script" .}}
 <script src="/static/dist/js/vue.js"></script>
 <script type="text/javascript">
-    var profile = JSON.parse("<<<.person>>>");
-    new Vue({el: "html", data: profile})
+    $.material.init();
+    var person = JSON.parse("<<<.person>>>");
+    new Vue({
+        el: "html",
+        data: person,
+        ready: function () {
+            $.material.ripples('.withripple');
+        }
+    })
 </script>
 {{template "footer" .}}
 {{end}}

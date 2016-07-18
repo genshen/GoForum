@@ -134,6 +134,7 @@
                     <a herf="#">
                         <span v-bind:class="list.icon" class="me-list-icon-left glyphicon glyphicon-left"></span>
                         <span class="me-list-name">{{list.name}}</span>
+                        <!--bookmark border-->
                         <!--<span class="glyphicon glyphicon-chevron-right pull-right"></span>-->
                     </a>
                 </div>
@@ -245,10 +246,12 @@
                 lists: [
                     {is_space: true},
                     {is_space: false, islast: false, name: "我的帖子", icon: "glyphicon-home", link: "#1"},
+                    {is_space: false, islast: false, name: "关注的人", icon: "glyphicon-user", link: "/profile/following"},
                     {is_space: false, islast: false, name: "我的粉丝", icon: "glyphicon-heart-empty", link: "/profile/followed"},
                     {is_space: false, islast: true, name: "我的收藏", icon: "glyphicon-star-empty", link: "/profile/collection"},
                     {is_space: true},
-                    {is_space: false, islast: false, name: "设置", icon: "glyphicon-cog", link: "#1"},
+                    {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
+                    {is_space: true},
                     {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "#1"},
                     {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "#1"}]
             }
