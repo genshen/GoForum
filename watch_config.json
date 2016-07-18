@@ -1,4 +1,11 @@
 {
+  "layouts": [
+    "layouts/header.html",
+    "layouts/header_foo.html",
+    "layouts/tabbar.html",
+    "layouts/center_script.html",
+    "layouts/footer.html"
+  ],
   "template": {
     "account/signin.html": {
       "title": "登录"
