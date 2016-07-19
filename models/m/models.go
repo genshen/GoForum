@@ -46,6 +46,13 @@ func (u *User) GetUserById(id uint) {
 	database.DB.Preload("Profile").First(&u, id)
 }
 
+type Follow struct {
+	Follower        User
+	Following   User
+	FollowerID      uint
+	FollowingID uint
+}
+
 //User         User `gorm:"ForeignKey:Author"`
 type Posts struct {
 	gorm.Model

@@ -106,3 +106,31 @@ type PostView struct {
 	Author  Person
 }
 /*</used for Post detail> */
+
+/*follow person*/
+type PersonFollow struct {
+	Person
+	Bio string
+}
+/*find all person who is following (select_following:true)*/
+/*find all person who is followed by(select_following:false)*/
+func findFollowsById(id uint, select_following bool) *[]PersonFollow {
+	db_follows := []m.Follow{}
+	if select_following {
+		database.DB.Where("follower_id = ?", id).Preload("Following").Preload("Following.Profile").Find(&db_follows)
+		personFollows := make([]PersonFollow, 0, len(db_follows))  //dbHotPosts to mHotPosts
+		for _, follow := range db_follows {
+			personFollows = append(personFollows, PersonFollow{Bio:follow.Following.Profile.Bio,
+				Person:Person{ID:follow.Following.ID, Name:follow.Following.Name, Cover:follow.Following.Profile.Cover}});
+		}
+		return &personFollows
+	} else {
+		database.DB.Where("following_id = ?", id).Preload("Follower").Preload("Follower.Profile").Find(&db_follows)
+		personFollows := make([]PersonFollow, 0, len(db_follows))  //dbHotPosts to mHotPosts
+		for _, follow := range db_follows {
+			personFollows = append(personFollows, PersonFollow{Bio:follow.Follower.Profile.Bio,
+				Person:Person{ID:follow.Follower.ID, Name:follow.Follower.Name, Cover:follow.Follower.Profile.Cover}});
+		}
+		return &personFollows
+	}
+}

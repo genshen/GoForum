@@ -4,12 +4,13 @@
 </style>
 <main id="app" style="background-color:#4CAF50">
     <div class="container">
-        <h1>粉丝页 following</h1>
+        <h1>我的关注页面 following</h1>
     </div>
 </main>
 {{template "script" .}}
 <script src="/static/dist/js/vue.js"></script>
 <script type="text/javascript">
+    var follows = JSON.parse("<<< .follows>>>");
 </script>
 {{template "footer" .}}
 {{end}}

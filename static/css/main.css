@@ -314,21 +314,24 @@ footer {
 }
 
 /*.me-menu-list .glyphicon-chevron-right {*/
-    /*font-size: 12px;*/
+/*font-size: 12px;*/
 /*}*/
 
 .me-profile {
     padding: 15px 20px 0 20px;
     background: rgb(255, 255, 255);
 }
-.me-profile .me-profile-username{
+
+.me-profile .me-profile-username {
     font-size: 15px;
     margin-left: 12px;
 }
-.me-profile .img-circle{
-    width:64px;
-    height:64px;
+
+.me-profile .img-circle {
+    width: 64px;
+    height: 64px;
 }
+
 .me-profile .glyphicon-chevron-right {
     margin-top: 22px;
 }
@@ -344,7 +347,7 @@ footer {
     margin-left: 12px;
 }
 
-.list-info .me-list-icon-left{
+.list-info .me-list-icon-left {
     font-size: 15px;
 }
 
@@ -362,37 +365,111 @@ footer {
     height: 2em;
 }
 
+/*simple list*/
+.mdl-list {
+    display: block;
+    padding: 12px;
+    position: relative;
+    list-style: none;
+}
+
+.mdl-list-item {
+    font-size: 16px;
+    letter-spacing: .04em;
+    line-height: 1;
+    color: rgba(0, 0, 0, .87);
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.mdl-list-item-avatar {
+    margin-right: 16px;
+    height: 40px;
+    width: 40px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background-color: #757575;
+}
+
+.mdl-list-item-primary-content {
+    margin-right: 96px;
+    overflow-x: hidden;
+    line-height: 20px;
+}
+.mdl-list-separator{
+    clear: both;
+    overflow: hidden;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+.mdl-list-separator:before {
+    content: "";
+    width: -webkit-calc(100% - 52px);
+    width: calc(100% - 52px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    float: right;
+}
+
+
+.mdl-list-item-describe {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 18px;
+    color: rgba(0, 0, 0, .54);
+}
+
+.mdl-list-item-action {
+    position: absolute;
+    right: 10px;
+    align-items: flex-end;
+}
+
+.mdl-list-item-action .btn {
+    margin: 0
+}
+
 /****************hot _ item*******************/
-.list-group{
+.list-group {
     background: #FFFFFF;
-    margin:10px -8px !important;
+    margin: 10px -8px !important;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
 }
-.list-group-item{
-    padding: 6px 12px 0px !important;
+
+.list-group-item {
+    padding: 6px 12px 0 !important;
 
 }
-.row-picture{
-    float:left;
-    margin-right:13px;
+
+.row-picture {
+    float: left;
+    margin-right: 13px;
 }
+
 .row-picture img {
     width: 39px !important;
     height: 39px !important;
 }
+
 .row-content {
     width: -webkit-calc(100% - 73px) !important;
     width: calc(100% - 70px) !important;
 }
-small{
-    color:#A0A0A0 !important;
+
+small {
+    color: #A0A0A0 !important;
     margin-right: 5px;
 }
-.list-group-item-text a{
+
+.list-group-item-text a {
     color: #4C4C4C !important;
     font-size: 16px;
 }
-.list-group-item-date{
-    margin-bottom:3px;
+
+.list-group-item-date {
+    margin-bottom: 3px;
 
 }

@@ -19,6 +19,12 @@
     "profile/person.html": {
       "title": "{{Name}}"
     },
+    "profile/following.html": {
+      "title": "关注的人"
+    },
+    "profile/followed.html": {
+      "title": "我的粉丝"
+    },
     "home/index.html": {
       "title": "首页"
     },
