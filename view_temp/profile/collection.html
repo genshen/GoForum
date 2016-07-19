@@ -1,10 +1,151 @@
 {{define "content"}}{{template "header" .}}{{template "header_foo" .}}
 <style>
     /**style here at this moment*/
+    #app .container{
+        background:#FAFAFA;
+    }
+    .post_item .row{
+        margin:0px;
+        padding:10px;
+    }
+    .post_content{
+        padding:0px 10px;
+    }
+    .post_bottom{
+    }
+
+    .post_item{
+        background: #ffffff;
+        border-bottom: 1px solid #F0F0F0;
+    }
+    .head_img{
+        float:left;
+    }
+    .head_img img{
+        width:50px;
+        height:50px;
+    }
+    .head_content{
+        float:left;
+    }
+    .head_content span{
+        display:block;
+        margin-top:5px;
+    }
+    .post_content{
+        margin:0px;
+    }
+    .post_bottom{
+        height:35px;
+    }
+    .post_bottom .row{
+        float:right;
+        position: relative;
+        margin-right:0px;
+        padding:0px;
+    }
+    .post_bottom .glyphicon{
+        top: 4px;
+        color:rgb(119, 119, 119);
+    }
+    .post_bottom ul{
+        float:right;
+        margin:0px;
+    }
+    .post_bottom ul li{
+        display:inline-table;
+    }
+    .post_bottom .dropdown-menu {
+        top: 100%;
+    }
+    .btn-group{
+        margin:0px 0px 5px;
+    }
+    .btn-group span{
+        padding:7px 10px;
+
+    }
+    .btn-group .glyphicon{
+         top:1px;
+    }
+    .dropdown-menu{
+        height:38px;
+        padding:2px 0px;
+        min-width: 103px;
+    }
+    .dropdown-menu li{
+        width: 103px;
+    }
+    .dropdown-menu li a{
+        display:inline-block !important;
+        padding-right:0px;
+        padding-left:8px;
+    }
+    .dropdown-menu span{
+        display:inline-block ;
+    }
+
 </style>
 <main id="app" style="background-color:#4CAF50">
     <div class="container">
-        <h1>收藏页</h1>
+        <ul class="row post_list list-unstyled">
+            <li class="post_item">
+                <div class="post_head row ">
+                    <div class="head_img">
+                        <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1468617112,4026338933&fm=23&gp=0.jpg"  alt="..." class="img-rounded">
+                    </div>
+                    <div class="head_content">
+                        <span><strong>I AndyLin</strong></span>
+                        <small>2016-07-14</small>
+                    </div>
+                </div>
+                <p class="post_content">
+                    clothesplus运用自己的系统，通过互联网络、手机软件等方式为用户提供专业的一站式服装定制批发服务，承接个性化文化衫定制,设计师一对一设计等服务。
+                </p>
+                <div class="post_bottom">
+                    <div class="row">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        <small>2048
+                        </small>
+                        <div class="btn-group dropup">
+                                <span class="btn btn-primary glyphicon glyphicon-option-vertical dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                </span>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="#">取消收藏</a><span class="glyphicon glyphicon-trash"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="post_item">
+                <div class="post_head row ">
+                    <div class="head_img">
+                        <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1468617112,4026338933&fm=23&gp=0.jpg"  alt="..." class="img-rounded">
+                    </div>
+                    <div class="head_content">
+                        <span><strong>I AndyLin</strong></span>
+                        <small>2016-07-14</small>
+                    </div>
+                </div>
+                <p class="post_content">
+                    clothesplus运用自己的系统，通过互联网络、手机软件等方式为用户提供专业的一站式服装定制批发服务，承接个性化文化衫定制,设计师一对一设计等服务。
+                </p>
+                <div class="post_bottom">
+                    <div class="row">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        <small>2048
+                        </small>
+                        <div class="btn-group dropup">
+                                <span class="btn btn-primary glyphicon glyphicon-option-vertical dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                </span>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="#">取消收藏</a><span class="glyphicon glyphicon-trash"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </main>
 {{template "script" .}}
