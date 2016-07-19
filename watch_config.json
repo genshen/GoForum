@@ -7,6 +7,12 @@
     "layouts/footer.html"
   ],
   "template": {
+    "about/index.html":{
+      "title": "关于我们"
+    },
+    "about/feedback.html":{
+      "title": "意见反馈"
+    },
     "account/signin.html": {
       "title": "登录"
     },
@@ -42,6 +48,9 @@
     }
   },
   "watched_folder": [
+    {
+      "folder": "about"
+    },
     {
       "folder": "home"
     },

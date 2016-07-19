@@ -32,4 +32,8 @@ func init() {
 	beego.Router("comment/:id([0-9]+)/:start([0-9]+)", &controllers.CommentController{}, "get:Comment")
 	beego.Router("comment/add/:id([0-9]+)", &controllers.CommentController{}, "post:CommentAdd")
 	//beego.AutoRouter(&controllers.UserController{})
+
+	//*about *//
+	beego.Router("about", &controllers.AboutController{}, "get:Index")
+	beego.Router("about/feedback", &controllers.AboutController{}, "get:Feedback")
 }
