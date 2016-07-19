@@ -9,7 +9,7 @@ import (
 type Person struct {
 	ID    uint
 	Name  string
-	Cover string
+	Avatar string
 }
 
 type Profile struct {
@@ -39,7 +39,7 @@ func DBHotPostsConvert(dbHotPosts *[]m.Posts) (*[]PostItem) {
 	for _, db_hot := range *dbHotPosts {
 		postItems = append(postItems, PostItem{PostID:db_hot.ID, Title:db_hot.Title,
 			ViewCount:db_hot.ViewCount, CommentCount:db_hot.CommentCount,
-			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Cover:db_hot.Author.Profile.Cover}});
+			Person:Person{ID:db_hot.Author.ID, Name:db_hot.Author.Name, Avatar:db_hot.Author.Profile.Avatar}});
 	}
 	return &postItems
 }
@@ -121,7 +121,7 @@ func findFollowsById(id uint, select_following bool) *[]PersonFollow {
 		personFollows := make([]PersonFollow, 0, len(db_follows))  //dbHotPosts to mHotPosts
 		for _, follow := range db_follows {
 			personFollows = append(personFollows, PersonFollow{Bio:follow.Following.Profile.Bio,
-				Person:Person{ID:follow.Following.ID, Name:follow.Following.Name, Cover:follow.Following.Profile.Cover}});
+				Person:Person{ID:follow.Following.ID, Name:follow.Following.Name, Avatar:follow.Following.Profile.Avatar}});
 		}
 		return &personFollows
 	} else {
@@ -129,7 +129,7 @@ func findFollowsById(id uint, select_following bool) *[]PersonFollow {
 		personFollows := make([]PersonFollow, 0, len(db_follows))  //dbHotPosts to mHotPosts
 		for _, follow := range db_follows {
 			personFollows = append(personFollows, PersonFollow{Bio:follow.Follower.Profile.Bio,
-				Person:Person{ID:follow.Follower.ID, Name:follow.Follower.Name, Cover:follow.Follower.Profile.Cover}});
+				Person:Person{ID:follow.Follower.ID, Name:follow.Follower.Name, Avatar:follow.Follower.Profile.Avatar}});
 		}
 		return &personFollows
 	}

@@ -75,7 +75,7 @@ func (this *SignUpForm)validOrSave(v *validation.Validation) {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
 		user := m.User{Email:this.Email, Name:this.Nickname, Password:security.Hash(this.Password), Status:m.STATUS_ACTIVE,
-			Profile:m.Profile{Cover:"/static/img/default.png"}}
+			Profile:m.Profile{Avatar:"/static/img/default.png"}}
 		database.DB.Create(&user)
 	}
 }

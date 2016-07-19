@@ -368,7 +368,7 @@ footer {
 /*simple list*/
 .mdl-list {
     display: block;
-    padding: 12px;
+    padding: 12px 0;
     position: relative;
     list-style: none;
 }
@@ -398,12 +398,14 @@ footer {
     overflow-x: hidden;
     line-height: 20px;
 }
-.mdl-list-separator{
+
+.mdl-list-separator {
     clear: both;
     overflow: hidden;
     margin-top: 12px;
     margin-bottom: 12px;
 }
+
 .mdl-list-separator:before {
     content: "";
     width: -webkit-calc(100% - 52px);
@@ -411,7 +413,6 @@ footer {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     float: right;
 }
-
 
 .mdl-list-item-describe {
     display: block;

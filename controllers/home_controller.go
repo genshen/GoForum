@@ -44,9 +44,9 @@ func (this *HomeController)Me() {
 		me.IsLogin = true
 		me.ID = this.getUserId()
 		me.Name = this.getUsername()
-		profile := m.Profile{}  //load cover info from database(while id username from session)
-		database.DB.Select("cover").Where("user_refer = ?",me.ID).First(&profile)
-		me.Cover = profile.Cover
+		profile := m.Profile{}  //load avatar info from database(while id username from session)
+		database.DB.Select("avatar").Where("user_refer = ?",me.ID).First(&profile)
+		me.Avatar = profile.Avatar
 	}
 	this.Data["json"] = &me
 	this.ServeJSON()

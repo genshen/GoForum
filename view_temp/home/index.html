@@ -30,7 +30,7 @@
             <div v-for="hot in home.hot_posts" class="list-group">
                 <div class="list-group-item">
                     <div class="row-picture">
-                        <img class="circle" v-bind:src="hot.Cover" alt="icon">
+                        <img class="circle" v-bind:src="hot.Avatar" alt="icon">
                     </div>
                     <div class="row-content">
                         <div>
@@ -102,7 +102,7 @@
             <li class="me-profile withripple" @click="toProfile">
                 <div class="me-list-container me-split-line-ignore">
                     <a>
-                        <img class="img-circle" v-bind:src="user.cover" alt="正在加载"/>
+                        <img class="img-circle" v-bind:src="user.avatar" alt="正在加载"/>
                         <span class="me-profile-username">{{"{{user.name}}"}}</span>
                         <span class="glyphicon glyphicon-chevron-right pull-right"></span>
                     </a>
@@ -225,7 +225,7 @@
             },
             category: {loaded: false, active: false, tags: [], topics: []},
             message: {loaded: false, active: false},
-            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", cover: "default.png"},
+            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "default.png"},
             setting: {}
         },
         ready: function () {
@@ -395,7 +395,7 @@
                 if (data.IsLogin) {
                     self.me.id = data.ID;
                     self.me.name = data.Name;
-                    self.me.cover = data.Cover;
+                    self.me.avatar = data.Avatar;
                 }
                 self.me.loaded = true;
                 $.material.ripples('.withripple'); //set ripple

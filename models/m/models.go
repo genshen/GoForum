@@ -25,7 +25,7 @@ type User struct {
 type Profile struct {
 	//ID uint `gorm:"primary_key"`
 	UserRefer      uint
-	Cover          string  `gorm:"default:'default.png'"`
+	Avatar         string  `gorm:"default:'default.png'"`
 	Coins          int     `gorm:"default:0"`
 	PostCount      int     `gorm:"default:0"`
 	CommentCount   int     `gorm:"default:0"`
@@ -47,9 +47,9 @@ func (u *User) GetUserById(id uint) {
 }
 
 type Follow struct {
-	Follower        User
+	Follower    User
 	Following   User
-	FollowerID      uint
+	FollowerID  uint
 	FollowingID uint
 }
 
