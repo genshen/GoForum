@@ -18,8 +18,8 @@ func init() {
 	beego.Router("account/signout", &controllers.UserController{}, "get:SignOut")
 
 	beego.Router("person/:uid([0-9]+)", &controllers.ProfileController{}, "get:Person")
-	beego.Router("profile/following", &controllers.ProfileController{}, "get:Following")
-	beego.Router("profile/followed", &controllers.ProfileController{}, "get:Followed")
+	beego.Router("profile/following", &controllers.ProfileController{}, "get:Follow")
+	beego.Router("profile/followed", &controllers.ProfileController{}, "get:Follow")
 	beego.Router("profile/collection", &controllers.ProfileController{}, "get:Collection")
 
 	beego.Router("topic/:slug([\\w]+)", &controllers.TopicController{}, "get:Slug")  //topic and tag

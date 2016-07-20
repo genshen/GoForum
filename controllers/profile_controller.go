@@ -12,8 +12,7 @@ type ProfileController struct {
 
 var profile_rules = map[string]int{
 	"Login":   0,
-	"Following": identify.Login,
-	"Followed": identify.Login,
+	"Follow": identify.Login,
 }
 
 func (this *ProfileController) getRules(action string) int {
@@ -40,24 +39,13 @@ func (this *ProfileController) Person() {
 	this.Abort("404")
 }
 
-/*those persons i'am focusing */
-func (this *ProfileController) Following() {
-	follows := findFollowsById(this.getUserId(),true)
+/*those persons i'am focusing or be followed */
+func (this *ProfileController) Follow() {
+	follows := findFollowsById(this.getUserId())
 	json, err := json.Marshal(follows)
 	if err == nil {
 		this.Data["follows"]  = string(json)
-		this.TplName = "profile/following.html"
-		return
-	}
-	this.Abort("404")
-}
-
-func (this *ProfileController) Followed() {
-	follows := findFollowsById(this.getUserId(),false)
-	json, err := json.Marshal(follows)
-	if err == nil {
-		this.Data["follows"]  = string(json)
-		this.TplName = "profile/followed.html"
+		this.TplName = "profile/follow.html"
 		return
 	}
 	this.Abort("404")

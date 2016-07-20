@@ -7,8 +7,8 @@ import (
 )
 
 type Person struct {
-	ID    uint
-	Name  string
+	ID     uint
+	Name   string
 	Avatar string
 }
 
@@ -112,25 +112,26 @@ type PersonFollow struct {
 	Person
 	Bio string
 }
-/*find all person who is following (select_following:true)*/
-/*find all person who is followed by(select_following:false)*/
-func findFollowsById(id uint, select_following bool) *[]PersonFollow {
-	db_follows := []m.Follow{}
-	if select_following {
-		database.DB.Where("follower_id = ?", id).Preload("Following").Preload("Following.Profile").Find(&db_follows)
-		personFollows := make([]PersonFollow, 0, len(db_follows))  //dbHotPosts to mHotPosts
-		for _, follow := range db_follows {
-			personFollows = append(personFollows, PersonFollow{Bio:follow.Following.Profile.Bio,
-				Person:Person{ID:follow.Following.ID, Name:follow.Following.Name, Avatar:follow.Following.Profile.Avatar}});
-		}
-		return &personFollows
-	} else {
-		database.DB.Where("following_id = ?", id).Preload("Follower").Preload("Follower.Profile").Find(&db_follows)
-		personFollows := make([]PersonFollow, 0, len(db_follows))  //dbHotPosts to mHotPosts
-		for _, follow := range db_follows {
-			personFollows = append(personFollows, PersonFollow{Bio:follow.Follower.Profile.Bio,
-				Person:Person{ID:follow.Follower.ID, Name:follow.Follower.Name, Avatar:follow.Follower.Profile.Avatar}});
-		}
-		return &personFollows
+type AllFollows struct {
+	Following *[]PersonFollow
+	Followed  *[]PersonFollow
+}
+/*find all person who is following */
+/*find all person who is followed by*/
+func findFollowsById(id uint) *AllFollows {
+	db_following := []m.Follow{}
+	db_followed := []m.Follow{}
+	database.DB.Where("follower_id = ?", id).Preload("Following").Preload("Following.Profile").Find(&db_following)
+	personFollowing := make([]PersonFollow, 0, len(db_following))
+	for _, follow := range db_following {
+		personFollowing = append(personFollowing, PersonFollow{Bio:follow.Following.Profile.Bio,
+			Person:Person{ID:follow.Following.ID, Name:follow.Following.Name, Avatar:follow.Following.Profile.Avatar}});
 	}
+	database.DB.Where("following_id = ?", id).Preload("Follower").Preload("Follower.Profile").Find(&db_followed)
+	personFollowed := make([]PersonFollow, 0, len(db_followed))  //dbHotPosts to mHotPosts
+	for _, follow := range db_followed {
+		personFollowed = append(personFollowed, PersonFollow{Bio:follow.Follower.Profile.Bio,
+			Person:Person{ID:follow.Follower.ID, Name:follow.Follower.Name, Avatar:follow.Follower.Profile.Avatar}});
+	}
+	return &AllFollows{Following:&personFollowing, Followed:&personFollowed}
 }

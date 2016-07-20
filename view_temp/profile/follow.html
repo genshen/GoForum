@@ -1,0 +1,66 @@
+{{define "content"}}{{template "header" .}}{{template "header_foo" .}}
+<style>
+    /**style here at this moment*/
+</style>
+<main id="app">
+    <nav class="tab-nav">
+        <ul class="nav nav-justified">
+            <li>
+                <a data-toggle="tab" href="#following">关注的人</a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#followed">我的粉丝</a>
+            </li>
+        </ul>
+    </nav>
+    <h1 v-text="H">WW</h1>
+    <div class="container tab-content">
+        <!-- Tab panes -->
+        <div class="tab-pane" id="following">Following</div>
+        <div class="tab-pane" id="followed">followed</div>
+    </div>
+    </div>
+</main>
+{{template "script" .}}
+<script src="/static/dist/js/vue.js"></script>
+<script src="/static/js/tab.js"></script>
+<script type="text/javascript">
+    var FOLLOWING_TITLE = "关注的人";
+    var FOLLOWED_TITLE = "我的粉丝";
+    $.material.init();
+    var follows = JSON.parse("<<< .follows>>>");
+
+    new Vue({
+        el: 'html',
+        data: {
+            follows: follows,
+            title: "",
+            H:"HI"
+        },
+        ready: function () {
+            var self = this;
+            //set title
+            if (document.location.pathname.indexOf("following") < 0) {
+                this.title = FOLLOWED_TITLE;
+                $('.tab-nav a[href="#followed"]').tab('show');
+            } else {
+                this.title = FOLLOWING_TITLE;
+                $('.tab-nav a[href="#following"]').tab('show');
+            }
+
+            $(document).on('show.bs.tab', '.tab-nav a[data-toggle="tab"]', function (e) {
+                if($(e.target).attr("href") == "#following"){
+                    window.history.replaceState(null, FOLLOWING_TITLE, "/profile/following");
+                    self.title = FOLLOWING_TITLE;
+                }else{
+                    window.history.replaceState(null, FOLLOWED_TITLE, "/profile/followed");
+                    self.title = FOLLOWED_TITLE;
+                }
+            });
+        }
+    });
+
+
+</script>
+{{template "footer" .}}
+{{end}}
