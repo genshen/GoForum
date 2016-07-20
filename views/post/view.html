@@ -18,7 +18,6 @@
     <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
     <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
     <link href="/static/css/main.css" rel="stylesheet">
-<link type="text/css" rel="stylesheet" href="/static/dist/css/snackbar.css">
 <style>
     .hr-block {
         border-top: 1px solid #b0bbc0;
@@ -94,7 +93,7 @@
     </div><!-- /.modal -->
 
     <div class="container">
-        <demo-grid :post="Post" :is_login="IsLogin" :author="Author" :start.sync="start" :comments="Comments"></demo-grid>
+        <post-grid :post="Post" :is_login="IsLogin" :author="Author" :start.sync="start" :comments="Comments"></post-grid>
     </div>
 
     <div id="shell-box">
@@ -161,7 +160,7 @@
         <div class="col-md-12 hr-block">
             <a v-if="is_login" href="javascript:replyPost()" id="reply-post"
                class="btn btn-raised btn-primary">回复</a>
-            <a v-else v-bind:href="'/account/signin?next=/post/'+ post.ID" class="btn btn-raised btn-primary">登录以回复</a>
+            <a v-else :href="'/account/signin?next=/post/'+ post.ID" class="btn btn-raised btn-primary">登录以回复</a>
             <a href="javascript:void(0)" style="color:#607fa6;"><span
                     class="glyphicon glyphicon-comment"></span>{{post.CommentCount}}评论</a>
             <a href="javascript:void(0)" style="color:#607fa6;"><span
@@ -188,10 +187,8 @@
 <!-- Material Design for Bootstrap -->
 <script src="/static/dist/js/material.min.js"></script>
 <script src="/static/dist/js/ripples.min.js"></script>
-<script src="/static/js/form-validate.js"></script>
 <script src="/static/dist/js/vue.js"></script>
-<script src="/static/dist/js/snackbar.min.js"></script>
-<script src="/static/dist/js/jquery.cookie.js"></script>
+<script src="/static/js/util.js"></script>
 <script>
     var D = JSON.parse("<<<.data>>>");
     var ID = D.Post.ID;
@@ -268,7 +265,7 @@
     }
 </script>
 <script>
-    Vue.component('demo-grid', {
+    Vue.component('post-grid', {
         template: '#grid-template',
         props: {
             is_login: Boolean,
@@ -278,7 +275,7 @@
             author: JSON
         },
         ready: function () {
-            this.loadMore()
+            this.loadMore();
         },
         data: function () {
             return {

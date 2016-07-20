@@ -41,14 +41,13 @@ func (this *CommentController) Comment() {
 //post only
 // 0 for no login;2 for article deleted; 1 feo success
 func (this *CommentController) CommentAdd() {
-	var result *forms.CommentAddResult
+	var result *forms.PostResult
 	if !this.IsUserLogin() {
-		result = &forms.CommentAddResult{Status:0, Error:"用户未登录"}
+		result = &forms.PostResult{Status:0, Error:"用户未登录"}
 	} else {
 		id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
-		post_id := uint(id);
 		content := this.GetString("content")
-		ccf :=  forms.CommentCreateForm{PostID:post_id,Content:content}
+		ccf :=  forms.CommentCreateForm{PostID:uint(id),Content:content}
 		result  = ccf.Create(this.getUserId())
 	}
 	this.Data["json"] = result

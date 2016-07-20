@@ -102,13 +102,13 @@ type CommentCreateForm struct {
 	Content string
 }
 
-type CommentAddResult struct {
+type PostResult struct {
 	Status   int
 	Error    string
 	Addition interface{}
 }
 
-func (this *CommentCreateForm)Create(user_id uint) (result *CommentAddResult) {
+func (this *CommentCreateForm)Create(user_id uint) (result *PostResult) {
 	p := m.Posts{}
 	// use transaction
 	tx := database.DB.Begin()
@@ -116,18 +116,35 @@ func (this *CommentCreateForm)Create(user_id uint) (result *CommentAddResult) {
 		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
 		if err := database.DB.Create(&comment).Error; err != nil {
 			tx.Rollback();
-			result = &CommentAddResult{Status:2, Addition:0}
+			result = &PostResult{Status:2, Addition:0}
 			return
 		}
 		if err := database.DB.Model(&p).UpdateColumn("CommentCount", p.CommentCount + 1).Error; err != nil {
 			tx.Rollback();
-			result = &CommentAddResult{Status:2, Addition:0}
+			result = &PostResult{Status:2, Addition:0}
 			return
 		}
-		result = &CommentAddResult{Status:1, Addition:comment.ID}
+		result = &PostResult{Status:1, Addition:comment.ID}
 	} else {
-		result = &CommentAddResult{Status:3, Error:"对应文章不存在"}
+		result = &PostResult{Status:3, Error:"对应文章不存在"}
 	}
 	tx.Commit()
+	return
+}
+
+type FollowAddForm struct {
+	PersonID uint
+}
+
+func (this *FollowAddForm)Add(myID uint) (result *PostResult) {
+	u := m.User{}
+	database.DB.Where("status = ?", m.STATUS_ACTIVE).First(&u, this.PersonID)
+	if u.ID == 0 {
+		result = &PostResult{Status:2, Addition:"对应用户不存在"}
+	} else {
+		follow := m.Follow{}
+		database.DB.FirstOrCreate(&follow, m.Follow{FollowerID:myID, FollowingID:this.PersonID})
+		result = &PostResult{Status:1, Addition:this.PersonID}
+	}
 	return
 }

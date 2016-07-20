@@ -121,13 +121,15 @@ type AllFollows struct {
 func findFollowsById(id uint) *AllFollows {
 	db_following := []m.Follow{}
 	db_followed := []m.Follow{}
-	database.DB.Where("follower_id = ?", id).Preload("Following").Preload("Following.Profile").Find(&db_following)
+	//todo Limit(256).
+	database.DB.Where("follower_id = ?", id).Limit(256).Preload("Following").Preload("Following.Profile").Find(&db_following)
 	personFollowing := make([]PersonFollow, 0, len(db_following))
 	for _, follow := range db_following {
 		personFollowing = append(personFollowing, PersonFollow{Bio:follow.Following.Profile.Bio,
 			Person:Person{ID:follow.Following.ID, Name:follow.Following.Name, Avatar:follow.Following.Profile.Avatar}});
 	}
-	database.DB.Where("following_id = ?", id).Preload("Follower").Preload("Follower.Profile").Find(&db_followed)
+	//todo Limit(256)
+	database.DB.Where("following_id = ?", id).Limit(256).Preload("Follower").Preload("Follower.Profile").Find(&db_followed)
 	personFollowed := make([]PersonFollow, 0, len(db_followed))  //dbHotPosts to mHotPosts
 	for _, follow := range db_followed {
 		personFollowed = append(personFollowed, PersonFollow{Bio:follow.Follower.Profile.Bio,

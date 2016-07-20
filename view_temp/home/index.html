@@ -1,6 +1,4 @@
-﻿{{define "content"}}{{template "header" .}}
-<link type="text/css" rel="stylesheet" href="/static/dist/css/snackbar.css">
-{{template "header_foo" .}}
+﻿{{define "content"}}{{template "header" .}}{{template "header_foo" .}}
 <main id="app" style="margin-bottom:72px"> <!--footer:60px-->
     <home-grid :home="home"></home-grid>
     <category-grid :category="category"></category-grid>
@@ -20,8 +18,8 @@
                 <!-- Carousel Card -->
                 <div id="home-owl" class="owl-carousel">
                     <div v-for="swipe in home.swipes">
-                        <a v-bind:href="{{" swipe.Url"}}" target="_blank">
-                        <img v-bind:src="{{" swipe.Img"}}" alt="Awesome Image">
+                        <a :href="{{" swipe.Url"}}" target="_blank">
+                        <img :src="{{" swipe.Img"}}" alt="Awesome Image">
                         </a>
                     </div>
                 </div>  <!--owl-carousel-->
@@ -30,7 +28,7 @@
             <div v-for="hot in home.hot_posts" class="list-group">
                 <div class="list-group-item">
                     <div class="row-picture">
-                        <img class="circle" v-bind:src="hot.Avatar" alt="icon">
+                        <img class="circle" :src="hot.Avatar" alt="icon">
                     </div>
                     <div class="row-content">
                         <div>
@@ -47,14 +45,13 @@
                         </div>
                         <div>
                             <p class="list-group-item-text">
-                                <a v-bind:href="'/post/'+hot.PostID">{{"{{hot.Title}}"}}</a>
+                                <a :href="'/post/'+hot.PostID">{{"{{hot.Title}}"}}</a>
                             </p>
                         </div>
                     </div><!--class="row-content"-->
                 </div><!--class="list-group-item"-->
             </div><!--calss="list-group"-->
-
-            <a @click="loadMore('btn')" :disabled="!home.loading_enable">{{"{{home.hot_loading_text}}"}}</a>
+            <a @click="loadMore" :disabled="!home.loading_enable">{{"{{home.hot_loading_text}}"}}</a>
         </div>
         <div v-show="!home.loaded">
             <span>正在加载...</span>
@@ -68,21 +65,21 @@
             <h1>category</h1>
             <h4>热门标签</h4>
             <div class="tag-container">
-                <a v-for="tag in category.tags" class="category-tag" v-bind:style="{background:tag.Color}">
+                <a v-for="tag in category.tags" class="category-tag" :style="{background:tag.Color}">
                     {{"{{tag.Name}}"}}
                 </a>
             </div>
             <h4>话题</h4>
             <div class="topic-container">
-                <div v-for="topic in category.topics" v-bind:style="{background:topic.Color}"
+                <div v-for="topic in category.topics" :style="{background:topic.Color}"
                      class="col-md-3 col-md-4 col-sm-6 category-topic">
-                    <h4><a v-bind:href="'/topic/'+topic.Slug">{{"{{topic.Name}}"}}</a></h4>
+                    <h4><a :href="'/topic/'+topic.Slug">{{"{{topic.Name}}"}}</a></h4>
                     <span class="text-info">{{"{{topic.Describe}}"}}</span>
                 </div>
             </div>  <!--/topic-container-->
         </div>
         <div v-show="!category.loaded">
-            <button v-bind:click="loadMore">正在加载...</button>
+           正在加载...
         </div> <!--/category.loaded-->
     </div> <!--/category.active-->
 </script>
@@ -102,18 +99,18 @@
             <li class="me-profile withripple" @click="toProfile">
                 <div class="me-list-container me-split-line-ignore">
                     <a>
-                        <img class="img-circle" v-bind:src="user.avatar" alt="正在加载"/>
+                        <img class="img-circle" :src="user.avatar" alt="正在加载"/>
                         <span class="me-profile-username">{{"{{user.name}}"}}</span>
                         <span class="glyphicon glyphicon-chevron-right pull-right"></span>
                     </a>
                 </div>
             </li>
             <li v-for="list in lists"
-                v-bind:class="{ 'me-white-space':list.is_space,'list-info':!list.is_space,'withripple':!list.is_space }">
-                <div v-if="!list.is_space" v-bind:class="{'me-split-line-ignore':list.islast}"
-                     v-bind:onclick="'jumpDelay(\''+list.link+'\')'" class="me-list-container">
+                :class="{ 'me-white-space':list.is_space,'list-info':!list.is_space,'withripple':!list.is_space }">
+                <div v-if="!list.is_space" :class="{'me-split-line-ignore':list.islast}"
+                     :onclick="'jumpDelay(\''+list.link+'\')'" class="me-list-container">
                     <a herf="#">
-                        <span v-bind:class="list.icon" class="me-list-icon-left glyphicon glyphicon-left"></span>
+                        <span :class="list.icon" class="me-list-icon-left glyphicon glyphicon-left"></span>
                         <span class="me-list-name">{{"{{list.name}}"}}</span>
                         <!--bookmark border-->
                         <!--<span class="glyphicon glyphicon-chevron-right pull-right"></span>-->
@@ -127,7 +124,6 @@
 {{template "script" .}}
 <script src="/static/dist/js/vue.js"></script>
 <script src="/static/dist/js/owl.carousel.min.js"></script>
-<script src="/static/dist/js/snackbar.min.js"></script>
 <script>
     $.material.init();
     var SHOW_HOME = 1,
@@ -233,7 +229,7 @@
             var self = this;
             this.initByHash(hash, false);
             $(window).on("popstate", function (event) {
-                console.log(window.location.hash);
+//                console.log(window.location.hash);
                 self.initByHash(window.location.hash, true);
             });
         },

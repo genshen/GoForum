@@ -2,25 +2,25 @@
 <footer>
     <div class="container-fluid">
         <ul class="row tab-bar text-center">
-            <li class="col-xs-3" v-bind:class="{'active':home.active}" v-on:click="greetHome"  data-toggle="tab">
+            <li class="col-xs-3" :class="{'active':home.active}" @click="greetHome"  data-toggle="tab">
                 <a href="#home">
                     <span class="glyphicon glyphicon-home"></span><br>
                     <span class="footer-text">首页</span>
                 </a>
             </li>
-            <li class="col-xs-3" v-bind:class="{'active':category.active}" v-on:click="greetCategory"  data-toggle="tab">
+            <li class="col-xs-3" :class="{'active':category.active}" @click="greetCategory"  data-toggle="tab">
                 <a href="#category">
                     <span class="glyphicon glyphicon-search"></span><br>
                     <span class="footer-text">发现</span>
                 </a>
             </li>
-            <li class="col-xs-3"  v-bind:class="{'active':message.active}" v-on:click="greetMessage" data-toggle="tab">
+            <li class="col-xs-3"  :class="{'active':message.active}" @click="greetMessage" data-toggle="tab">
                 <a href="#message">
                     <span class="glyphicon glyphicon-comment"></span><br>
                     <span class="footer-text">消息</span>
                 </a>
             </li>
-            <li class="col-xs-3"  v-bind:class="{'active':me.active}" v-on:click="greetMe" data-toggle="tab">
+            <li class="col-xs-3"  :class="{'active':me.active}" @click="greetMe" data-toggle="tab">
                 <a>
                     <span class="glyphicon glyphicon-user"></span><br>
                     <span class="footer-text">我</span>

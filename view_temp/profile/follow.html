@@ -1,7 +1,14 @@
-{{define "content"}}{{template "header" .}}{{template "header_foo" .}}
+{{define "content"}}{{template "header" .}}
 <style>
-    /**style here at this moment*/
+    .following {
+        padding: 8px 16px
+    }
+
+    .has-followed {
+        padding: 8px 23px
+    }
 </style>
+{{template "header_foo" .}}
 <main id="app">
     <nav class="tab-nav">
         <ul class="nav nav-justified">
@@ -13,29 +20,134 @@
             </li>
         </ul>
     </nav>
-    <h1 v-text="H">WW</h1>
     <div class="container tab-content">
         <!-- Tab panes -->
-        <div class="tab-pane" id="following">Following</div>
-        <div class="tab-pane" id="followed">followed</div>
-    </div>
+        <div class="tab-pane" id="following">
+            <div class="row">
+                <div class="col-xs-12" style="background-color: #FFF">
+                    <ul class="mdl-list">
+                        <template v-for="follow in following">
+                            <li v-if="$index != 0" class="mdl-list-separator"></li>
+                            <li class="mdl-list-item" :click="toPerson">
+                                <img src="/static/img/default.png" class="mdl-list-item-avatar img-circle"/>
+                                <div class="mdl-list-item-primary-content">
+                                    <span>{{"{{follow.Name}}"}}</span><br>
+                                    <span class="mdl-list-item-describe">{{"{{follow.Bio}}"}}</span>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="followed">
+            <div class="row">
+                <div class="col-xs-12" style="background-color: #FFF">
+                    <ul class="mdl-list">
+                        <template v-for="follow in followed">
+                            <li v-if="$index != 0" class="mdl-list-separator"></li>
+                            <li class="mdl-list-item">
+                                <img src="/static/img/default.png" class="mdl-list-item-avatar img-circle"/>
+                                <div class="mdl-list-item-primary-content">
+                                    <span>{{"{{follow.Name}}"}}</span><br>
+                                    <span class="mdl-list-item-describe">{{"{{follow.Bio}}"}}</span>
+                                </div>
+                                <div class="mdl-list-item-action">
+                                    <button :disabled="follow.Status!=0" @click="followAction($index)"
+                                            v-text="follow.Status==1?'已关注':(follow.Status==2?'正在关注':'关注')"
+                                            :class="{'has-followed':follow.Status==1,'following':follow.Status==2}"
+                                            class="btn btn-primary"></button>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 {{template "script" .}}
 <script src="/static/dist/js/vue.js"></script>
-<script src="/static/js/tab.js"></script>
+<script src="/static/js/util.js"></script>
 <script type="text/javascript">
     var FOLLOWING_TITLE = "关注的人";
     var FOLLOWED_TITLE = "我的粉丝";
     $.material.init();
     var follows = JSON.parse("<<< .follows>>>");
+    //add status
+    follows.Followed.forEach(function (e) {
+        e.Status = hasFollowingId(e.ID) ? 1 : 0;  //0:未关注，1:已经关注，2:正在关注
+    });
+
+    function hasFollowingId(id) {
+        var flag = false;
+        follows.Following.forEach(function (e) {
+            if (e.ID == id) {
+                flag = true;
+            }
+        });
+        return flag;
+    }
 
     new Vue({
         el: 'html',
         data: {
-            follows: follows,
-            title: "",
-            H:"HI"
+            following: follows.Following,
+            followed: follows.Followed,
+            title: ""
+        },
+        methods: {
+            followAction: function (index) {
+                var options = {
+                    content: "出了点错误,请<a href='" + window.location.href + "'>刷新</a>重试",
+                    timeout: 4000
+                };
+                try { //cookie may be null or something else bad data
+                    xsrf = base64_decode(Cookies.get('_xsrf').split("|")[0]);
+                } catch (err) {
+                    $.snackbar(options);
+                    return
+                }
+                var f = this.followed[index];
+                var self = this;
+                f.Status = 2;
+                $.ajax({
+                    type: 'POST',
+                    url: "/profile/follow/add",
+                    data: {_xsrf: xsrf, id: f.ID},
+                    success: function (data) {
+                        try {
+                            switch (data.Status) { //1 for success,0 for not login,2 for article have deleted!
+                                case 0:
+                                    options.content = "请<a href='/account/signin?next=" + document.location.pathname + "'>登录</a>后进行关注";
+                                    f.Status = 0;
+                                    break;
+                                case 1:
+                                    options.content = "关注成功";
+                                    f.Status = 1;
+                                    self.following.push({Avatar: f.Avatar, Bio: f.Bio, Name: f.Name});
+                                    break;
+                                case 2:
+                                    options.content = "添加关注失败,请重试!";
+                                    f.Status = 0;
+                                    break;
+                                case 3:
+                                    options.content = "对应用户不存在";
+                                    f.Status = 0;
+                                    break;
+                            }
+                        } catch (err) {
+                            f.Status = 0;
+//                            console.log(err);
+                        }
+                        $.snackbar(options);
+                    },
+                    error: function (err) {
+                        f.Status = 0;
+                        $.snackbar(options);
+                    }
+                });
+            }
         },
         ready: function () {
             var self = this;
@@ -49,18 +161,16 @@
             }
 
             $(document).on('show.bs.tab', '.tab-nav a[data-toggle="tab"]', function (e) {
-                if($(e.target).attr("href") == "#following"){
+                if ($(e.target).attr("href") == "#following") {
                     window.history.replaceState(null, FOLLOWING_TITLE, "/profile/following");
                     self.title = FOLLOWING_TITLE;
-                }else{
+                } else {
                     window.history.replaceState(null, FOLLOWED_TITLE, "/profile/followed");
                     self.title = FOLLOWED_TITLE;
                 }
             });
         }
     });
-
-
 </script>
 {{template "footer" .}}
 {{end}}

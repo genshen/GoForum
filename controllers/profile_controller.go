@@ -3,6 +3,7 @@ package controllers
 import (
 	"strconv"
 	"encoding/json"
+	"../models/forms"
 	identify "./../verify/auth"
 )
 
@@ -44,11 +45,28 @@ func (this *ProfileController) Follow() {
 	follows := findFollowsById(this.getUserId())
 	json, err := json.Marshal(follows)
 	if err == nil {
-		this.Data["follows"]  = string(json)
+		this.Data["follows"] = string(json)
 		this.TplName = "profile/follow.html"
 		return
 	}
 	this.Abort("404")
+}
+
+func (this *ProfileController) FollowAdd() {
+	var result *forms.PostResult
+	if !this.IsUserLogin() {
+		result = &forms.PostResult{Status:0, Error:"用户未登录"}
+	} else {
+		id, err := this.GetInt("id")
+		if err == nil {
+			faf := forms.FollowAddForm{PersonID:uint(id)}
+			result = faf.Add(this.getUserId())
+		} else {
+			result = &forms.PostResult{Status:2, Error:"ID不合法"}
+		}
+	}
+	this.Data["json"] = result
+	this.ServeJSON()
 }
 
 func (this *ProfileController) Collection() {
