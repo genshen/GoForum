@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="file://D:/Program Files (x86)/GoPath/src/golang.org" />
       <root url="file://D:/Program Files (x86)/GoPath/src/qiniupkg.com" />
+      <root url="file://D:/Program Files (x86)/GoPath/src/blog" />
       <root url="file://D:/Program Files (x86)/GoPath/src/github.com" />
     </CLASSES>
     <JAVADOC />

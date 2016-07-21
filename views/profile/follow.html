@@ -19,6 +19,10 @@
     <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
     <link href="/static/css/main.css" rel="stylesheet">
 <style>
+    .mdl-list-item a {
+        color: rgba(0, 0, 0, .87)
+    }
+
     .following {
         padding: 8px 16px
     }
@@ -49,9 +53,11 @@
                         <template v-for="follow in following">
                             <li v-if="$index != 0" class="mdl-list-separator"></li>
                             <li class="mdl-list-item" :click="toPerson">
-                                <img src="/static/img/default.png" class="mdl-list-item-avatar img-circle"/>
+                                <a :href="'/person/'+follow.ID">
+                                    <img :src="follow.Avatar" class="mdl-list-item-avatar img-circle"/>
+                                </a>
                                 <div class="mdl-list-item-primary-content">
-                                    <span>{{follow.Name}}</span><br>
+                                    <a :href="'/person/'+follow.ID">{{follow.Name}}</a><br>
                                     <span class="mdl-list-item-describe">{{follow.Bio}}</span>
                                 </div>
                             </li>
@@ -67,9 +73,11 @@
                         <template v-for="follow in followed">
                             <li v-if="$index != 0" class="mdl-list-separator"></li>
                             <li class="mdl-list-item">
-                                <img src="/static/img/default.png" class="mdl-list-item-avatar img-circle"/>
+                                <a :href="'/person/'+follow.ID">
+                                    <img :src="follow.Avatar" class="mdl-list-item-avatar img-circle"/>
+                                </a>
                                 <div class="mdl-list-item-primary-content">
-                                    <span>{{follow.Name}}</span><br>
+                                    <a :href="'/person/'+follow.ID">{{follow.Name}}</a><br>
                                     <span class="mdl-list-item-describe">{{follow.Bio}}</span>
                                 </div>
                                 <div class="mdl-list-item-action">
