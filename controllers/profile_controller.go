@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"encoding/json"
 	"../models/forms"
-	identify "./../verify/auth"
+	identify "../middleware/auth"
 )
 
 type ProfileController struct {

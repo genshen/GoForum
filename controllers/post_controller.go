@@ -6,8 +6,8 @@ import (
 	"github.com/qiniu/api.v7/kodo"
 	"./../models/forms"
 	"./../models/m"
-	form_check "./../verify/form"
-	identify "./../verify/auth"
+	form_check "../middleware/form"
+	identify "../middleware/auth"
 	"encoding/json"
 )
 

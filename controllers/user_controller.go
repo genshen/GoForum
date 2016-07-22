@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"github.com/astaxie/beego"
 	"./../models/forms"
-	form_check "../verify/form"
-	identify "./../verify/auth"
+	form_check "../middleware/form"
+	identify "../middleware/auth"
 )
 
 type UserController struct {

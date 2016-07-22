@@ -2,7 +2,7 @@ package forms
 
 import (
 	"../database"
-	"../../verify/auth/security"
+	"../../middleware/auth/security"
 	"../m"
 	"github.com/astaxie/beego/validation"
 	"time"

@@ -36,5 +36,5 @@ func init() {
 
 	//*about *//
 	beego.Router("about", &controllers.AboutController{}, "get:Index")
-	beego.Router("about/feedback", &controllers.AboutController{}, "get:Feedback")
+	beego.Router("about/feedback", &controllers.AboutController{}, "get:Feedback;post:POST_Feedback")
 }

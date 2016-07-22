@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	//"../models/forms"
 )
 
 type AboutController struct {
@@ -20,4 +21,8 @@ func (this *AboutController) Index() {
 
 func (this *AboutController) Feedback() {
 	this.TplName = "about/feedback.html"
+}
+
+func (this *AboutController)POST_Feedback(){
+//forms.PostResult{}
 }

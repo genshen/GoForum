@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	identify "./../verify/auth"
+	identify "../middleware/auth"
 )
 
 const (

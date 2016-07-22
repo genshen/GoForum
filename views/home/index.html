@@ -250,8 +250,8 @@
                     {is_space: true},
                     {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
                     {is_space: true},
-                    {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "#1"},
-                    {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "#1"}]
+                    {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "/about"},
+                    {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "/about/feedback"}]
             }
         }, methods: {
             toProfile: function () {
@@ -287,7 +287,7 @@
             var self = this;
             this.initByHash(hash, false);
             $(window).on("popstate", function (event) {
-//                console.log(window.location.hash);
+//              console.log(window.location.hash);
                 self.initByHash(window.location.hash, true);
             });
         },
