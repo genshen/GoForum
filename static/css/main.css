@@ -376,18 +376,18 @@ footer {
     padding: 8px
 }
 
-/*  me  css     */
-.me-menu-list {
+/*  cell  css     */
+.cell-menu-list {
     margin-top: 20px;
     background-color: #fff;
 }
 
-.me-menu-list li a:hover, .me-menu-list li a:active, .me-menu-list li a:visited, .me-menu-list li a:focus {
+.cell-menu-list li a:hover, .cell-menu-list li a:active, .cell-menu-list li a:visited, .cell-menu-list li a:focus {
     text-decoration: none;
 }
 
 .me-profile {
-    padding: 15px 20px 0 20px;
+    padding: 15px 20px 15px 20px;
     background: rgb(255, 255, 255);
 }
 
@@ -405,31 +405,42 @@ footer {
     margin-top: 22px;
 }
 
-.list-info {
-    padding: 15px 20px 0 20px;
+.cell-list-info {
+    /*padding: 15px 20px 0 20px;*/
+    display: flex;
+    align-items: center;
     background: rgb(255, 255, 255);
 }
 
-.list-info .me-list-name {
+.cell-list-info .cell-list-text {
     font-size: 15px;
     color: #101010;
     margin-left: 12px;
 }
 
-.list-info .me-list-icon-left {
+.cell-list-info .cell-list-left-icon {
     font-size: 15px;
 }
 
-.me-list-container {
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(186, 186, 186, 0.37);;
-}
-
-.me-split-line-ignore {
+.cell-list-info .cell-split-line-ignore {
     border-bottom: none;
 }
 
-.me-white-space {
+.cell-list-container {
+    /*padding-bottom: 14px;*/
+    display: block;
+    width: calc(100% - 20px);
+    padding: 15px 20px 15px 0;
+    margin-left: 20px;
+    border-bottom: 1px solid rgba(186, 186, 186, 0.37);;
+}
+
+.cell-right-arrow{
+    float:right;
+    color:rgba(16, 16, 16, 0.45);;
+    font-weight:300;
+}
+.cell-white-space {
     background-color: #fcfcfc;
     height: 2em;
 }
@@ -501,20 +512,24 @@ footer {
 .mdl-list-item-action .btn {
     margin: 0
 }
+
 /**tab*/
 .tab-nav {
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
     position: relative;
 }
+
 .tab-nav .nav {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
+
 .tab-nav .nav > li > a,
 .tab-nav .nav > li > .a {
     color: inherit;
     text-transform: uppercase;
 }
+
 .tab-nav .nav > li > a:after,
 .tab-nav .nav > li > .a:after {
     border-bottom: 2px solid #ff4081;
@@ -528,17 +543,20 @@ footer {
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
 }
+
 .tab-nav .nav > li > a:focus:after, .tab-nav .nav > li > a:hover:after,
 .tab-nav .nav > li > .a:focus:after,
 .tab-nav .nav > li > .a:hover:after {
     opacity: 0.3;
 }
+
 .tab-nav .nav > li.active > a:after, .tab-nav .nav > li.active > .a:after {
     opacity: 1;
     -webkit-transition: opacity 0s 0.45s;
     transition: opacity 0s 0.45s;
 }
-.nav-justified>li {
+
+.nav-justified > li {
     -webkit-box-flex: 1;
     -webkit-flex-grow: 1;
     -ms-flex-positive: 1;
@@ -546,28 +564,33 @@ footer {
     display: table-cell;
     width: 1%;
 }
-.nav-justified>li>.a, .nav-justified>li>a {
+
+.nav-justified > li > .a, .nav-justified > li > a {
     -webkit-box-pack: center;
     -webkit-justify-content: center;
     -ms-flex-pack: center;
     justify-content: center;
     text-align: center;
 }
-.nav-justified>li>a {
+
+.nav-justified > li > a {
     margin-bottom: 0;
 }
+
 .tab-nav-indicator {
     background-color: transparent;
     height: 2px;
     position: absolute;
     bottom: 0;
 }
+
 .tab-nav-indicator.animate {
     background-color: #ff4081;
     -webkit-transition: left 0.225s cubic-bezier(0.4, 0, 0.2, 1) 0.225s, right 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     transition: left 0.225s cubic-bezier(0.4, 0, 0.2, 1) 0.225s, right 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: left, right;
 }
+
 .tab-nav-indicator.animate.reverse {
     -webkit-transition: left 0.45s cubic-bezier(0.4, 0, 0.2, 1), right 0.225s cubic-bezier(0.4, 0, 0.2, 1) 0.225s;
     transition: left 0.45s cubic-bezier(0.4, 0, 0.2, 1), right 0.225s cubic-bezier(0.4, 0, 0.2, 1) 0.225s;
@@ -577,6 +600,7 @@ footer {
 .tab-nav-brand .nav > li > .a:after {
     border-bottom-color: #3f51b5;
 }
+
 .tab-nav-brand .tab-nav-indicator.animate {
     background-color: #3f51b5;
 }
@@ -585,6 +609,7 @@ footer {
 .tab-nav-green .nav > li > .a:after {
     border-bottom-color: #4caf50;
 }
+
 .tab-nav-green .tab-nav-indicator.animate {
     background-color: #4caf50;
 }
@@ -593,6 +618,7 @@ footer {
 .tab-nav-orange .nav > li > .a:after {
     border-bottom-color: #ff9800;
 }
+
 .tab-nav-orange .tab-nav-indicator.animate {
     background-color: #ff9800;
 }
@@ -601,6 +627,7 @@ footer {
 .tab-nav-red .nav > li > .a:after {
     border-bottom-color: #f44336;
 }
+
 .tab-nav-red .tab-nav-indicator.animate {
     background-color: #f44336;
 }
@@ -609,6 +636,7 @@ footer {
     display: none;
     visibility: hidden;
 }
+
 .tab-pane.active {
     display: block;
     visibility: visible;

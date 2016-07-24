@@ -115,26 +115,23 @@
 <!--me template-->
 <script type="text/x-template" id="user-template">
     <div class="container" v-show="user.active">
-        <ul class="row me-menu-list list-unstyled">
+        <ul class="row cell-menu-list list-unstyled">
             <li class="me-profile withripple" @click="toProfile">
-                <div class="me-list-container me-split-line-ignore">
                     <a>
                         <img class="img-circle" :src="user.avatar" alt="正在加载"/>
                         <span class="me-profile-username">{{user.name}}</span>
                         <span class="glyphicon glyphicon-chevron-right pull-right"></span>
                     </a>
-                </div>
             </li>
             <li v-for="list in lists"
-                :class="{ 'me-white-space':list.is_space,'list-info':!list.is_space,'withripple':!list.is_space }">
-                <div v-if="!list.is_space" :class="{'me-split-line-ignore':list.islast}"
-                     :onclick="'jumpDelay(\''+list.link+'\')'" class="me-list-container">
+                :class="{ 'cell-white-space':list.is_space,'cell-list-info':!list.is_space,'withripple':!list.is_space }">
+                <div v-if="!list.is_space" :class="{'cell-split-line-ignore':list.islast}"
+                     :onclick="'jumpDelay(\''+list.link+'\')'" class="cell-list-container">
                     <a herf="#">
-                        <span :class="list.icon" class="me-list-icon-left glyphicon glyphicon-left"></span>
-                        <span class="me-list-name">{{list.name}}</span>
-                        <!--bookmark border-->
-                        <!--<span class="glyphicon glyphicon-chevron-right pull-right"></span>-->
+                        <span :class="list.icon" class="cell-list-left-icon glyphicon glyphicon-left"></span>
+                        <span class="cell-list-text">{{list.name}}</span>
                     </a>
+                    <i class="material-icons cell-right-arrow">chevron_right</i>
                 </div>
             </li>
         </ul>
