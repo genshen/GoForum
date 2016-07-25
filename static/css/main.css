@@ -1,12 +1,8 @@
-/*button, html, input, select, textarea {*/
-/*font-family:"Microsoft Yahei","Hiragino Sans GB",Helvetica,"Helvetica Neue","微软雅黑",Tahoma,Arial,sans-serif;;*/
-/*!*font-family: Roboto,"Helvetica Neue",sans-serif;*!*/
-/*}*/
-body {
-    background-color: #fafafa !important;
+html,body {
+    height:100%;
 }
 
-footer {
+.footer-tab-bar {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -406,9 +402,6 @@ footer {
 }
 
 .cell-list-info {
-    /*padding: 15px 20px 0 20px;*/
-    display: flex;
-    align-items: center;
     background: rgb(255, 255, 255);
 }
 
@@ -427,19 +420,16 @@ footer {
 }
 
 .cell-list-container {
-    /*padding-bottom: 14px;*/
-    display: block;
-    width: calc(100% - 20px);
-    padding: 15px 20px 15px 0;
-    margin-left: 20px;
+    padding: 15px 20px 15px 20px;
     border-bottom: 1px solid rgba(186, 186, 186, 0.37);;
 }
 
-.cell-right-arrow{
-    float:right;
-    color:rgba(16, 16, 16, 0.45);;
-    font-weight:300;
+.cell-right-arrow {
+    float: right;
+    color: rgba(16, 16, 16, 0.45);;
+    font-weight: 300;
 }
+
 .cell-white-space {
     background-color: #fcfcfc;
     height: 2em;

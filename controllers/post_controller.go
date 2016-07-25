@@ -49,6 +49,7 @@ func (this *PostController) POST_CreateMobile() {
 	if errs := form.Valid(); errs == nil {
 		if id := form.Save(this.getUserId()); id != 0 {
 			this.Redirect("/post/" + strconv.FormatInt(int64(id), 10), 302)
+			OnPostCreated()
 			//or use : beego.URLFor("",id)
 			return
 		}

@@ -60,7 +60,9 @@ func (this *ProfileController) FollowAdd() {
 		id, err := this.GetInt("id")
 		if err == nil {
 			faf := forms.FollowAddForm{PersonID:uint(id)}
-			result = faf.Add(this.getUserId())
+			if result := faf.Add(this.getUserId()); result.Status == 1 {
+				OnFollowed()
+			}
 		} else {
 			result = &forms.PostResult{Status:2, Error:"ID不合法"}
 		}

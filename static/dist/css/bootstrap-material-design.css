@@ -39,7 +39,7 @@ Then, run this script to get the list.
 /* SHADOWS */
 /* Shadows (from mdl http://www.getmdl.io/) */
 body {
-  background-color: #EEEEEE;
+  background-color: #fafafa;
 }
 body.inverse {
   background: #333333;
@@ -267,7 +267,7 @@ body .container-fluid .jumbotron-danger {
 .input-group-btn .btn.btn-fab.btn-default,
 .btn-group-raised .btn.btn-default,
 .btn-group-raised .input-group-btn .btn.btn-default {
-  background-color: #EEEEEE;
+  background-color: #fafafa;
   color: rgba(0,0,0, 0.87);
 }
 .btn.btn-raised.btn-inverse,
@@ -381,7 +381,7 @@ body .container-fluid .jumbotron-danger {
 .input-group-btn .btn.btn-raised:not(.btn-link):active.btn-default,
 .btn-group-raised .btn:not(.btn-link):active.btn-default,
 .btn-group-raised .input-group-btn .btn:not(.btn-link):active.btn-default {
-  background-color: #e4e4e4;
+  background-color: #f0f0f0;
 }
 .btn.btn-raised:not(.btn-link):hover.btn-inverse,
 .input-group-btn .btn.btn-raised:not(.btn-link):hover.btn-inverse,
@@ -784,7 +784,7 @@ fieldset[disabled][disabled] .btn-group-vertical.btn-group-raised:focus:not(:act
 .btn-group-vertical.open > .dropdown-toggle.btn,
 .btn-group.open > .dropdown-toggle.btn.btn-default,
 .btn-group-vertical.open > .dropdown-toggle.btn.btn-default {
-  background-color: #EEEEEE;
+  background-color: #fafafa;
 }
 .btn-group.open > .dropdown-toggle.btn.btn-inverse,
 .btn-group-vertical.open > .dropdown-toggle.btn.btn-inverse {

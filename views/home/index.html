@@ -117,11 +117,11 @@
     <div class="container" v-show="user.active">
         <ul class="row cell-menu-list list-unstyled">
             <li class="me-profile withripple" @click="toProfile">
-                    <a>
-                        <img class="img-circle" :src="user.avatar" alt="正在加载"/>
-                        <span class="me-profile-username">{{user.name}}</span>
-                        <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-                    </a>
+                <a>
+                    <img class="img-circle" :src="user.avatar" alt="正在加载"/>
+                    <span class="me-profile-username">{{user.name}}</span>
+                    <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+                </a>
             </li>
             <li v-for="list in lists"
                 :class="{ 'cell-white-space':list.is_space,'cell-list-info':!list.is_space,'withripple':!list.is_space }">
@@ -138,7 +138,7 @@
     </div>
 </script>
 
-<footer>
+<footer class="footer-tab-bar">
     <div class="container-fluid">
         <ul class="row tab-bar text-center">
             <li class="col-xs-3" :class="{'active':home.active}" @click="greetHome"  data-toggle="tab">

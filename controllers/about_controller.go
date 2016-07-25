@@ -3,6 +3,17 @@ package controllers
 import (
 	//"../models/forms"
 )
+import (
+	"github.com/astaxie/beego/cache"
+	"github.com/astaxie/beego/utils/captcha"
+)
+var cpt *captcha.Captcha
+
+func init() {
+	// use beego cache system store the captcha data
+	store := cache.NewMemoryCache()
+	cpt = captcha.NewWithFilter("/temp/captcha/", store)
+}
 
 type AboutController struct {
 	BaseController
