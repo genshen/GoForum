@@ -1,14 +1,276 @@
 {{define "content"}}{{template "header" .}}
 <style>
     /**style here at this moment*/
+    h1 {
+        color: #fff;
+        font-size: 20px;
+    }
+
+    .bigSec {
+        margin: 15px;
+        position: relative;
+        display: block;
+        height: auto;
+    }
+
+    .inputArea {
+        resize: none;
+        width: 100%;
+        border: 1px solid #c9c9c9;
+        color: #c9c9c9;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        line-height: 30px;
+    }
+
+    .secTitle {
+        font-size: 16px;
+        margin-right: 5px;
+
+    }
+
+    .options {
+        display: inline-block;
+    }
+
+    .options button {
+        background-color: #fff;
+        border: 1px solid #c9c9c9;
+        color: #c9c9c9;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+    }
+
+    .options button:nth-child(1) {
+        background-color: #3e3e3e;
+        border: 1px solid #3e3e3e;
+        color: #fff;
+    }
+
+    .addImg {
+        position: relative;
+        width: 70px;
+        height: 70px;
+        border: 1px dashed #c9c9c9;
+        color: #c9c9c9;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        margin: 10px 3px;
+        line-height: 65px;
+        font-size: 20px;
+        text-align: center;
+        float: left;
+    }
+
+    .addImg input {
+        filter: alpha(opacity=0);
+        -moz-opacity: 0;
+        opacity: 0;
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        left: 0;top:0;
+    }
+
+    .showImg {
+        width: 70px;
+        height: 70px;
+        margin: 10px 3px;
+        float: left;
+        display:none;
+        position: relative;
+    }
+    .showImg img{
+      height: 100%;
+      width: 100%;
+    }
+    .delBtn{
+      height: 16px;width: 16px;
+      position: absolute;
+      right: 0;top: 0;
+      -webkit-border-radius: 8px;
+      border-radius: 8x;
+      background-color: rgba(59,59,59,.8);
+      color:#fff;
+      font-size: 18px;
+      line-height: 14px;
+      text-align:center;
+    }
+    .imgs{
+      width: 100%;
+      height: 90px;
+    }
+    #submit{
+      background-color:#4CAF50;
+      width: 100%;
+      height: 40px;
+      -webkit-border-radius: 6px;
+      border-radius: 6px;
+      border:0;
+      color: #fff;
+      margin: 10px 0;
+    }
+    .midTitle{
+      margin: auto;
+      width: 200px;
+      display: block;
+      text-align:center;
+      color: #c9c9c9;
+    }
+
 </style>{{template "header_foo" .}}
-<main id="app" style="background-color:#4CAF50">
-    <div class="container">
-        <h1>意见反馈</h1>
-    </div>
+<main id="app" title="意见反馈">
+  <div class="container" style="background-color:#4CAF50">
+      <h1>意见反馈</h1>
+  </div>
+
+  <section class="typeChoice bigSec">
+      <span class="secTitle">反馈类型</span>
+      <div class="options">
+          <button type="button" id="proOpt">产品使用</button>
+          <button type="button" id="bugOpt">bug</button>
+          <button type="button" id="advOpt">建议</button>
+      </div>
+  </section>
+  <section class="bigSec">
+          <textarea rows="6" cols="30" id="advText" class="inputArea"> 吐槽都写在这里吧 </textarea>
+          <span class="secTitle">可上传3张图片</span>
+        <div class="imgs">
+          <div class="showImg" id="imgD1"><img id="img1"><div class="delBtn" id="delBtn1">×</div></div>
+          <div class="showImg" id="imgD2"><img id="img2"><div class="delBtn" id="delBtn2">×</div></div>
+          <div class="showImg" id="imgD3"><img id="img3"><div class="delBtn" id="delBtn3">×</div></div>
+          <div class="addImg" id="addImg">+
+              <input id="uploadBtn" type="file" name="file" accept="image/*" onchange="setImagePreview()"/>
+          </div>
+        </div>
+
+    <span class="secTitle">您的联系方式（邮箱/QQ/手机）</span>
+    <textarea rows="1" cols="20" id="tel" class="inputArea"> 也可以不填 </textarea>
+    <button type="button" id="submit">提交</button>
+  </section>
+  <span class="midTitle">微博@Clothplus</span>
 </main>
 {{template "script" .}}
 <script type="text/javascript">
+var type = 0; //建议类型
+var proOpt = document.getElementById("proOpt");
+var bugOpt = document.getElementById("bugOpt");
+var advOpt = document.getElementById("advOpt");
+var advText = document.getElementById("advText");
+var imgNum = 0;//图片数量
+var addImg = document.getElementById("addImg");
+var uploadBtn = document.getElementById("uploadBtn");
+var img1 = document.getElementById("img1");
+var imgD1 = document.getElementById("imgD1");
+var img2 = document.getElementById("img2");
+var imgD2 = document.getElementById("imgD2");
+var img3 = document.getElementById("img3");
+var imgD3 = document.getElementById("imgD3");
+var delBtn1 = document.getElementById("delBtn1");
+var delBtn2 = document.getElementById("delBtn2");
+var delBtn3 = document.getElementById("delBtn3");
+var tel = document.getElementById("tel");
+
+function reset() {
+    proOpt.style.backgroundColor = "#fff";
+    proOpt.style.color = "#c9c9c9";
+    proOpt.style.borderColor = "#c9c9c9";
+    bugOpt.style.backgroundColor = "#fff";
+    bugOpt.style.color = "#c9c9c9";
+    bugOpt.style.borderColor = "#c9c9c9";
+    advOpt.style.backgroundColor = "#fff";
+    advOpt.style.color = "#c9c9c9";
+    advOpt.style.borderColor = "#c9c9c9";
+}
+proOpt.onclick = function() {
+    reset();
+    proOpt.style.backgroundColor = "#3e3e3e";
+    proOpt.style.color = "#fff";
+    type = 0;
+}
+
+bugOpt.onclick = function() {
+    reset();
+    bugOpt.style.backgroundColor = "#3e3e3e";
+    bugOpt.style.color = "#fff";
+    type = 1;
+}
+
+advOpt.onclick = function() {
+    reset();
+    advOpt.style.backgroundColor = "#3e3e3e";
+    advOpt.style.color = "#fff";
+    type = 2;
+}
+
+advText.onclick = function() {
+    advText.innerHTML = "";
+    advText.style.color = "#3e3e3e";
+}
+tel.onclick = function() {
+    tel.innerHTML = "";
+    tel.style.color = "#3e3e3e";
+}
+
+
+function delOneImg(){
+
+  if (imgNum == 3){
+    imgD3.style.display="none";
+  }
+  else if (imgNum == 2) {
+    imgD2.style.display="none";
+  }
+  else if (imgNum == 1) {
+    imgD1.style.display="none";
+  }
+  imgNum--;
+  addImg.style.display="inline-block";
+}
+
+delBtn1.onclick = function() {
+  img1.src = img2.src;
+  img2.src = img3.src;
+  img3.src="";
+  delOneImg();
+
+}
+delBtn2.onclick = function() {
+  img2.src = img3.src;
+  img3.src="";
+  delOneImg();
+}
+delBtn3.onclick = function() {
+  img3.src="";
+  delOneImg();
+}
+
+//下面用于图片上传预览功能
+function setImagePreview() {
+
+    if (uploadBtn.files && uploadBtn.files[0]) {
+
+        if (imgNum==0){
+          img1.src = window.URL.createObjectURL(uploadBtn.files[0]);
+          imgD1.style.display="inline-block";
+          imgNum++;
+        }
+        else if (imgNum==1) {
+          img2.src = window.URL.createObjectURL(uploadBtn.files[0]);
+          imgD2.style.display="inline-block";
+          imgNum++;
+        }
+        else if (imgNum==2) {
+          img3.src = window.URL.createObjectURL(uploadBtn.files[0]);
+          imgD3.style.display="inline-block";
+          addImg.style.display="none";
+          imgNum++;
+        }
+
+    }
+
+    return true;
+}
 </script>
 {{template "footer" .}}
 {{end}}
