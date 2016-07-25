@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	identify "../middleware/auth"
+	identify "../middleware/values"
 )
 
 const (

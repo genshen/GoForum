@@ -6,10 +6,6 @@ import (
 	"fmt"
 )
 
-const (
-	STATUS_ACTIVE int = 10
-)
-
 type User struct {
 	gorm.Model
 	Email      string
@@ -18,7 +14,7 @@ type User struct {
 	Password   string  `gorm:"column:password_hash"`
 	AuthKey    string  `gorm:"column:auth_key"`
 	ResetToken string  `gorm:"column:password_reset_token"`
-	Status     int     `gorm:"default:10"`
+	Status     int     `gorm:"default:9"` //todo UNACTIVATED
 	Profile    Profile `gorm:"ForeignKey:UserRefer"`
 }
 

@@ -4,8 +4,9 @@ import (
 	"html/template"
 	"github.com/astaxie/beego"
 	"./../models/forms"
+	"../middleware/event"
 	form_check "../middleware/form"
-	identify "../middleware/auth"
+	identify "../middleware/values"
 )
 
 type UserController struct {
@@ -82,6 +83,7 @@ func (this *UserController) POST_SignUp() {
 		flash := beego.NewFlash()
 		flash.Success(email)
 		flash.Store(&this.Controller)
+		event.OnAccountCreated(email, nickname, sign_up_form.UserID) //todo
 	} else {
 		s := form_check.NewInstant(errs, map[string]string{"email":  email, "password": ""})
 		this.Data["json"] = &s

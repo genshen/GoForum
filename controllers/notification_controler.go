@@ -1,18 +1,5 @@
 package controllers
 
-//todo: none
-func OnPostCreated() {
+import (
 
-}
-
-func OnCommentSubmitted() {
-
-}
-
-func OnFollowed() {
-
-}
-
-func OnUnFollowed() {
-
-}
+)

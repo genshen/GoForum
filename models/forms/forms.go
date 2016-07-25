@@ -1,11 +1,12 @@
 package forms
 
 import (
+	"github.com/astaxie/beego/validation"
+	"time"
+	"../../middleware/values"
 	"../database"
 	"../../middleware/auth/security"
 	"../m"
-	"github.com/astaxie/beego/validation"
-	"time"
 )
 
 type SignInForm struct {
@@ -14,6 +15,7 @@ type SignInForm struct {
 }
 
 type SignUpForm struct {
+	UserID uint
 	Email    string
 	Nickname string
 	Password string
@@ -74,9 +76,10 @@ func (this *SignUpForm)validOrSave(v *validation.Validation) {
 	if u.ID != 0 {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
-		user := m.User{Email:this.Email, Name:this.Nickname, Password:security.Hash(this.Password), Status:m.STATUS_ACTIVE,
+		user := m.User{Email:this.Email, Name:this.Nickname, Password:security.Hash(this.Password), Status:values.UNACTIVATED,
 			Profile:m.Profile{Avatar:"/static/img/default.png"}}
 		database.DB.Create(&user)
+		this.UserID = u.ID
 	}
 }
 
@@ -136,15 +139,22 @@ type FollowAddForm struct {
 	PersonID uint
 }
 
-func (this *FollowAddForm)Add(myID uint) (result *PostResult) {
+func (this *FollowAddForm)Add(myID uint) (result *PostResult, isAdded bool) {
 	u := m.User{}
-	database.DB.Where("status = ?", m.STATUS_ACTIVE).First(&u, this.PersonID)
+	isAdded = false
+	database.DB.Where("status != ?", values.FREEZING).First(&u, this.PersonID)
 	if u.ID == 0 {
-		result = &PostResult{Status:2, Addition:"对应用户不存在"}
+		result = &PostResult{Status:3, Addition:"对应用户不存在"}
 	} else {
 		follow := m.Follow{}
-		database.DB.FirstOrCreate(&follow, m.Follow{FollowerID:myID, FollowingID:this.PersonID})
-		result = &PostResult{Status:1, Addition:this.PersonID}
+		if database.DB.Where("follower_id = ? AND following_id = ?", myID, this.PersonID).First(&follow);
+		follow.FollowerID == 0 && follow.FollowingID == 0 {
+			database.DB.Create(&m.Follow{FollowerID:myID, FollowingID:this.PersonID})
+			result = &PostResult{Status:1, Addition:this.PersonID}
+			isAdded = true
+		} else {
+			result = &PostResult{Status:3, Addition:"已经关注了改用户"}
+		}
 	}
 	return
 }

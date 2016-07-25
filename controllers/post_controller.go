@@ -4,11 +4,13 @@ import (
 	"html/template"
 	"strconv"
 	"github.com/qiniu/api.v7/kodo"
+	"encoding/json"
 	"./../models/forms"
+	"./../middleware/event"
 	"./../models/m"
 	form_check "../middleware/form"
-	identify "../middleware/auth"
-	"encoding/json"
+	identify "../middleware/values"
+
 )
 
 type PostController struct {
@@ -49,7 +51,7 @@ func (this *PostController) POST_CreateMobile() {
 	if errs := form.Valid(); errs == nil {
 		if id := form.Save(this.getUserId()); id != 0 {
 			this.Redirect("/post/" + strconv.FormatInt(int64(id), 10), 302)
-			OnPostCreated()
+			event.OnPostCreated()
 			//or use : beego.URLFor("",id)
 			return
 		}

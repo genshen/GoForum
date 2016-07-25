@@ -4,7 +4,8 @@ import (
 	"strconv"
 	"encoding/json"
 	"../models/forms"
-	identify "../middleware/auth"
+	"./../middleware/event"
+	identify "../middleware/values"
 )
 
 type ProfileController struct {
@@ -12,8 +13,8 @@ type ProfileController struct {
 }
 
 var profile_rules = map[string]int{
-	"Login":   0,
-	"Follow": identify.Login,
+	"Follow": identify.Login | identify.JumpBack,
+	"Collection": identify.Login | identify.JumpBack,
 }
 
 func (this *ProfileController) getRules(action string) int {
@@ -60,8 +61,11 @@ func (this *ProfileController) FollowAdd() {
 		id, err := this.GetInt("id")
 		if err == nil {
 			faf := forms.FollowAddForm{PersonID:uint(id)}
-			if result := faf.Add(this.getUserId()); result.Status == 1 {
-				OnFollowed()
+			myID := this.getUserId()
+			create_result, is_created := faf.Add(myID)
+			result = create_result
+			if is_created {
+				event.OnFollowed(uint(id), myID, this.getUsername())
 			}
 		} else {
 			result = &forms.PostResult{Status:2, Error:"ID不合法"}
