@@ -18,15 +18,56 @@
     <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
     <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
     <link href="/static/css/main.css" rel="stylesheet">
+<link href="/static/css/about_us.css" type="text/css" rel="stylesheet">
 <style>
+    html,body{min-height:100%;}
     /**style here at this moment*/
 </style></head>
 <body>
-<main id="app" style="background-color:#4CAF50">
+<main id="app" style="background-color: #EDEDED;">
     <div class="container">
-        <h1>关于我们</h1>
+        <div class="row">
+            <div class="section_1">
+                <img src="/static/img/logo.png" class="logo" alt="clothesplus-logo">
+                <h4 class="beta">V0.0.0 beta</h4>
+            </div>
+            <ul class="section_2">
+                <li class="about-web">
+                    <div class="div-span">
+                        <span>官方网站</span><span class="glyphicon glyphicon-chevron-right right-narrow" aria-hidden="true"></span><span class="right">www.kuluosi.com</span>
+                    </div>
+                </li>
+                <li class="about-wx">
+                    <div class="div-span">
+                        <span>微信公众号 </span><span class="glyphicon glyphicon-chevron-right right-narrow" aria-hidden="true"></span><span class="right"> clothesplus</span>
+                    </div>
+
+                </li>
+                <li class="about-weibo">
+                    <div class="div-span">
+                        <span>官方微博</span><span class="glyphicon glyphicon-chevron-right right-narrow" aria-hidden="true"></span><span class="right">clothesplus</span>
+                    </div>
+                </li>
+                <li class="about-cooperate">
+                    <div class="div-span">
+                        <span>商务合作</span><span class="glyphicon glyphicon-chevron-right right-narrow" aria-hidden="true"></span><span class="right">zhaost@kuluosi.com</span>
+                    </div>
+                </li>
+                <li class="about-protocol">
+                    <div class="div-span">
+                        <span>用户协议</span><span class="glyphicon glyphicon-chevron-right right-narrow" aria-hidden="true"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </main>
+<footer>
+    <div class="section_3" id="copyright">
+        <h5 class="copyright">北京库洛斯科技有限公司版权所有</h5>
+        <h6 class="clothesplus">Powered by Clothes+</h6>
+    </div>
+</footer>
 <!-- jQuery -->
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
 <!-- Twitter Bootstrap -->
@@ -36,6 +77,14 @@
 <script src="/static/dist/js/material.min.js"></script>
 <script src="/static/dist/js/ripples.min.js"></script>
 <script type="text/javascript">
+//    var windowHeight = $(window).height();        //获取浏览器窗口高度
+//    var documentHeight = $(document).height();        //获取文档高度
+//    windowHeight - documentHeight
+//    $("section_2").bottom();
+//     var screenHeight = document.documentElement.clientHeight;
+//     var demo1 = screenHeight-50;
+//     console.log(demo1);
+//    $(".section_3").css("margin-top",demo1);
 </script>
 </body>
 </html>
