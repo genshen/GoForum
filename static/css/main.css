@@ -423,10 +423,16 @@ html,body {
     padding: 15px 20px 15px 20px;
     border-bottom: 1px solid rgba(186, 186, 186, 0.37);;
 }
-
+.cell-right-block{
+    display: inline-flex;
+    align-items: center;
+    float: right;
+    color: rgba(16, 16, 16, 0.55);
+    font-weight: 300;
+}
 .cell-right-arrow {
     float: right;
-    color: rgba(16, 16, 16, 0.45);;
+    color: rgba(16, 16, 16, 0.45);
     font-weight: 300;
 }
 
