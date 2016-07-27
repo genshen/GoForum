@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 100109
 File Encoding         : 65001
 
-Date: 2016-07-22 17:45:28
+Date: 2016-07-27 12:05:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -50,8 +50,10 @@ COMMIT;
 DROP TABLE IF EXISTS `feedback`;
 CREATE TABLE `feedback` (
 `id`  int(11) NOT NULL AUTO_INCREMENT ,
-`subject`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`content`  varchar(511) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`user_id`  int(11) NULL DEFAULT NULL ,
+`type`  tinyint(4) NOT NULL ,
+`content`  varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`contact`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 `created_at`  datetime NOT NULL ,
 `updated_at`  datetime NOT NULL ,
 `deleted_at`  datetime NULL DEFAULT NULL ,
@@ -87,7 +89,7 @@ DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 -- Records of follows
 -- ----------------------------
 BEGIN;
-INSERT INTO `follows` VALUES ('5', '6'), ('6', '5'), ('11', '6'), ('23', '6');
+INSERT INTO `follows` VALUES ('5', '6'), ('6', '5'), ('6', '11'), ('6', '22'), ('6', '23'), ('11', '6'), ('22', '6'), ('23', '6');
 COMMIT;
 
 -- ----------------------------
@@ -96,18 +98,22 @@ COMMIT;
 DROP TABLE IF EXISTS `notification`;
 CREATE TABLE `notification` (
 `id`  int(11) NOT NULL AUTO_INCREMENT ,
-`title`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`subject_type`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`user_id`  int(11) NOT NULL DEFAULT 0 ,
+`related_id`  int(11) NOT NULL DEFAULT 0 ,
+`target_id`  int(11) NOT NULL DEFAULT 0 ,
+`title`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+`subject_type`  int(11) NOT NULL DEFAULT 0 ,
+`subject`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 `content`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`is_read`  tinyint(4) NULL DEFAULT NULL ,
-`created_at`  datetime NULL DEFAULT NULL ,
-`updated_at`  datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP ,
+`is_read`  tinyint(4) NOT NULL DEFAULT 0 ,
+`created_at`  datetime NOT NULL ,
+`updated_at`  datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ,
 `deleted_at`  datetime NULL DEFAULT NULL ,
 PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-AUTO_INCREMENT=1
+AUTO_INCREMENT=5
 
 ;
 
@@ -115,6 +121,7 @@ AUTO_INCREMENT=1
 -- Records of notification
 -- ----------------------------
 BEGIN;
+INSERT INTO `notification` VALUES ('1', '5', '6', '0', 'Hello关注了你', '1', '关注', '', '0', '2016-07-25 16:55:01', '2016-07-25 16:55:01', null), ('2', '11', '6', '0', 'Hello关注了你', '1', '关注', '', '0', '2016-07-25 16:55:41', '2016-07-25 16:55:41', null), ('3', '22', '6', '0', 'Hello关注了你', '1', '关注', '', '0', '2016-07-25 16:55:42', '2016-07-25 16:55:42', null), ('4', '23', '6', '0', 'Hello关注了你', '1', '关注', '', '0', '2016-07-25 16:55:42', '2016-07-25 16:55:42', null);
 COMMIT;
 
 -- ----------------------------
@@ -162,7 +169,7 @@ INDEX `author` (`author_id`) USING BTREE
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-AUTO_INCREMENT=24
+AUTO_INCREMENT=25
 
 ;
 
@@ -170,7 +177,7 @@ AUTO_INCREMENT=24
 -- Records of posts
 -- ----------------------------
 BEGIN;
-INSERT INTO `posts` VALUES ('15', '5', '1', 'hhhhhhhhhhhh', '<p>请输入hhhh内容...</p><p><br></p>', '1', '0', '0', '0', '2016-06-29 11:03:24', '1', '2016-06-29 11:03:24', '2016-06-29 11:03:24', null), ('16', '5', '1', '没标题?', '<p>请输入内容...</p><p><br></p>', '1', '0', '8', '0', '2016-06-29 11:04:18', '1', '2016-06-29 11:04:18', '2016-06-29 11:04:18', null), ('17', '5', '1', 'yyy', '<p>请输入内容...</p><p>yy</p>', '1', '0', '4', '0', '2016-06-29 11:05:45', '1', '2016-06-29 11:05:45', '2016-06-29 11:05:45', null), ('18', '5', '1', '标题', '<p>请输入内容...</p><p>hhha</p>', '1', '0', '2', '0', '2016-06-29 12:12:43', '1', '2016-06-29 12:12:43', '2016-06-29 12:12:43', null), ('19', '6', '1', 'jjjj', '<p>请输入内容...</p><p><br></p>', '1', '0', '0', '0', '2016-06-29 23:53:31', '1', '2016-06-29 23:53:31', '2016-06-29 23:53:31', null), ('20', '6', '1', 'hhh', '<p>请输入内容...</p><p><br></p>', '1', '0', '0', '0', '2016-06-30 11:40:01', '1', '2016-06-30 11:40:01', '2016-06-30 11:40:01', null), ('21', '6', '1', 'title', '<p>请输入内容...content</p><p><br></p>', '1', '0', '17', '0', '2016-07-01 00:41:58', '1', '2016-07-01 00:41:58', '2016-07-01 00:41:58', null), ('22', '6', '1', 'H', '<p class=\"\">请输入内容...</p><p class=\"\">Hil</p><img src=\"#BASE_URL#FgxdvCRQ6asrgwnXCNagXSW-otjl\" style=\"max-width: 100%;\">', '1', '0', '2', '0', '2016-07-03 09:58:37', '1', '2016-07-03 09:58:37', '2016-07-03 09:58:37', null), ('23', '6', '1', 'Test Title', '<p class=\"\"><b>请输入内容...</b></p><p><br></p>', '1', '0', '2', '0', '2016-07-06 15:40:29', '1', '2016-07-06 15:40:29', '2016-07-06 15:40:29', null);
+INSERT INTO `posts` VALUES ('15', '5', '1', 'hhhhhhhhhhhh', '<p>请输入hhhh内容...</p><p><br></p>', '1', '0', '0', '0', '2016-06-29 11:03:24', '1', '2016-06-29 11:03:24', '2016-06-29 11:03:24', null), ('16', '5', '1', '没标题?', '<p>请输入内容...</p><p><br></p>', '1', '0', '8', '0', '2016-06-29 11:04:18', '1', '2016-06-29 11:04:18', '2016-06-29 11:04:18', null), ('17', '5', '1', 'yyy', '<p>请输入内容...</p><p>yy</p>', '1', '0', '4', '0', '2016-06-29 11:05:45', '1', '2016-06-29 11:05:45', '2016-06-29 11:05:45', null), ('18', '5', '1', '标题', '<p>请输入内容...</p><p>hhha</p>', '1', '0', '2', '0', '2016-06-29 12:12:43', '1', '2016-06-29 12:12:43', '2016-06-29 12:12:43', null), ('19', '6', '1', 'jjjj', '<p>请输入内容...</p><p><br></p>', '1', '0', '0', '0', '2016-06-29 23:53:31', '1', '2016-06-29 23:53:31', '2016-06-29 23:53:31', null), ('20', '6', '1', 'hhh', '<p>请输入内容...</p><p><br></p>', '1', '0', '0', '0', '2016-06-30 11:40:01', '1', '2016-06-30 11:40:01', '2016-06-30 11:40:01', null), ('21', '6', '1', 'title', '<p>请输入内容...content</p><p><br></p>', '1', '0', '17', '0', '2016-07-01 00:41:58', '1', '2016-07-01 00:41:58', '2016-07-01 00:41:58', null), ('22', '6', '1', 'H', '<p class=\"\">请输入内容...</p><p class=\"\">Hil</p><img src=\"#BASE_URL#FgxdvCRQ6asrgwnXCNagXSW-otjl\" style=\"max-width: 100%;\">', '1', '0', '2', '0', '2016-07-03 09:58:37', '1', '2016-07-03 09:58:37', '2016-07-03 09:58:37', null), ('23', '6', '1', 'Test Title', '<p class=\"\"><b>请输入内容...</b></p><p><br></p>', '1', '0', '2', '0', '2016-07-06 15:40:29', '1', '2016-07-06 15:40:29', '2016-07-06 15:40:29', null), ('24', '6', '1', '标题', '<p class=\"\">请输入内容...</p><img src=\"#BASE_URL#Fi5AOEz8NtrWNpeT5c6PeTK9c5iy\" style=\"max-width: 100%;\"><p><br></p>', '1', '0', '0', '0', '2016-07-22 18:38:05', '1', '2016-07-22 18:38:05', '2016-07-22 18:38:05', null);
 COMMIT;
 
 -- ----------------------------
@@ -197,7 +204,7 @@ DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 -- Records of profile
 -- ----------------------------
 BEGIN;
-INSERT INTO `profile` VALUES ('5', 'deaf.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('6', '/static/img/default.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('7', 'deaf.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('11', 'deaf.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('23', '/static/img/default.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0');
+INSERT INTO `profile` VALUES ('5', 'deaf.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('6', '/static/img/default.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('7', 'deaf.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('11', 'deaf.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('23', '/static/img/default.png', '9', '这家伙很懒,什么都没有', '0', '0', '0', '0'), ('30', '/static/img/default.png', '0', null, '0', '0', '0', '0'), ('31', '/static/img/default.png', '0', null, '0', '0', '0', '0');
 COMMIT;
 
 -- ----------------------------
@@ -305,7 +312,7 @@ PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-AUTO_INCREMENT=26
+AUTO_INCREMENT=32
 
 ;
 
@@ -313,7 +320,7 @@ AUTO_INCREMENT=26
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES ('5', '', '储根深', '1690512717@qq.com', '273a0c7bd3c679ba9a6f5d99078e36e85d02b952', '', null, '10', '2016-06-24 14:57:23', '2016-06-24 14:57:23', null), ('6', '', 'Hello', 'genshenchu@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-06-24 15:16:00', '2016-06-24 15:16:00', null), ('7', '', 'Hello1', 'genshen220284@163.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '0', '2016-06-24 15:52:54', '2016-06-24 15:52:54', null), ('10', '', 'Hello2', '1690512717@qq.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-06 19:01:14', '2016-07-06 19:01:14', null), ('11', '', 'Hello3', 'genshenchu@gail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 17:23:29', '2016-07-09 17:23:29', null), ('12', '', 'Hell4', 'genshen220284@163.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 17:39:58', '2016-07-09 17:39:58', null), ('13', '', 'Hello6', 'genshenchu@gmail.co', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 18:18:16', '2016-07-09 18:18:16', null), ('14', '', 'Hello7', 'ggg@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-09 21:11:12', '2016-07-09 21:11:12', null), ('15', '', 'Hello56', '11111@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-09 21:12:19', '2016-07-09 21:12:19', null), ('16', '', 'Hello53', '111@qq.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 21:13:31', '2016-07-09 21:13:31', null), ('19', '', '', '1112@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 11:26:08', '2016-07-16 11:26:08', null), ('20', '', '', '11113@qq.com', '77bce9fb18f977ea576bbcd143b2b521073f0cd6', '', '', '10', '2016-07-16 11:46:12', '2016-07-16 11:46:12', null), ('21', '', '', '1111111@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 12:02:26', '2016-07-16 12:02:26', null), ('22', '', '', 'www@ww.com', 'b33b5e3e04dae7c04d1e4dc759ca5c80e26e576a', '', '', '10', '2016-07-16 12:04:06', '2016-07-16 12:04:06', null), ('23', '', '无名氏', '1111211@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 12:04:36', '2016-07-16 12:04:36', null), ('24', '', '', '1234@111.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 16:10:46', '2016-07-16 16:10:46', null), ('25', '', 'half储根深', 'gens@gmal.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 16:11:41', '2016-07-16 16:11:41', null);
+INSERT INTO `user` VALUES ('5', '', '储根深', '1690512717@qq.com', '273a0c7bd3c679ba9a6f5d99078e36e85d02b952', '', null, '10', '2016-06-24 14:57:23', '2016-06-24 14:57:23', null), ('6', '', 'Hello', 'genshenchu@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-06-24 15:16:00', '2016-06-24 15:16:00', null), ('7', '', 'Hello1', 'genshen220284@163.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '0', '2016-06-24 15:52:54', '2016-06-24 15:52:54', null), ('10', '', 'Hello2', '1690512717@qq.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-06 19:01:14', '2016-07-06 19:01:14', null), ('11', '', 'Hello3', 'genshenchu@gail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 17:23:29', '2016-07-09 17:23:29', null), ('12', '', 'Hell4', 'genshen220284@163.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 17:39:58', '2016-07-09 17:39:58', null), ('13', '', 'Hello6', 'genshenchu@gmail.co', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 18:18:16', '2016-07-09 18:18:16', null), ('14', '', 'Hello7', 'ggg@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-09 21:11:12', '2016-07-09 21:11:12', null), ('15', '', 'Hello56', '11111@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-09 21:12:19', '2016-07-09 21:12:19', null), ('16', '', 'Hello53', '111@qq.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '10', '2016-07-09 21:13:31', '2016-07-09 21:13:31', null), ('19', '', '', '1112@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 11:26:08', '2016-07-16 11:26:08', null), ('20', '', '', '11113@qq.com', '77bce9fb18f977ea576bbcd143b2b521073f0cd6', '', '', '10', '2016-07-16 11:46:12', '2016-07-16 11:46:12', null), ('21', '', '', '1111111@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 12:02:26', '2016-07-16 12:02:26', null), ('22', '', '', 'www@ww.com', 'b33b5e3e04dae7c04d1e4dc759ca5c80e26e576a', '', '', '10', '2016-07-16 12:04:06', '2016-07-16 12:04:06', null), ('23', '', '无名氏', '1111211@qq.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 12:04:36', '2016-07-16 12:04:36', null), ('24', '', '', '1234@111.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 16:10:46', '2016-07-16 16:10:46', null), ('25', '', 'half储根深', 'gens@gmal.com', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '', '10', '2016-07-16 16:11:41', '2016-07-16 16:11:41', null), ('30', '', '123', 'm18813128117@163.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '', '9', '2016-07-26 01:33:53', '2016-07-26 01:33:53', null), ('31', '', '2222', 'genshen220284@foxmail.com', '273a0c7bd3c679ba9a6f5d99078e36e85d02b952', '', '', '9', '2016-07-27 10:46:06', '2016-07-27 10:46:06', null);
 COMMIT;
 
 -- ----------------------------
@@ -329,12 +336,12 @@ ALTER TABLE `feedback` AUTO_INCREMENT=1;
 -- ----------------------------
 -- Auto increment value for notification
 -- ----------------------------
-ALTER TABLE `notification` AUTO_INCREMENT=1;
+ALTER TABLE `notification` AUTO_INCREMENT=5;
 
 -- ----------------------------
 -- Auto increment value for posts
 -- ----------------------------
-ALTER TABLE `posts` AUTO_INCREMENT=24;
+ALTER TABLE `posts` AUTO_INCREMENT=25;
 
 -- ----------------------------
 -- Auto increment value for swipe
@@ -354,4 +361,4 @@ ALTER TABLE `topic` AUTO_INCREMENT=3;
 -- ----------------------------
 -- Auto increment value for user
 -- ----------------------------
-ALTER TABLE `user` AUTO_INCREMENT=26;
+ALTER TABLE `user` AUTO_INCREMENT=32;
