@@ -260,18 +260,10 @@
                             self.reset(true, true); //todo 上传图
                             options.content = "提交成功,十分感谢您的反馈!";
                             $.snackbar(options);
-                            return
-                        } else{
-                            if (data.Error.captcha && data.Error.captcha.Errors.length > 0) {
-                                options.content = data.Error.captcha.Errors[0].Message;
-                            } else if(data.Error.feedback && data.Error.feedback.Errors.length > 0) {
-                                options.content = data.Error.feedback.Errors[0].Message;
-                            } else if (data.Error.type && data.Error.type.Errors.length > 0) {
-                                options.content = data.Error.type.Errors[0].Message;
-                            }
+                        } else if(data.Status == 0){
+                            Util.passPostError.init(data.Error);
+                            self.reset(false, true);
                         }
-                        self.reset(false, true);
-                        $.snackbar(options);
                     }, error: function (err) {
                         self.reset(false, true);
                         $.snackbar(options);

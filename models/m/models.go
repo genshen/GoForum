@@ -107,6 +107,6 @@ type Feedback struct {
 	Contact string
 }
 
-func (Swipe) Feedback() string {
+func (Feedback) TableName() string {
 	return "feedback"
 }

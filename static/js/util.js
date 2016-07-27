@@ -92,7 +92,7 @@ $.forms = {
                 var pass = true;
                 $.forms.options.fields.forEach(function (e) {
                     var field = $(e.field);
-                    var t = valid(field, e.rules,true);
+                    var t = valid(field, e.rules, true);
                     if (!t && pass) {
                         pass = t;
                         field.focus();
@@ -112,10 +112,10 @@ $.forms = {
         }
     }
 };
-function valid(input, rules,isSubmit) {
+function valid(input, rules, isSubmit) {
     var rule = rules.required;
     var value = input.val();
-    if (rule && !validRequired(value, input, rule,isSubmit)) {
+    if (rule && !validRequired(value, input, rule, isSubmit)) {
         return false;
     }
     rule = rules.min;
@@ -162,7 +162,6 @@ function setError(input, message) {
     var $formGroup = input.closest(".form-group");
     $formGroup.addClass("has-error");
     var help = $formGroup.find(".help-block");
-    console.log($formGroup.html());
     if (help.length === 0) {
         input.after("<p class='help-block'>" + message + "</p>");
     } else {
@@ -170,10 +169,10 @@ function setError(input, message) {
     }
 }
 
-function validRequired(value, input, rule,isSubmit) {
-    if((!isSubmit && rule.submitOnly) || value){
+function validRequired(value, input, rule, isSubmit) {
+    if ((!isSubmit && rule.submitOnly) || value) {
         return true;
-    }else {
+    } else {
         setError(input, rule.message);
         return false;
     }
@@ -303,11 +302,11 @@ function base64_decode(encodedData) {
         };
     }
 }(function () {
-    function extend () {
+    function extend() {
         var i = 0;
         var result = {};
         for (; i < arguments.length; i++) {
-            var attributes = arguments[ i ];
+            var attributes = arguments[i];
             for (var key in attributes) {
                 result[key] = attributes[key];
             }
@@ -315,8 +314,8 @@ function base64_decode(encodedData) {
         return result;
     }
 
-    function init (converter) {
-        function api (key, value, attributes) {
+    function init(converter) {
+        function api(key, value, attributes) {
             var result;
             if (typeof document === 'undefined') {
                 return;
@@ -338,7 +337,8 @@ function base64_decode(encodedData) {
                     if (/^[\{\[]/.test(result)) {
                         value = result;
                     }
-                } catch (e) {}
+                } catch (e) {
+                }
 
                 if (!converter.write) {
                     value = encodeURIComponent(String(value))
@@ -354,8 +354,8 @@ function base64_decode(encodedData) {
                 return (document.cookie = [
                     key, '=', value,
                     attributes.expires && '; expires=' + attributes.expires.toUTCString(), // use expires attribute, max-age is not supported by IE
-                    attributes.path    && '; path=' + attributes.path,
-                    attributes.domain  && '; domain=' + attributes.domain,
+                    attributes.path && '; path=' + attributes.path,
+                    attributes.domain && '; domain=' + attributes.domain,
                     attributes.secure ? '; secure' : ''
                 ].join(''));
             }
@@ -390,7 +390,8 @@ function base64_decode(encodedData) {
                     if (this.json) {
                         try {
                             cookie = JSON.parse(cookie);
-                        } catch (e) {}
+                        } catch (e) {
+                        }
                     }
 
                     if (key === name) {
@@ -401,7 +402,8 @@ function base64_decode(encodedData) {
                     if (!key) {
                         result[name] = cookie;
                     }
-                } catch (e) {}
+                } catch (e) {
+                }
             }
 
             return result;
@@ -429,7 +431,8 @@ function base64_decode(encodedData) {
         return api;
     }
 
-    return init(function () {});
+    return init(function () {
+    });
 }));
 
 /* SnackbarJS - MIT LICENSE (https://github.com/FezVrasta/snackbarjs/blob/master/LICENSE.md) */
@@ -488,3 +491,29 @@ function base64_decode(encodedData) {
         return a
     }
 })(jQuery);
+
+
+var Util = {
+    passPostError: {
+        options:{
+            snackTimeout: 3000,
+            errorCallback: function (message,name) {
+                $.snackbar({content: message, timeout: this.snackTimeout})
+            }
+        },
+        init:function (errors,options) {
+            this.options = $.extend({}, this.options, options);
+            this.execute(errors)
+        },
+        execute: function (Errors) {
+            for (var key in Errors) {
+                var err = Errors[key].Errors;
+                if (err.length > 0) {
+                    this.options.errorCallback(err[0].Message,err[0].Name); //Name == key
+                    return false
+                }
+            }
+            return true;
+        }
+    }
+};

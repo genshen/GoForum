@@ -105,12 +105,14 @@
                         success: function (data) {
                             subBtn.text("登录");
                             subBtn.removeAttr("disabled");
-                            if (data.name && data.name.Errors.length > 0) {
-                                setErrorAlert(data.name.Errors[0].Message)
-                            } else if (data.pass && data.pass.Errors.length > 0) {
-                                setErrorAlert(data.pass.Errors[0].Message)
-                            } else {  //no error
-                                window.location.replace(data.next)
+                            if(data.Status == 1){
+                                window.location.replace(data.Addition)
+                            }else if(data.Status == 0){
+                                Util.passPostError.init(data.Error,{errorCallback:function (message) {
+                                    setErrorAlert(message);
+                                }})
+                            }else{
+                                setErrorAlert(ERROR_MESSAGE);
                             }
                         }, error: function (err) {
                             subBtn.text("登录");

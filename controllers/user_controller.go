@@ -52,10 +52,10 @@ func (this *UserController) POST_SignIn() {
 		if len(next) > 0 && next[0] != '/' {
 			next = "/" + next
 		}
-		this.Data["json"] = &SignResult{Status:true, Next:next}
+		this.Data["json"] = &forms.PostResult{Status:1, Addition:next}
 	} else {
 		s := form_check.NewInstant(errs, map[string]string{"name":  username, "pass": ""})
-		this.Data["json"] = &s
+		this.Data["json"] = &forms.PostResult{Status:0, Error:&s}
 	}
 	this.ServeJSON()
 }
@@ -79,14 +79,14 @@ func (this *UserController) POST_SignUp() {
 	password := this.GetString("password")
 	sign_up_form := forms.SignUpForm{Email:email, Nickname:nickname, Password: password}
 	if errs := sign_up_form.Valid(); errs == nil {
-		this.Data["json"] = &SignResult{Status:true}
+		this.Data["json"] = &forms.PostResult{Status:1}
 		flash := beego.NewFlash()
 		flash.Success(email)
 		flash.Store(&this.Controller)
 		event.OnAccountCreated(email, nickname, sign_up_form.UserID) //todo
 	} else {
 		s := form_check.NewInstant(errs, map[string]string{"email":  email, "password": ""})
-		this.Data["json"] = &s
+		this.Data["json"] = &forms.PostResult{Status:0, Error:&s}
 	}
 	this.ServeJSON()
 }

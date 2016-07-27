@@ -20,11 +20,32 @@
     <link href="/static/css/main.css" rel="stylesheet"></head>
 <body>
 <style>
-    /*sm*/
+    .profile-bio {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        word-break: break-all;
+        overflow: hidden;
+    }
+
     @media (max-width: 768px) {
         .profile-box {
             text-align: center;
             color: white;
+        }
+
+        .profile-bio {
+            padding: 0 50px;
+        }
+
+        .profile-summary {
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .profile-bio {
+            padding: 0 30px;
         }
     }
 
@@ -51,7 +72,7 @@
 
     .follow-action {
         display: inline-block;
-        box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         padding: 2px;
         background-color: #0eb400;
         border-radius: 50%;
@@ -69,35 +90,48 @@
         color: white;
     }
 </style>
-<main id="app" style="background-color:#4CAF50">
-    <div class="container">
-        <p style="height:20px"></p>
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 profile-box">
-                <div class="profile-header row">
-                    <div class="profile-avatar">
-                        <a href="#">
-                            <img class="img-circle img-thumbnail" v-bind:src="Avatar" alt="...">
-                        </a>
-                        <a href="javascript:void(0)" class="follow-action withripple"><i class="material-icons">add</i></a>
+<main id="app">
+    <div class="container-fluid" style="background-color:#4CAF50;padding-top:20px;padding-bottom:20px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-lg-9 profile-box">
+                    <div class="profile-header row">
+                        <div class="profile-avatar">
+                            <a href="#">
+                                <img class="img-circle img-thumbnail" :src="Avatar" alt="Avatar">
+                            </a>
+                            <a href="javascript:void(0)" class="follow-action withripple"><i
+                                    class="material-icons">add</i></a>
+                        </div>
+                        <h2 class="profile-username"><a href="#" v-text="Name" >正在加载</a></h2>
+                        <p v-text="'个人简介:'+Bio" class="profile-bio">正在加载</p>
+                        <p class="profile-join">
+                            <span class="glyphicon glyphicon-time"></span>2016年6月15日加入
+                        </p>
                     </div>
-                    <h2 class="profile-username"><a href="#">{{Name}}</a></h2>
-                    <p class="profile-bio">个人简介:{{Bio}}</p>
-                    <p class="profile-join">
-                        <span class="glyphicon glyphicon-time"></span>2016年6月15日 加入
-                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 profile-summary">
+                    <button v-text="PostCount+'帖子'" class="btn btn-success btn-raised">正在加载</button>
+                    <button v-text="FollowedCount+'粉丝'" class="btn btn-success btn-raised">正在加载</button>
+                    <button v-text="FollowingCount+'关注'"class="btn btn-success btn-raised">正在加载</button>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="container" style="margin-top: 20px">
         <div class="row">
-            <div class="col-xs-12">
-                <button class="btn btn-success btn-raised">{{PostCount}} 帖子</button>
-                <button class="btn btn-success btn-raised">{{CommentCount}} 评论</button>
-                <button class="btn btn-success btn-raised">{{FollowedCount}} 粉丝</button>
-                <button class="btn btn-success btn-raised">{{FollowingCount}} 关注</button>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">最新动态</h3>
+                </div>
+                <div class="panel-body">
+                    <p><i class="material-icons">sentiment_neutral</i>
+                        <span style="font-size:16px;vertical-align: super">这人这里空空如也~user id:{{UserRefer}}</span></p>
+                </div>
             </div>
         </div>
-        <h1> user id:{{ID}}</h1>
     </div>
 </main>
 <!-- jQuery -->

@@ -134,14 +134,12 @@
                         success: function (data) {
                             subBtn.text("注册");
                             subBtn.removeAttr("disabled");
-                            if (data.email && data.email.Errors.length > 0) {
-                                setErrorAlert(data.email.Errors[0].Message)
-                            } else if (data.password && data.password.Errors.length > 0) {
-                                setErrorAlert(data.password.Errors[0].Message)
-                            } else if (data.nickname && data.nickname.Errors.length > 0) {
-                                setErrorAlert(data.nickname.Errors[0].Message)
-                            } else if(data.status){ //no error
+                            if(data.Status == 1){
                                 window.location.replace("/account/signup/success");
+                            }else if(data.Status == 0){
+                                Util.passPostError.init(data.Error,{errorCallback:function (message) {
+                                    setErrorAlert(message);
+                                }})
                             }else{
                                 setErrorAlert(ERROR_MESSAGE);
                             }
