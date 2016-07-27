@@ -98,3 +98,15 @@ func LoadSwipes() (swipes []Swipe) {
 	database.DB.Where("visible = ?", true).Limit(8).Find(&swipes)
 	return
 }
+
+type Feedback struct {
+	gorm.Model
+	UserID  uint
+	Type    int8
+	Content string
+	Contact string
+}
+
+func (Swipe) Feedback() string {
+	return "feedback"
+}

@@ -92,7 +92,7 @@ $.forms = {
                 var pass = true;
                 $.forms.options.fields.forEach(function (e) {
                     var field = $(e.field);
-                    var t = valid(field, e.rules);
+                    var t = valid(field, e.rules,true);
                     if (!t && pass) {
                         pass = t;
                         field.focus();
@@ -112,11 +112,10 @@ $.forms = {
         }
     }
 };
-function valid(input, rules) {
+function valid(input, rules,isSubmit) {
     var rule = rules.required;
     var value = input.val();
-
-    if (rule && !validRequired(value, input, rule, false)) {
+    if (rule && !validRequired(value, input, rule,isSubmit)) {
         return false;
     }
     rule = rules.min;
@@ -163,6 +162,7 @@ function setError(input, message) {
     var $formGroup = input.closest(".form-group");
     $formGroup.addClass("has-error");
     var help = $formGroup.find(".help-block");
+    console.log($formGroup.html());
     if (help.length === 0) {
         input.after("<p class='help-block'>" + message + "</p>");
     } else {
@@ -170,19 +170,13 @@ function setError(input, message) {
     }
 }
 
-function validRequired(value, input, rule, isSubmit) {
-    if (value) {
+function validRequired(value, input, rule,isSubmit) {
+    if((!isSubmit && rule.submitOnly) || value){
         return true;
-    } else if (isSubmit) {
+    }else {
         setError(input, rule.message);
         return false;
-    } else {
-        if (!rule.submitOnly) {
-            setError(input, rule.message);
-            return false;
-        }
     }
-    return true;
 }
 function validMin(value, input, rule) {
     if (value.length >= rule.count) {

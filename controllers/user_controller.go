@@ -45,7 +45,7 @@ func (this *UserController) POST_SignIn() {
 	username := this.GetString("username")
 	password := this.GetString("password")
 	sign_in_form := forms.SignInForm{Username:username, Password: password}
-	if errs, userID := sign_in_form.LoginVerify(); errs == nil {
+	if errs, userID := sign_in_form.SignInVerify(); errs == nil {
 		//验证通过
 		this.LoginUser(userID, sign_in_form.Username)
 		next := this.GetString("next")
@@ -78,7 +78,7 @@ func (this *UserController) POST_SignUp() {
 	nickname := this.GetString("nickname")
 	password := this.GetString("password")
 	sign_up_form := forms.SignUpForm{Email:email, Nickname:nickname, Password: password}
-	if errs, status := sign_up_form.Valid(); status {
+	if errs := sign_up_form.Valid(); errs == nil {
 		this.Data["json"] = &SignResult{Status:true}
 		flash := beego.NewFlash()
 		flash.Success(email)

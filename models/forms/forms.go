@@ -7,6 +7,7 @@ import (
 	"../database"
 	"../../middleware/auth/security"
 	"../m"
+	"fmt"
 )
 
 type SignInForm struct {
@@ -15,7 +16,7 @@ type SignInForm struct {
 }
 
 type SignUpForm struct {
-	UserID uint
+	UserID   uint
 	Email    string
 	Nickname string
 	Password string
@@ -26,7 +27,7 @@ type PostCreateForm struct {
 	Content string
 }
 
-func (this *SignInForm)LoginVerify() ([]*validation.Error, uint) {
+func (this *SignInForm)SignInVerify() ([]*validation.Error, uint) {
 	valid := validation.Validation{}
 	valid.Required(this.Username, "name").Message("用户名不能为空")
 	valid.Required(this.Password, "pass").Message("密码不能为空")
@@ -53,7 +54,7 @@ func (this *SignInForm) validPassword(v *validation.Validation) uint {
 	return u.ID
 }
 
-func (this *SignUpForm)Valid() ([]*validation.Error, bool) {
+func (this *SignUpForm)Valid() ([]*validation.Error) {
 	valid := validation.Validation{}
 	valid.Required(this.Email, "email").Message("邮箱不能为空")
 	valid.Email(this.Email, "email").Message("邮箱格式不正确")
@@ -61,13 +62,13 @@ func (this *SignUpForm)Valid() ([]*validation.Error, bool) {
 	valid.Required(this.Password, "pass").Message("密码不能为空")
 	valid.MinSize(this.Password, 6, "pass").Message("密码长度不能小于6")
 	if valid.HasErrors() {
-		return valid.Errors, false
+		return valid.Errors
 	}
 	this.validOrSave(&valid);
 	if valid.HasErrors() {
-		return valid.Errors, false
+		return valid.Errors
 	}
-	return nil, true
+	return nil
 }
 
 func (this *SignUpForm)validOrSave(v *validation.Validation) {
@@ -107,7 +108,7 @@ type CommentCreateForm struct {
 
 type PostResult struct {
 	Status   int
-	Error    string
+	Error    interface{}
 	Addition interface{}
 }
 
@@ -157,4 +158,32 @@ func (this *FollowAddForm)Add(myID uint) (result *PostResult, isAdded bool) {
 		}
 	}
 	return
+}
+
+type FeedbackForm struct {
+	Type     int8
+	Feedback string
+	Captcha  bool
+	Contact  string
+}
+
+func (this *FeedbackForm)Valid(uid uint) ([]*validation.Error) {
+	v := validation.Validation{}
+	if !this.Captcha {
+		v.SetError("captcha", "验证码错误")
+		return v.Errors
+	}
+	//todo 联系方式验证
+	fmt.Println(this.Type)
+	v.Required(this.Feedback, "feedback").Message("反馈意见不能为空")
+	v.MaxSize(this.Feedback, 512, "feedback").Message("反馈意见字数不能超过255")
+	if this.Type > 2 || this.Type < 0 {
+		v.SetError("type", "反馈类型错误")
+	}
+	if v.HasErrors() {
+		return v.Errors
+	}
+	feedback := m.Feedback{UserID:uid, Type:this.Type, Content:this.Feedback, Contact:this.Contact}
+	database.DB.Create(&feedback)
+	return nil
 }
