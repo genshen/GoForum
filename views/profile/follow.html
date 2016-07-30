@@ -152,25 +152,20 @@
                     data: {_xsrf: xsrf, id: f.ID},
                     success: function (data) {
                         try {
-                            switch (data.Status) { //1 for success,0 for not login,2 for article have deleted!
-                                case 0:
-                                    options.content = "请<a href='/account/signin?next=" + document.location.pathname + "'>登录</a>后进行关注";
-                                    f.Status = 0;
-                                    break;
-                                case 1:
+                            Util.simpleParseError.init(data.Status, data.Error, {
+                                onSuccess: function () {
                                     options.content = "关注成功";
                                     f.Status = 1;
                                     self.following.push({Avatar: f.Avatar, Bio: f.Bio, Name: f.Name});
-                                    break;
-                                case 2:
-                                    options.content = "添加关注失败,请重试!";
+                                },errorCallback:function (msg) {
+                                    options.content = msg;
                                     f.Status = 0;
-                                    break;
-                                case 3:
-                                    options.content = "对应用户不存在";
+                                },
+                                onUnAuth:function () {
+                                    options.content = "请<a href='/account/signin?next=" + document.location.pathname + "'>登录</a>后进行关注";
                                     f.Status = 0;
-                                    break;
-                            }
+                                }
+                            });
                         } catch (err) {
                             f.Status = 0;
 //                            console.log(err);

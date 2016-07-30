@@ -81,7 +81,7 @@
                             if(data.Status == 1){
                                 window.location.replace(data.Addition)
                             }else if(data.Status == 0){
-                                Util.passPostError.init(data.Error,{errorCallback:function (message) {
+                                Util.parseError.init(data.Error,{errorCallback:function (message) {
                                     setErrorAlert(message);
                                 }})
                             }else{

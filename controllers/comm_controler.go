@@ -43,7 +43,7 @@ func (this *CommentController) Comment() {
 func (this *CommentController) CommentAdd() {
 	var result *forms.PostResult
 	if !this.IsUserLogin() {
-		result = &forms.PostResult{Status:0, Error:"用户未登录"}
+		result = &forms.PostResult{Status:3, Error:"用户未登录"}
 	} else {
 		id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
 		content := this.GetString("content")

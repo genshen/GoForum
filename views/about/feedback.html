@@ -288,7 +288,7 @@
                             options.content = "提交成功,十分感谢您的反馈!";
                             $.snackbar(options);
                         } else if(data.Status == 0){
-                            Util.passPostError.init(data.Error);
+                            Util.parseError.init(data.Error);
                             self.reset(false, true);
                         }
                     }, error: function (err) {

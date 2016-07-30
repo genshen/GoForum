@@ -494,26 +494,59 @@ function base64_decode(encodedData) {
 
 
 var Util = {
-    passPostError: {
-        options:{
-            snackTimeout: 3000,
-            errorCallback: function (message,name) {
-                $.snackbar({content: message, timeout: this.snackTimeout})
-            }
-        },
-        init:function (errors,options) {
-            this.options = $.extend({}, this.options, options);
+    parseError: {
+        options: {},
+        init: function (errors, options) {
+            this.options = $.extend({}, { //default options
+                snackTimeout: 3000,
+                errorCallback: function (message, name) {
+                    $.snackbar({content: message, timeout: this.snackTimeout})
+                }
+            }, options);
             this.execute(errors)
         },
         execute: function (Errors) {
             for (var key in Errors) {
                 var err = Errors[key].Errors;
                 if (err.length > 0) {
-                    this.options.errorCallback(err[0].Message,err[0].Name); //Name == key
+                    this.options.errorCallback(err[0].Message, err[0].Name); //Name == key
                     return false
                 }
             }
             return true;
+        }
+    },
+    simpleParseError: {
+        options: {
+            authUrl: "/account/signin",
+            snackTimeout: 3000,
+            errorCallback: function (message) {
+                $.snackbar({content: message, timeout: this.snackTimeout})
+            },
+            onUnAuth: function () {
+                var url = this.authUrl + "?next=" + document.location.pathname;
+                $.snackbar({content: "请<a href='" + url + "'>登录</a>后进行该操作", timeout: this.snackTimeout})
+            },
+            onSuccess: null
+        },
+        init: function (status, error, options) {
+            this.options = $.extend({}, this.options, options);
+            this.execute(status, error)
+        },
+        execute: function (status, error) {
+            switch (status) {
+                case 0:
+                    this.options.errorCallback(error);
+                    return false;
+                case 1:
+                    if(this.options.onSuccess != null){
+                        this.options.onSuccess();
+                    }
+                    return true;
+                case 3: //unauth
+                    this.options.onUnAuth();
+                    return false;
+            }
         }
     }
 };

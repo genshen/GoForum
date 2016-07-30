@@ -23,7 +23,7 @@
       "title": "<title>注册成功</title>"
     },
     "profile/person.html": {
-      "title": "<title v-text='Name'>正在加载</title>"
+      "title": "<title v-text='person.Name'>正在加载</title>"
     },
     "profile/follow.html": {
       "title": "<title v-text='title'>正在加载</title>"

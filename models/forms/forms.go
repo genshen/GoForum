@@ -73,7 +73,7 @@ func (this *SignUpForm)Valid() ([]*validation.Error) {
 
 func (this *SignUpForm)validOrSave(v *validation.Validation) {
 	u := m.User{};
-	database.DB.Where("email = ?", this.Email).First(&u)
+	database.DB.Where("email = ?", this.Email).First(&u) //todo use NewRecord
 	if u.ID != 0 {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
@@ -120,17 +120,17 @@ func (this *CommentCreateForm)Create(user_id uint) (result *PostResult) {
 		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
 		if err := database.DB.Create(&comment).Error; err != nil {
 			tx.Rollback();
-			result = &PostResult{Status:2, Addition:0}
+			result = &PostResult{Status:0, Addition:"添加回复失败,请重试!"}
 			return
 		}
 		if err := database.DB.Model(&p).UpdateColumn("CommentCount", p.CommentCount + 1).Error; err != nil {
 			tx.Rollback();
-			result = &PostResult{Status:2, Addition:0}
+			result = &PostResult{Status:0, Error:"添加回复失败,请重试!"}
 			return
 		}
 		result = &PostResult{Status:1, Addition:comment.ID}
 	} else {
-		result = &PostResult{Status:3, Error:"对应文章不存在"}
+		result = &PostResult{Status:0, Error:"对应文章不存在"}
 	}
 	tx.Commit()
 	return
@@ -140,21 +140,25 @@ type FollowAddForm struct {
 	PersonID uint
 }
 
-func (this *FollowAddForm)Add(myID uint) (result *PostResult, isAdded bool) {
-	u := m.User{}
+func (this *FollowAddForm)Add(my_id uint) (result *PostResult, isAdded bool) {
 	isAdded = false
+	if(my_id == this.PersonID){
+		result = &PostResult{Status:0, Error:"不能关注自己本人哟~"}
+		return
+	}
+	u := m.User{}
 	database.DB.Where("status != ?", values.FREEZING).First(&u, this.PersonID)
-	if u.ID == 0 {
-		result = &PostResult{Status:3, Addition:"对应用户不存在"}
+	if u.ID == 0 {  //todo use NewRecord
+		result = &PostResult{Status:0, Error:"对应用户不存在"}
 	} else {
 		follow := m.Follow{}
-		if database.DB.Where("follower_id = ? AND following_id = ?", myID, this.PersonID).First(&follow);
+		if database.DB.Where("follower_id = ? AND following_id = ?", my_id, this.PersonID).First(&follow);
 		follow.FollowerID == 0 && follow.FollowingID == 0 {
-			database.DB.Create(&m.Follow{FollowerID:myID, FollowingID:this.PersonID})
+			database.DB.Create(&m.Follow{FollowerID:my_id, FollowingID:this.PersonID})
 			result = &PostResult{Status:1, Addition:this.PersonID}
 			isAdded = true
 		} else {
-			result = &PostResult{Status:3, Addition:"已经关注了改用户"}
+			result = &PostResult{Status:0, Error:"已经关注了改用户"}
 		}
 	}
 	return

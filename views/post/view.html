@@ -227,26 +227,20 @@
                     data: {_xsrf: xsrf, content: value},
                     success: function (data) {
                         try {
-                            switch (data.Status) { //1 for success,0 for not login,2 for article have deleted!
-                                case 0:
-                                    $.snackbar(loginOptions);
-                                    break;
-                                case 1:
+                            Util.simpleParseError.init(data.Status, data.Error, {
+                                onSuccess: function () {
                                     var options = {content: "发布成功", timeout: 2000};
                                     $.snackbar(options);
                                     D.Comments.push({Content: value, ID: data.Addition});
-                                    D.start++;
+                                    D.start++; //todo bug here:如果后面还有未加载的,会隐藏一条.如果没有未加载的则正确.
                                     replyBox.close(false);
-                                    break;
-                                case 2:
-                                    var options = {content: "添加回复失败,请重试!", timeout: 2000};
-                                    $.snackbar(options);
-                                    break;
-                                case 3:
-                                    var options = {content: "对应文章不存在", timeout: 2000};
-                                    $.snackbar(options);
-                                    break;
-                            }
+                                },errorCallback:function (msg) {
+                                    $.snackbar( {content: msg, timeout: 2000});
+                                },
+                                onUnAuth:function () {
+                                    $.snackbar(loginOptions);
+                                }
+                            });
                         } catch (err) {
                             $.snackbar(errorOptions);
                         }

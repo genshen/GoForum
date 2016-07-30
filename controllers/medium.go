@@ -14,14 +14,18 @@ type Person struct {
 
 type Profile struct {
 	m.Profile
-	Name string
-	Edit bool
+	Name        string
+	HasFollowed bool
+	Edit        bool
+	IsLogin     bool
 }
 
-func GetProfileById(uid uint, can_edit bool) (profile Profile) {
+func GetProfileById(my_id uint, uid uint) (profile Profile) {
 	user := m.User{}
 	database.DB.Preload("Profile").First(&user, uid)
-	profile = Profile{Name:user.Name, Profile:user.Profile, Edit:can_edit}
+	has_followed := !database.DB.NewRecord(m.Follow{FollowerID:my_id, FollowingID:uid}) //todo
+	profile = Profile{Name:user.Name, Profile:user.Profile, Edit:(my_id == uid),
+		HasFollowed:has_followed, IsLogin:!(my_id == 0)}
 	return
 }
 
