@@ -44,33 +44,31 @@
                     </div>
                 </div>  <!--owl-carousel-->
             </div>  <!--/row--->
-
-            <div v-for="hot in home.hot_posts" class="list-group">
-                <div class="list-group-item">
-                    <div class="row-picture">
-                        <img class="circle" :src="hot.Avatar" alt="icon">
-                    </div>
-                    <div class="row-content">
-                        <div>
-                            <small>{{hot.Name}}</small><!--class="list-group-item-heading"-->
-                            <small class="pull-right">
-                                <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{hot.CommentCount}}&nbsp;&nbsp;</span>
-                            </small>
-                            <small class="pull-right">
-                                <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{hot.ViewCount}}&nbsp;&nbsp;</span>
-                            </small>
-                        </div>
-                        <div class="list-group-item-date">
-                            <small>2016.7.11</small>
-                        </div>
-                        <div>
-                            <p class="list-group-item-text">
-                                <a :href="'/post/'+hot.PostID">{{hot.Title}}</a>
-                            </p>
-                        </div>
-                    </div><!--class="row-content"-->
-                </div><!--class="list-group-item"-->
-            </div><!--calss="list-group"-->
+            <div class="row">
+                <div class="col-md-8 list-group">
+                    <template  v-for="hot in home.hot_posts">
+                        <div class="list-group-item">
+                            <div class="row-picture">
+                                <a :href="'/person/'+hot.ID" ><img class="circle" :src="hot.Avatar" alt="Avatar"/></a>
+                            </div>
+                            <div class="row-content">
+                                <div class="home-list-top-info"><!--class="list-group-item-heading"-->
+                                    <a :href="'/person/'+hot.ID" class="hot-list-author"><small>{{hot.Name}}</small></a>
+                                    <small class="pull-right">
+                                        <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{hot.ViewCount}}&nbsp;&nbsp;</span>
+                                        <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{hot.CommentCount}}&nbsp;&nbsp;</span>
+                                    </small>
+                                </div>
+                                <p class="list-group-item-date"><small>2016.7.11</small></p>
+                                <h5 class="list-group-item-text" style="margin-top:0;">
+                                    <a :href="'/post/'+hot.PostID">{{hot.Title}}</a>
+                                </h5>
+                            </div><!--class="row-content"-->
+                        </div><!--class="list-group-item"-->
+                        <div class="list-group-separator"></div>
+                    </template>
+                </div><!--calss="list-group"-->
+            </div>
             <a @click="loadMore" :disabled="!home.loading_enable">{{home.hot_loading_text}}</a>
         </div>
         <div v-show="!home.loaded">

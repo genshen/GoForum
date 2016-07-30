@@ -638,44 +638,53 @@ html,body {
     visibility: visible;
 }
 
-/****************hot _ item*******************/
+/*hot_item*/
+.hot-list-author{
+    color:#333
+}
+.hot-list-author:hover,.hot-list-author:active,.hot-list-author:focus,.hot-list-author:visited{
+    color:#333;
+    text-decoration: none;
+}
 .list-group {
-    background: #FFFFFF;
-    margin: 10px -8px !important;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+/*background: #FFFFFF;*/
+    /*margin: 10px -8px !important;*/
+    /*box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);*/
 }
 
 .list-group-item {
-    padding: 6px 12px 0 !important;
-
+    /*padding: 6px 12px 0 !important;*/
 }
 
 .row-picture {
-    float: left;
-    margin-right: 13px;
+    /*float: left;*/
+    /*margin-right: 13px;*/
 }
 
 .row-picture img {
-    width: 39px !important;
-    height: 39px !important;
+    /*width: 39px !important;*/
+    /*height: 39px !important;*/
 }
 
 .row-content {
-    width: -webkit-calc(100% - 73px) !important;
-    width: calc(100% - 70px) !important;
+    /*width: -webkit-calc(100% - 73px) !important;*/
+    /*width: calc(100% - 70px) !important;*/
 }
 
 small {
-    color: #A0A0A0 !important;
-    margin-right: 5px;
+    /*color: #A0A0A0 !important;*/
+    /*margin-right: 5px;*/
 }
 
+.list-group-item-text{
+    /*margin-top: 3px;*/
+}
 .list-group-item-text a {
-    color: #4C4C4C !important;
-    font-size: 16px;
+    /*color: #4C4C4C !important;*/
+    /*font-size: 16px;*/
 }
 
 .list-group-item-date {
     margin-bottom: 3px;
-
+    /*font-size:12px;*/
 }
