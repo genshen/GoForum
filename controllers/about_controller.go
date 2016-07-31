@@ -38,7 +38,7 @@ func (this *AboutController) Feedback() {
 }
 
 func (this *AboutController)POST_Feedback() {
-	post_result := forms.PostResult{Status:1}
+	post_result := forms.SimpleJsonResponse{Status:1}
 	captcha := cpt.VerifyReq(this.Ctx.Request)
 	feedback := this.GetString("feedback")
 	contact := this.GetString("contact")

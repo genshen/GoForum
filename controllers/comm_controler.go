@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"strconv"
 	"../models/m"
 	"../models/forms"
-	"strconv"
+	identify "../middleware/values"
 )
 
 type CommentController struct {
@@ -12,6 +13,7 @@ type CommentController struct {
 
 var comment_rules = map[string]int{
 	"View":   0,
+	"CommentAdd":identify.LoginJSON,
 }
 
 func (this *CommentController) getRules(action string) int {
@@ -39,17 +41,13 @@ func (this *CommentController) Comment() {
 }
 
 //post only
-// 0 for no login;2 for article deleted; 1 feo success
+// 0 for article deleted; 1 for success,3 for no login;
 func (this *CommentController) CommentAdd() {
-	var result *forms.PostResult
-	if !this.IsUserLogin() {
-		result = &forms.PostResult{Status:3, Error:"用户未登录"}
-	} else {
-		id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
-		content := this.GetString("content")
-		ccf :=  forms.CommentCreateForm{PostID:uint(id),Content:content}
-		result  = ccf.Create(this.getUserId())
-	}
+	var result *forms.SimpleJsonResponse
+	id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
+	content := this.GetString("content")
+	ccf := forms.CommentCreateForm{PostID:uint(id), Content:content}
+	result = ccf.Create(this.getUserId())
 	this.Data["json"] = result
 	this.ServeJSON()
 }

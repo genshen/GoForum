@@ -25,7 +25,7 @@ var post_rules = map[string]int{
 	"CreateJump": identify.Login | identify.JumpBack,
 	"CreateMobile": identify.Login | identify.JumpBack,
 	"POST_CreateMobile": identify.Login | identify.JumpBack,
-	"UploadToken":identify.Login,
+	"UploadToken":identify.LoginJSON,
 }
 
 func (this *PostController) getRules(action string) int {

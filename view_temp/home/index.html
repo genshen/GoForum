@@ -26,20 +26,24 @@
             </div>  <!--/row--->
             <div class="row">
                 <div class="col-md-8 list-group">
-                    <template  v-for="hot in home.hot_posts">
+                    <template v-for="hot in home.hot_posts">
                         <div class="list-group-item">
                             <div class="row-picture">
-                                <a :href="'/person/'+hot.ID" ><img class="circle" :src="hot.Avatar" alt="Avatar"/></a>
+                                <a :href="'/person/'+hot.ID"><img class="circle" :src="hot.Avatar" alt="Avatar"/></a>
                             </div>
                             <div class="row-content">
                                 <div class="home-list-top-info"><!--class="list-group-item-heading"-->
-                                    <a :href="'/person/'+hot.ID" class="hot-list-author"><small>{{"{{hot.Name}}"}}</small></a>
+                                    <a :href="'/person/'+hot.ID" class="hot-list-author">
+                                        <small>{{"{{hot.Name}}"}}</small>
+                                    </a>
                                     <small class="pull-right">
                                         <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{"{{hot.ViewCount}}"}}&nbsp;&nbsp;</span>
                                         <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{"{{hot.CommentCount}}"}}&nbsp;&nbsp;</span>
                                     </small>
                                 </div>
-                                <p class="hot-list-item-date"><small>2016.7.11</small></p>
+                                <p class="hot-list-item-date">
+                                    <small>2016.7.11</small>
+                                </p>
                                 <h5 class="list-group-item-text" style="margin-top:0;">
                                     <a :href="'/post/'+hot.PostID">{{"{{hot.Title}}"}}</a>
                                 </h5>
@@ -77,7 +81,7 @@
             </div>  <!--/topic-container-->
         </div>
         <div v-show="!category.loaded">
-           正在加载...
+            正在加载...
         </div> <!--/category.loaded-->
     </div> <!--/category.active-->
 </script>
@@ -85,8 +89,8 @@
 <script type="text/x-template" id="message-template">
     <div class="container" v-show="message.active">
         <h1>Message</h1>
-        <div v-for="msg in messages">
-            {{"{{msg}}"}}
+        <div v-for="msg in message.message_data">
+            {{"{{msg.Content}}"}}
         </div>
     </div>
 </script>
@@ -130,11 +134,6 @@
         props: {
             home: JSON
         },
-        ready: function () {
-        },
-        data: function () {
-            return {}
-        },
         methods: {
             loadMore: function () {
                 requestHotPosts(this, this.home.hot_start);
@@ -147,11 +146,6 @@
         props: {
             category: JSON
         },
-        ready: function () {
-        },
-        data: function () {
-            return {}
-        },
         methods: {}
     });
 
@@ -159,11 +153,6 @@
         template: '#message-template',
         props: {
             message: JSON
-        },
-        ready: function () {
-        },
-        data: function () {
-            return {}
         },
         methods: {}
     });
@@ -173,16 +162,26 @@
         props: {
             user: JSON
         },
-        ready: function () {
-        },
         data: function () {
             return {
                 lists: [
                     {is_space: true},
                     {is_space: false, islast: false, name: "我的帖子", icon: "glyphicon-home", link: "#1"},
                     {is_space: false, islast: false, name: "关注的人", icon: "glyphicon-user", link: "/profile/following"},
-                    {is_space: false, islast: false, name: "我的粉丝", icon: "glyphicon-heart-empty", link: "/profile/followed"},
-                    {is_space: false, islast: true, name: "我的收藏", icon: "glyphicon-star-empty", link: "/profile/collection"},
+                    {
+                        is_space: false,
+                        islast: false,
+                        name: "我的粉丝",
+                        icon: "glyphicon-heart-empty",
+                        link: "/profile/followed"
+                    },
+                    {
+                        is_space: false,
+                        islast: true,
+                        name: "我的收藏",
+                        icon: "glyphicon-star-empty",
+                        link: "/profile/collection"
+                    },
                     {is_space: true},
                     {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
                     {is_space: true},
@@ -214,7 +213,7 @@
                 hot_loading_enable: true
             },
             category: {loaded: false, active: false, tags: [], topics: []},
-            message: {loaded: false, active: false},
+            message: {loaded: false, active: false,message_data:[]},
             me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "default.png"},
             setting: {}
         },
@@ -271,8 +270,7 @@
                 }
                 this.show(SHOW_MESSAGE);
                 if (!this.message.loaded) {
-                    console.log("no data");
-                    this.message.loaded = true;
+                    loadMessageData(this);
                 }
             },
             greetMe: function (ispop) {
@@ -371,6 +369,24 @@
                 var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
                 $.snackbar(options);
                 //  console.log(err);
+            }
+        });
+    }
+
+    //加载消息页面数据
+    function loadMessageData(self) {
+        $.ajax({
+            type: 'GET',
+            url: "/message",
+            success: function (data) {
+                self.message.message_data = [];
+                data.forEach(function (e) {
+                    self.message.message_data.push(e);
+                });
+                self.message.loaded = true;
+            }, error: function (err) {
+                var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
+                $.snackbar(options);
             }
         });
     }

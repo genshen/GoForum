@@ -24,7 +24,7 @@ func GetProfileById(my_id uint, uid uint) (profile Profile) {
 	user := m.User{}
 	database.DB.Preload("Profile").First(&user, uid)
 	var follow_count int
-	database.DB.Model(&m.Follow{}).Where("follower_id = ? AND following_id = ?", my_id,uid).Count(&follow_count)
+	database.DB.Model(&m.Follow{}).Where("follower_id = ? AND following_id = ?", my_id, uid).Count(&follow_count)
 	profile = Profile{Name:user.Name, Profile:user.Profile, Edit:(my_id == uid),
 		HasFollowed:follow_count != 0, IsLogin:!(my_id == 0)}
 	return
@@ -141,4 +141,24 @@ func findFollowsById(id uint) *AllFollows {
 			Person:Person{ID:follow.Follower.ID, Name:follow.Follower.Name, Avatar:follow.Follower.Profile.Avatar}});
 	}
 	return &AllFollows{Following:&personFollowing, Followed:&personFollowed}
+}
+
+type Message struct {
+	ID          uint
+	RelatedID   uint
+	SubjectType int
+	Title       string
+	Content     string
+	IsRead      bool
+}
+
+func findLatestMessages(uid uint) ([]Message) {
+	notices := []m.Notification{}
+	database.DB.Find(&notices) //todo
+	messages := make([]Message, 0, len(notices))
+	for _, no := range notices {
+		messages = append(messages, Message{ID:no.ID, RelatedID:no.RelatedID, SubjectType:no.SubjectType,
+			Title:no.Title, Content:no.Content, IsRead:no.IsRead});
+	}
+	return messages
 }

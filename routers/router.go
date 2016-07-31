@@ -23,6 +23,8 @@ func init() {
 	beego.Router("profile/follow/add", &controllers.ProfileController{}, "post:FollowAdd")
 	beego.Router("profile/collection", &controllers.ProfileController{}, "get:Collection")
 
+	beego.Router("message", &controllers.MessageController{}, "get:Message")
+
 	beego.Router("topic/:slug([\\w]+)", &controllers.TopicController{}, "get:Slug")  //topic and tag
 
 	beego.Router("post/:id([0-9]+)", &controllers.PostController{}, "get:View")

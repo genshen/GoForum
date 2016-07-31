@@ -15,6 +15,7 @@ type ProfileController struct {
 var profile_rules = map[string]int{
 	"Follow": identify.Login | identify.JumpBack,
 	"Collection": identify.Login | identify.JumpBack,
+	"FollowAdd":identify.LoginJSON,
 }
 
 func (this *ProfileController) getRules(action string) int {
@@ -24,7 +25,7 @@ func (this *ProfileController) getRules(action string) int {
 func (this *ProfileController) Person() {
 	id, _ := strconv.Atoi(this.Ctx.Input.Param(":uid"))
 	uid := uint(id)
-	profile := GetProfileById(this.getUserId(),uid)
+	profile := GetProfileById(this.getUserId(), uid)
 	if profile.Profile.UserRefer != 0 {
 		json, err := json.Marshal(profile)
 		if err == nil {
@@ -49,22 +50,18 @@ func (this *ProfileController) Follow() {
 }
 
 func (this *ProfileController) FollowAdd() {
-	var result *forms.PostResult
-	if !this.IsUserLogin() {
-		result = &forms.PostResult{Status:3, Error:"用户未登录"}
-	} else {
-		id, err := this.GetInt("id")
-		if err == nil {
-			faf := forms.FollowAddForm{PersonID:uint(id)}
-			myID := this.getUserId()
-			create_result, is_created := faf.Add(myID)
-			result = create_result
-			if is_created {
-				event.OnFollowed(uint(id), myID, this.getUsername())
-			}
-		} else {
-			result = &forms.PostResult{Status:0, Error:"ID不合法"}
+	var result *forms.SimpleJsonResponse
+	id, err := this.GetInt("id")
+	if err == nil {
+		faf := forms.FollowAddForm{PersonID:uint(id)}
+		myID := this.getUserId()
+		create_result, is_created := faf.Add(myID)
+		result = create_result
+		if is_created {
+			event.OnFollowed(uint(id), myID, this.getUsername())
 		}
+	} else {
+		result = &forms.SimpleJsonResponse{Status:0, Error:"ID不合法"}
 	}
 	this.Data["json"] = result
 	this.ServeJSON()

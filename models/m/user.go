@@ -3,7 +3,6 @@ package m
 import (
 	"github.com/jinzhu/gorm"
 	"./../database"
-	"fmt"
 )
 
 type User struct {
@@ -39,7 +38,6 @@ func (User) TableName() string {
 }
 
 func (u *User) GetUserById(id uint) {
-	fmt.Println(id)
 	database.DB.Preload("Profile").First(&u, id)
 }
 
