@@ -39,7 +39,7 @@
                                         <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{"{{hot.CommentCount}}"}}&nbsp;&nbsp;</span>
                                     </small>
                                 </div>
-                                <p class="list-group-item-date"><small>2016.7.11</small></p>
+                                <p class="hot-list-item-date"><small>2016.7.11</small></p>
                                 <h5 class="list-group-item-text" style="margin-top:0;">
                                     <a :href="'/post/'+hot.PostID">{{"{{hot.Title}}"}}</a>
                                 </h5>
@@ -84,7 +84,7 @@
 <!--message template-->
 <script type="text/x-template" id="message-template">
     <div class="container" v-show="message.active">
-        <h1>Nessage</h1>
+        <h1>Message</h1>
         <div v-for="msg in messages">
             {{"{{msg}}"}}
         </div>

@@ -24,7 +24,7 @@ func (this *ProfileController) getRules(action string) int {
 func (this *ProfileController) Person() {
 	id, _ := strconv.Atoi(this.Ctx.Input.Param(":uid"))
 	uid := uint(id)
-	profile := GetProfileById(this.getUserId(),uid)   //todo use NewRecord
+	profile := GetProfileById(this.getUserId(),uid)
 	if profile.Profile.UserRefer != 0 {
 		json, err := json.Marshal(profile)
 		if err == nil {

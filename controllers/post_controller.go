@@ -10,7 +10,6 @@ import (
 	"./../models/m"
 	form_check "../middleware/form"
 	identify "../middleware/values"
-
 )
 
 type PostController struct {
@@ -47,7 +46,8 @@ func (this *PostController) POST_CreateMobile() {
 	//this.ServeJSON()
 	title := this.GetString("post_title")
 	content := this.GetString("post_content")
-	form := forms.PostCreateForm{Title:title, Content:content}
+	summary := this.GetString("post_summary")
+	form := forms.PostCreateForm{Title:title, Summary:summary, Content:content}
 	if errs := form.Valid(); errs == nil {
 		if id := form.Save(this.getUserId()); id != 0 {
 			this.Redirect("/post/" + strconv.FormatInt(int64(id), 10), 302)
@@ -57,7 +57,7 @@ func (this *PostController) POST_CreateMobile() {
 		}
 	} else {
 		//todo set error
-		s := form_check.NewInstantToByte(errs, map[string]string{"title":  title, "content": ""})
+		s := form_check.NewInstantToByte(errs, map[string]string{"title":  title, "summary":summary, "content": content})
 		this.Data["form_check"] = string(s)
 	}
 	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())

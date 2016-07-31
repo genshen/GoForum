@@ -24,6 +24,7 @@ type SignUpForm struct {
 
 type PostCreateForm struct {
 	Title   string
+	Summary   string
 	Content string
 }
 
@@ -88,6 +89,8 @@ func (this *PostCreateForm)Valid() ([]*validation.Error) {
 	valid := validation.Validation{}
 	valid.Required(this.Title, "title").Message("标题不能为空")
 	valid.Required(this.Content, "conten").Message("内容不能为空")
+	valid.Required(this.Summary, "summary").Message("摘要不能为空")
+	valid.MaxSize(this.Summary,255, "summary").Message("摘要不超过255")
 	if valid.HasErrors() {
 		return valid.Errors
 	}
@@ -96,7 +99,8 @@ func (this *PostCreateForm)Valid() ([]*validation.Error) {
 
 func (this *PostCreateForm)Save(userID uint) uint {
 	//todo check user account first
-	post := m.Posts{TopicID:1, AuthorID:userID, Title:this.Title, Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
+	post := m.Posts{TopicID:1, AuthorID:userID, Title:this.Title,Summary:this.Summary,
+		Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
 	database.DB.Create(&post)
 	return post.ID
 }

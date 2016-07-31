@@ -15,6 +15,7 @@ type Posts struct {
 	AuthorID     uint
 	Author       User `gorm:"ForeignKey:AuthorID"`
 	Title        string
+	Summary string
 	Content      string
 	IsMobile     bool // 1 for mobile,0 for desktop
 	Sticky       bool  `gorm:"default:false"`

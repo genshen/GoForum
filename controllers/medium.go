@@ -23,9 +23,10 @@ type Profile struct {
 func GetProfileById(my_id uint, uid uint) (profile Profile) {
 	user := m.User{}
 	database.DB.Preload("Profile").First(&user, uid)
-	has_followed := !database.DB.NewRecord(m.Follow{FollowerID:my_id, FollowingID:uid}) //todo
+	var follow_count int
+	database.DB.Model(&m.Follow{}).Where("follower_id = ? AND following_id = ?", my_id,uid).Count(&follow_count)
 	profile = Profile{Name:user.Name, Profile:user.Profile, Edit:(my_id == uid),
-		HasFollowed:has_followed, IsLogin:!(my_id == 0)}
+		HasFollowed:follow_count != 0, IsLogin:!(my_id == 0)}
 	return
 }
 

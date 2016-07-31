@@ -24,10 +24,10 @@
 <main id="app">
     <div class="container">
         <h1>Create Post</h1>
-
         <form id="post_form" action="" method="post">
             <<< .xsrf_token >>>
             <input type="hidden" id="post_content" name="post_content">
+            <input type="hidden" id="post_summary" name="post_summary">
             <div class="form-group">
                 <label for="post_title" class="col-md-2 control-label">标题</label>
                 <div class="col-md-10">
@@ -93,7 +93,12 @@
 
     function submitPost() {
         var content = editor.$txt.html().replace(editor.config.imgUploadConfig.domain, editor.config.imgUrlTag);
+        var summary = content.replace(/<[^>]+>/g,"");//去掉所有的html标记
+        if(summary.length > 300) {
+            summary = title.substring(0,255);
+        }
         $("#post_content").val(content);
+        $("#post_summary").val(summary);
         $("#post_form").submit();
     }
 </script>

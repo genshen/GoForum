@@ -192,7 +192,7 @@
                                 Util.simpleParseError.init(data.Status, data.Error, {
                                     onSuccess: function () {
                                         $.snackbar({content: "关注成功", timeout: 3000});
-                                        self.HasFollowed = true;
+                                        self.person.HasFollowed = true;
                                     }, errorCallback: function (msg) {
                                         $.snackbar({content: msg, timeout: 3000});
                                     },
@@ -220,7 +220,15 @@
                     return;
                 }
                 if (this.person.IsLogin) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "/profile/follow/remove",
+                        success:function(data){
 
+                        },error:function(data){
+
+                        }
+                    });
                 } else {
                     $.snackbar({content: SnackBarUnAuth, timeout: 3000});
                 }
