@@ -651,3 +651,12 @@ html,body {
     margin-bottom: 3px;
     /*font-size:12px;*/
 }
+
+#message-list .message-list-icon i{
+    background: #4CAF50;
+    font-size: 30px;
+    color: white;
+}
+#message-list .message-list-title{
+    font-size:16px;
+}

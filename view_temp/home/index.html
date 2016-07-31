@@ -88,9 +88,27 @@
 <!--message template-->
 <script type="text/x-template" id="message-template">
     <div class="container" v-show="message.active">
-        <h1>Message</h1>
-        <div v-for="msg in message.message_data">
-            {{"{{msg.Content}}"}}
+
+        <div class="message-control-box">
+            <h1>Mark all Read<i class="material-icons">done_all</i></h1>
+    </div>
+        <div class="row list-group" id="message-list">
+            <template v-for="msg in message.message_data | orderBy 'IsRead' -1">
+                <div class="list-group-item">
+                    <div class="row-picture message-list-icon">
+                        <i class="material-icons">poll</i>
+                    </div>
+                    <div class="row-content">
+                        <div class="action-secondary"><i class="material-icons">done</i></div>
+                        <h6 class="message-list-title list-group-item-heading"><a>{{"{{msg.Title}}"}}</a></h6>
+                        <p class="list-group-item-text">Donec id elit non m</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+            </template>
+        </div>
+        <div>
+            {{"{{msg.Title}}"}}
         </div>
     </div>
 </script>
@@ -213,7 +231,7 @@
                 hot_loading_enable: true
             },
             category: {loaded: false, active: false, tags: [], topics: []},
-            message: {loaded: false, active: false,message_data:[]},
+            message: {loaded: false, active: false, message_data: []},
             me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "default.png"},
             setting: {}
         },

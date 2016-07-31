@@ -122,13 +122,20 @@ func (this *CommentCreateForm)Create(user_id uint) (result *SimpleJsonResponse) 
 	tx := database.DB.Begin()
 	if (p.Exist(this.PostID) ) {
 		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
-		if err := database.DB.Create(&comment).Error; err != nil {
+		if err := tx.Create(&comment).Error; err != nil {
 			tx.Rollback();
 			result = &SimpleJsonResponse{Status:0, Addition:"添加回复失败,请重试!"}
 			return
 		}
-		if err := database.DB.Model(&p).UpdateColumn("CommentCount", p.CommentCount + 1).Error; err != nil {
-			tx.Rollback();
+		if err :=  tx.Model(&p).UpdateColumn("comment_count", p.CommentCount + 1).Error; err != nil {
+			tx.Rollback()
+			result = &SimpleJsonResponse{Status:0, Error:"添加回复失败,请重试!"}
+			return
+		}
+		u := m.Profile{} //update profile attributes
+		tx.Select("user_refer,comment_count").Where("user_refer = ?",user_id).First(&u)
+		if err :=  tx.Table("profile").Where("user_refer = ?",user_id).UpdateColumn("comment_count", u.CommentCount + 1).Error; err != nil {
+			tx.Rollback()
 			result = &SimpleJsonResponse{Status:0, Error:"添加回复失败,请重试!"}
 			return
 		}

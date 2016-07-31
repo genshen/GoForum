@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/utils"
 	"github.com/astaxie/beego"
 	"net/textproto"
+	"../values"
 	"../../models/m"
 	"./../../models/database"
 )
@@ -25,7 +26,7 @@ func OnCommentSubmitted() {
 
 /*id userId;id_r:related_id;name:*/
 func OnFollowed(id uint, id_r uint, name string) {
-	var notify = m.Notification{UserID:id, RelatedID:id_r, Title:name + "关注了你", Subject:"关注", SubjectType:1}
+	var notify = m.Notification{UserID:id, RelatedID:id_r, Title:name + "关注了你", Subject:"关注", SubjectType:values.FOLLOW_ADD}
 	database.DB.Create(&notify)
 }
 

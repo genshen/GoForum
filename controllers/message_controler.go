@@ -9,8 +9,7 @@ type MessageController struct {
 }
 
 var message_rules = map[string]int{
-	"Follow": identify.Login | identify.JumpBack,
-	"Collection": identify.Login | identify.JumpBack,
+	"Message": identify.LoginJSON,
 }
 
 func (this *MessageController) getRules(action string) int {

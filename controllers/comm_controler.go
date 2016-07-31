@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"../models/m"
 	"../models/forms"
+	"../middleware/event"
 	identify "../middleware/values"
 )
 
@@ -50,4 +51,7 @@ func (this *CommentController) CommentAdd() {
 	result = ccf.Create(this.getUserId())
 	this.Data["json"] = result
 	this.ServeJSON()
+	if result.Status == 1{
+		event.OnCommentSubmitted()
+	}
 }

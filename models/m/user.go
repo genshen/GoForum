@@ -13,7 +13,7 @@ type User struct {
 	Password   string  `gorm:"column:password_hash"`
 	AuthKey    string  `gorm:"column:auth_key"`
 	ResetToken string  `gorm:"column:password_reset_token"`
-	Status     int     `gorm:"default:9"` //todo UNACTIVATED
+	Status     int     `gorm:"default:1"` //todo UNACTIVATED
 	Profile    Profile `gorm:"ForeignKey:UserRefer"`
 }
 
