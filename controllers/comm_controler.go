@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"../models/m"
 	"../models/forms"
-	"../middleware/event"
 	identify "../middleware/values"
 )
 
@@ -12,7 +11,7 @@ type CommentController struct {
 	BaseController
 }
 
-var comment_rules = map[string]int{
+const comment_rules = map[string]int{
 	"View":   0,
 	"CommentAdd":identify.LoginJSON,
 }
@@ -48,10 +47,7 @@ func (this *CommentController) CommentAdd() {
 	id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
 	content := this.GetString("content")
 	ccf := forms.CommentCreateForm{PostID:uint(id), Content:content}
-	result = ccf.Create(this.getUserId())
+	result = ccf.Create(this.getUserId(),this.getUsername())
 	this.Data["json"] = result
 	this.ServeJSON()
-	if result.Status == 1{
-		event.OnCommentSubmitted()
-	}
 }

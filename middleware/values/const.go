@@ -16,7 +16,8 @@ const (
 
 //message type
 const (
-	POST_REPLY = iota
+	POST_COMMENT = iota
+	POST_REPLY
 	FOLLOW_ADD
 
 )

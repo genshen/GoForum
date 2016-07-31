@@ -12,7 +12,7 @@ type ProfileController struct {
 	BaseController
 }
 
-var profile_rules = map[string]int{
+const profile_rules = map[string]int{
 	"Follow": identify.Login | identify.JumpBack,
 	"Collection": identify.Login | identify.JumpBack,
 	"FollowAdd":identify.LoginJSON,

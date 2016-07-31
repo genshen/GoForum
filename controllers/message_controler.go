@@ -8,7 +8,7 @@ type MessageController struct {
 	BaseController
 }
 
-var message_rules = map[string]int{
+const message_rules = map[string]int{
 	"Message": identify.LoginJSON,
 }
 

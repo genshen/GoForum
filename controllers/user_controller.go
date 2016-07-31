@@ -13,7 +13,7 @@ type UserController struct {
 	BaseController
 }
 
-var rules = map[string]int{
+const rules = map[string]int{
 	"Login":   0,
 	"Logout": identify.Login,
 }

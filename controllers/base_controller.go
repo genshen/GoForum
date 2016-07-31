@@ -10,6 +10,7 @@ const (
 	User = "user"
 	User_Name = "username"
 	Is_Login = "is_login"
+	Login_Json_Err = forms.SimpleJsonResponse{Status:3, Error:"用户未登录"}
 )
 
 type Rules interface {
@@ -34,7 +35,7 @@ func (this *BaseController) Prepare() {
 				this.Redirect("/account/signin", 302)
 			}
 		} else if ((rule & identify.LoginJSON) == identify.LoginJSON) && !is_login {
-			this.Data["json"] = &forms.SimpleJsonResponse{Status:3, Error:"用户未登录"}
+			this.Data["json"] = &Login_Json_Err
 			this.ServeJSON()
 			this.StopRun()
 		}

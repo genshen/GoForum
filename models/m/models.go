@@ -15,7 +15,7 @@ type Posts struct {
 	AuthorID     uint
 	Author       User `gorm:"ForeignKey:AuthorID"`
 	Title        string
-	Summary string
+	Summary      string
 	Content      string
 	IsMobile     bool // 1 for mobile,0 for desktop
 	Sticky       bool  `gorm:"default:false"`
@@ -32,11 +32,8 @@ func (p *Posts) GetPostById(id string) {
 }
 
 func (p *Posts) Exist(id uint) bool {
-	database.DB.Select("id,comment_count").First(&p, id)
-	if p.ID == 0 {
-		return false
-	}
-	return true
+	database.DB.Select("id,author_id,title,comment_count").First(&p, id)
+	return p.ID != 0
 }
 
 type Comment struct {

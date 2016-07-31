@@ -3,11 +3,11 @@ package forms
 import (
 	"github.com/astaxie/beego/validation"
 	"time"
+	"../../middleware/event"
 	"../../middleware/values"
 	"../database"
 	"../../middleware/auth/security"
 	"../m"
-	"fmt"
 )
 
 type SignInForm struct {
@@ -116,7 +116,7 @@ type SimpleJsonResponse struct {
 	Addition interface{}
 }
 
-func (this *CommentCreateForm)Create(user_id uint) (result *SimpleJsonResponse) {
+func (this *CommentCreateForm)Create(user_id uint,username string) (result *SimpleJsonResponse) {
 	p := m.Posts{}
 	// use transaction
 	tx := database.DB.Begin()
@@ -140,6 +140,7 @@ func (this *CommentCreateForm)Create(user_id uint) (result *SimpleJsonResponse) 
 			return
 		}
 		result = &SimpleJsonResponse{Status:1, Addition:comment.ID}
+		event.OnCommentSubmitted(&p,&comment,username)
 	} else {
 		result = &SimpleJsonResponse{Status:0, Error:"对应文章不存在"}
 	}
@@ -189,7 +190,6 @@ func (this *FeedbackForm)Valid(uid uint) ([]*validation.Error) {
 		return v.Errors
 	}
 	//todo 联系方式验证
-	fmt.Println(this.Type)
 	v.Required(this.Feedback, "feedback").Message("反馈意见不能为空")
 	v.MaxSize(this.Feedback, 512, "feedback").Message("反馈意见字数不能超过255")
 	if this.Type > 2 || this.Type < 0 {

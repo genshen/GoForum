@@ -45,13 +45,13 @@
                 </div>  <!--owl-carousel-->
             </div>  <!--/row--->
             <div class="row">
-                <div class="col-md-8 list-group">
+                <div class="col-md-8 mdl-list-group">
                     <template v-for="hot in home.hot_posts">
-                        <div class="list-group-item">
+                        <div class="mdl-list-group-item">
                             <div class="row-picture">
                                 <a :href="'/person/'+hot.ID"><img class="circle" :src="hot.Avatar" alt="Avatar"/></a>
                             </div>
-                            <div class="row-content">
+                            <div class="row-content without-arrow">
                                 <div class="home-list-top-info"><!--class="list-group-item-heading"-->
                                     <a :href="'/person/'+hot.ID" class="hot-list-author">
                                         <small>{{hot.Name}}</small>
@@ -111,12 +111,13 @@
 
         <div class="message-control-box">
             <h1>Mark all Read<i class="material-icons">done_all</i></h1>
-    </div>
-        <div class="row list-group" id="message-list">
+        </div>
+        <div class="row mdl-list-group" id="message-list">
             <template v-for="msg in message.message_data | orderBy 'IsRead' -1">
-                <div class="list-group-item">
+                <div class="mdl-list-group-item">
                     <div class="row-picture message-list-icon">
-                        <i class="material-icons">poll</i>
+                        <i v-if="msg.SubjectType==0" class="material-icons">reply</i>
+                        <i v-if="msg.SubjectType==2" class="material-icons">poll</i>
                     </div>
                     <div class="row-content">
                         <div class="action-secondary"><i class="material-icons">done</i></div>
@@ -126,10 +127,7 @@
                 </div>
                 <div class="list-group-separator"></div>
             </template>
-        </div>
-        <div>
-            {{msg.Title}}
-        </div>
+        </div> <!--/list-group--->
     </div>
 </script>
 <!--me template-->

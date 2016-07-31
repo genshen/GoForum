@@ -652,6 +652,9 @@ html,body {
     /*font-size:12px;*/
 }
 
+#message-list .message-list-icon{
+    vertical-align: super;
+}
 #message-list .message-list-icon i{
     background: #4CAF50;
     font-size: 30px;
