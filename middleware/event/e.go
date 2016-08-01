@@ -15,21 +15,23 @@ func OnAccountCreated(email string, username string, uid uint) {
 	go sendMail(email, "激活账号", "Text Message")
 }
 
- //todo: none
+//todo: none
 func OnPostCreated() {
 
 }
 
 //Posts:id,title,comment_count
 func OnCommentSubmitted(post *m.Posts, comment *m.Comment, username string) {
-	var notify = m.Notification{UserID:post.AuthorID, RelatedID:comment.Author,
-		Data:"{\"username\":\"" + username + "\"}", SubjectType:values.POST_COMMENT}
-	database.DB.Create(&notify)
+	var message = m.PostMessage{RelatedUsername:username, PostID:post.ID, PostTitle:post.Title,
+		BaseMessage:m.BaseMessage{UserID:post.AuthorID, RelatedID:comment.Author, SubjectType:values.POST_COMMENT} }
+	database.DB.Create(&message)
+	//多次create,message 可以复用
 }
 
 /*id userId;id_r:related_id;name:*/
 func OnFollowed(id uint, id_r uint, name string) {
-	var notify = m.Notification{UserID:id, RelatedID:id_r,Data:"{\"username\":\"" + name + "\"}", SubjectType:values.FOLLOW_ADD}
+	var notify = m.Notification{Data:"{\"username\":\"" + name + "\"}",
+		BaseMessage:m.BaseMessage{UserID:id, RelatedID:id_r, SubjectType:values.FOLLOW_ADD}}
 	database.DB.Create(&notify)
 }
 

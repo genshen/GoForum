@@ -129,10 +129,12 @@
                                     <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
                                         <i class="material-icons">done</i>
                                     </a>
-                                    <h6 class="message-list-title list-group-item-heading">
-                                        <a>{{msg.Data}}</a>
+                                    <h6 class="single-line message-list-title list-group-item-heading">
+                                        <a :href="'/person/'+msg.RelatedID" v-text="msg.RelatedUsername">Loading</a>
+                                        <span>回复了你的帖子</span>
+                                        <a :href="'/post/'+msg.PostID" v-text="msg.PostTitle">Loading</a>
                                     </h6>
-                                    <p class="list-group-item-text">Donec id elit non m</p>
+                                    <p class="list-group-item-text">See More</p>
                                 </div>
                             </div>
                             <div class="list-group-separator"></div>
@@ -157,7 +159,7 @@
                                         <i class="material-icons">done</i>
                                     </a>
                                     <h6 class="message-list-title list-group-item-heading">
-                                        <a v-text="msg.Data.username+'关注了你'"></a>
+                                        <a :href="'/person/'+msg.RelatedID" v-text="msg.Data.username">Loading</a><span>关注了你</span>
                                     </h6>
                                     <p class="list-group-item-text">Donec id elit non m</p>
                                 </div>
@@ -533,7 +535,9 @@
             success: function (data) {
                 self.message_data[index] = [];
                 data.forEach(function (e) {
-                    e.Data = JSON.parse(e.Data);
+                    if (e.Data != undefined){
+                        e.Data = JSON.parse(e.Data);
+                    }
                     self.message_data[index].push(e);
                 });
                 self.message_loaded = self.message_loaded | (1 << position);

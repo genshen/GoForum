@@ -653,6 +653,9 @@ html,body {
 }
 
 /*message lists*/
+.single-line{ /*fixed width */
+    text-overflow:ellipsis; white-space:nowrap; overflow:hidden;
+}
 .message-control-box{
     padding-left: 12px;
     margin-bottom:12px;
@@ -674,5 +677,5 @@ html,body {
     color: white;
 }
 .mdl-list-group.message-list .message-list-title{
-    font-size:16px;
+    font-size:15px;
 }
