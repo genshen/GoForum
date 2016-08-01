@@ -24,10 +24,6 @@
     <category-grid :category="category"></category-grid>
     <message-grid :active="message.active" :tab_index.sync="message.tab_index"></message-grid>
     <user-grid :user="me"></user-grid>
-    <a href="javascript:void(0)" class="btn btn-primary btn-fab"
-       style="position:fixed;right:20px;bottom:80px;padding-top: 14px;">
-        <span class="glyphicon glyphicon-refresh" title="刷新"></span>
-    </a>
 </main>
 <!--home template-->
 <script type="text/x-template" id="home-template">
@@ -133,7 +129,9 @@
                                     <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
                                         <i class="material-icons">done</i>
                                     </a>
-                                    <h6 class="message-list-title list-group-item-heading"><a>{{msg.Title}}</a></h6>
+                                    <h6 class="message-list-title list-group-item-heading">
+                                        <a>{{msg.Data}}</a>
+                                    </h6>
                                     <p class="list-group-item-text">Donec id elit non m</p>
                                 </div>
                             </div>
@@ -158,7 +156,9 @@
                                     <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
                                         <i class="material-icons">done</i>
                                     </a>
-                                    <h6 class="message-list-title list-group-item-heading"><a>{{msg.Title}}</a></h6>
+                                    <h6 class="message-list-title list-group-item-heading">
+                                        <a v-text="msg.Data.username+'关注了你'"></a>
+                                    </h6>
                                     <p class="list-group-item-text">Donec id elit non m</p>
                                 </div>
                             </div>
@@ -533,6 +533,7 @@
             success: function (data) {
                 self.message_data[index] = [];
                 data.forEach(function (e) {
+                    e.Data = JSON.parse(e.Data);
                     self.message_data[index].push(e);
                 });
                 self.message_loaded = self.message_loaded | (1 << position);

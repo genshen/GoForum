@@ -10,11 +10,8 @@ type Notification struct {
 	RelatedUser User    `gorm:"ForeignKey:RelatedID"`
 	UserID      uint
 	RelatedID   uint    `gorm:"default:0"`
-	TargetID    uint    `gorm:"default:0"`
-	Title       string
-	Subject     string
 	SubjectType int
-	Content     string   `gorm:"default:''"`
+	Data     string   `gorm:"default:''"`
 	IsRead      bool     `gorm:"default:false"`
 }
 
