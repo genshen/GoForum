@@ -11,7 +11,7 @@ type CommentController struct {
 	BaseController
 }
 
-const comment_rules = map[string]int{
+var comment_rules = map[string]int{
 	"View":   0,
 	"CommentAdd":identify.LoginJSON,
 }
