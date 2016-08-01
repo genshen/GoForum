@@ -22,7 +22,7 @@ type AboutController struct {
 	BaseController
 }
 
-const about_rules = map[string]int{
+var about_rules = map[string]int{
 }
 
 func (this *AboutController) getRules(action string) int {

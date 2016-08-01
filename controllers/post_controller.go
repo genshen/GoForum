@@ -20,7 +20,7 @@ type QiNiuToken struct {
 	Token string
 }
 
-const post_rules = map[string]int{
+var post_rules = map[string]int{
 	"View":   0,
 	"CreateJump": identify.Login | identify.JumpBack,
 	"CreateMobile": identify.Login | identify.JumpBack,

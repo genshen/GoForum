@@ -10,7 +10,7 @@ type TopicController struct {
 	BaseController
 }
 
-const topic_rules = map[string]int{
+var topic_rules = map[string]int{
 }
 
 func (this *TopicController) getRules(action string) int {

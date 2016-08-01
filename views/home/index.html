@@ -108,7 +108,20 @@
 <!--message template-->
 <script type="text/x-template" id="message-template">
     <div class="container" v-show="message.active">
+        <nav class="tab-nav">
+            <ul class="nav nav-justified">
+                <li><a data-toggle="tab" href="#message">动态</a></li>
+                <li><a data-toggle="tab" href="#notification">通知</a></li>
+            </ul>
+        </nav>
+        <div class="container tab-content">
+            <div class="tab-pane" id="message">
 
+            </div>
+            <div class="tab-pane" id="notification">
+
+            </div>
+        </div>
         <div class="message-control-box">
             <h1>Mark all Read<i class="material-icons">done_all</i></h1>
         </div>
