@@ -4,6 +4,7 @@ import (
 	"time"
 	"../models/m"
 	"../models/database"
+	"fmt"
 )
 
 type Person struct {
@@ -152,9 +153,9 @@ type Message struct {
 	IsRead      bool
 }
 
-func findLatestMessages(uid uint) ([]Message) {
+func findLatestMessages(uid uint,types []int) ([]Message) {
 	notices := []m.Notification{}
-	database.DB.Find(&notices) //todo
+	database.DB.Where("subject_type in (?)",types).Find(&notices) //todo
 	messages := make([]Message, 0, len(notices))
 	for _, no := range notices {
 		messages = append(messages, Message{ID:no.ID, RelatedID:no.RelatedID, SubjectType:no.SubjectType,

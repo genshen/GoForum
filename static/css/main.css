@@ -652,6 +652,19 @@ html,body {
     /*font-size:12px;*/
 }
 
+/*message lists*/
+.message-control-box{
+    padding-left: 12px;
+    margin-bottom:12px;
+    margin-top:8px;
+}
+.message-control-box .read-mark-action{
+   float:right
+}
+.mdl-list-group .read-mark-action,.message-control-box .read-mark-action{
+    display: inline-block;
+    padding: 2px;
+}
 .mdl-list-group.message-list .message-list-icon{
     vertical-align: super;
 }

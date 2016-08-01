@@ -118,16 +118,21 @@
             <div class="tab-content">
                 <div class="tab-pane container" id="m-message">
                     <div class="message-control-box">
-                        <h1>Mark alRead<i class="material-icons">done_all</i></h1>
+                        <span class="label label-info">{{unread_messages}}</span><span>条未读</span>
+                        <a href="javascript:void(0)" class="withripple read-mark-action">
+                            <i class="material-icons">done_all</i>
+                        </a>
                     </div>
                     <div class="row mdl-list-group message-list">
-                        <template v-for="msg in message_data | orderBy 'IsRead' -1">
+                        <template v-for="msg in message_data.messages | orderBy 'IsRead' -1">
                             <div class="mdl-list-group-item">
                                 <div class="row-picture message-list-icon">
                                     <i class="material-icons">reply</i>
                                 </div>
                                 <div class="row-content">
-                                    <div class="action-secondary"><i class="material-icons">done</i></div>
+                                    <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
+                                        <i class="material-icons">done</i>
+                                    </a>
                                     <h6 class="message-list-title list-group-item-heading"><a>{{msg.Title}}</a></h6>
                                     <p class="list-group-item-text">Donec id elit non m</p>
                                 </div>
@@ -138,17 +143,21 @@
                 </div>
                 <div class="tab-pane container" id="m-notification">
                     <div class="message-control-box">
-                        <h1>Mark all Read<i class="material-icons">done_all</i></h1>
+                        <span class="label label-info">{{unread_messages}}</span><span>条未读</span>
+                        <a href="javascript:void(0)" class="withripple read-mark-action">
+                            <i class="material-icons">done_all</i>
+                        </a>
                     </div>
                     <div class="row mdl-list-group message-list">
-                        <template v-for="msg in message_data | orderBy 'IsRead' -1">
+                        <template v-for="msg in message_data.notifications | orderBy 'IsRead' -1">
                             <div class="mdl-list-group-item">
                                 <div class="row-picture message-list-icon">
-                                    <i v-if="msg.SubjectType==0" class="material-icons">reply</i>
-                                    <i v-if="msg.SubjectType==2" class="material-icons">poll</i>
+                                    <i class="material-icons">poll</i>
                                 </div>
                                 <div class="row-content">
-                                    <div class="action-secondary"><i class="material-icons">done</i></div>
+                                    <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
+                                        <i class="material-icons">done</i>
+                                    </a>
                                     <h6 class="message-list-title list-group-item-heading"><a>{{msg.Title}}</a></h6>
                                     <p class="list-group-item-text">Donec id elit non m</p>
                                 </div>
@@ -260,35 +269,43 @@
         template: '#message-template',
         data: function () {
             return {
-                message_data: [],
-                notification_data: [],
-                message_loaded: false,
-                notification_loaded: false
+                message_data: {messages: [], notifications: []},
+                message_loaded: 0
             }
         },
         props: {
             tab_index: Number,
             active: Boolean
         },
-        methods: {},
+        computed: {
+            unread_messages: function () {
+                return this.countUnRead(this.message_data.messages);
+            },
+            unread_notifications: function () {
+                return this.countUnRead(this.message_data.notifications);
+            }
+        },
+        methods: {
+            countUnRead: function (d) {
+                var count = 0;
+                d.forEach(function (e) {
+                    if (e.IsRead == false) {
+                        count++;
+                    }
+                });
+                return count;
+            }
+        },
         ready: function () {
             var self = this;
+            var indexs = ["messages", "notifications"];
+            var urls = ["messages", "notifications"];
+
             $("#message-tab-nav").on('show.bs.tab', 'a[data-toggle="tab"]', function (e) {
                 var index = $(e.target).parent().index();
                 self.tab_index = index;
-                switch (index) {
-                    case 0:
-                        if (!self.message_loaded) {
-                            loadMessageData(self);
-                        }
-                        break;
-                    case 1:
-                        if (!self.notification_loaded) {
-                            loadMessageData(self);
-                        }
-                        break;
-                    default: //todo
-                        break;
+                if (((self.message_loaded >> index) & 1) != 1) {
+                    loadMessageData(self, urls[index], indexs[index], index);
                 }
             });
         }
@@ -509,16 +526,17 @@
     }
 
     //加载消息页面数据
-    function loadMessageData(self) {
+    function loadMessageData(self, url, index, position) {
         $.ajax({
             type: 'GET',
-            url: "/message",
+            url: "/message/" + url,
             success: function (data) {
-                self.message_data = [];
+                self.message_data[index] = [];
                 data.forEach(function (e) {
-                    self.message_data.push(e);
+                    self.message_data[index].push(e);
                 });
-                self.message_loaded = true;
+                self.message_loaded = self.message_loaded | (1 << position);
+                window.setTimeout(function(){$.material.ripples('.withripple');},300);
             }, error: function (err) {
                 var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
                 $.snackbar(options);
