@@ -664,6 +664,15 @@ html,body {
 .message-control-box .read-mark-action{
    float:right
 }
+#m-message  .row-content .post-message-collapse{
+    max-width:100%;
+}
+.message-list  .row-content .post-message-collapse blockquote{
+    margin-bottom:0;
+    font-size: 12px;
+    padding: 6px 10px;
+    color: rgba(0, 0, 0, 0.58);
+}
 .mdl-list-group .read-mark-action,.message-control-box .read-mark-action{
     display: inline-block;
     padding: 2px;

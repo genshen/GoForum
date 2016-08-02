@@ -3,7 +3,7 @@ package m
 import (
 	"github.com/jinzhu/gorm"
 	"time"
-	"./../database"
+	"gensh.me/goforum/models/database"
 )
 
 //User         User `gorm:"ForeignKey:Author"`

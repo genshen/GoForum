@@ -6,9 +6,9 @@ import (
 	"github.com/astaxie/beego/utils"
 	"github.com/astaxie/beego"
 	"net/textproto"
-	"../values"
-	"../../models/m"
-	"./../../models/database"
+	"gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/models/m"
+	"gensh.me/goforum/models/database"
 )
 
 func OnAccountCreated(email string, username string, uid uint) {

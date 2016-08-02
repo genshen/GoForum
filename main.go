@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "./routers"
-	"./models/database"
+	_ "gensh.me/goforum/routers"
+	"gensh.me/goforum/models/database"
 	"github.com/astaxie/beego"
 )
 

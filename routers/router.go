@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"./../controllers"
+	"gensh.me/goforum/controllers"
 	"github.com/astaxie/beego"
 )
 

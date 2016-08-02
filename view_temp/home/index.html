@@ -114,7 +114,15 @@
                                         <span>回复了你的帖子</span>
                                         <a :href="'/post/'+msg.PostID" v-text="msg.PostTitle">Loading</a>
                                     </h6>
-                                    <p class="list-group-item-text">See More</p>
+                                    <p class="list-group-item-text">
+                                        <a data-toggle="collapse" href="#post_message_collapse" aria-expanded="false" aria-controls="collapseExample">详情</a>
+                                        <span>2016-08-01</span>
+                                    </p>
+                                    <div class="post-message-collapse collapse" id="post_message_collapse">
+                                        <blockquote>
+                                            <p>Firefox 浏览器对 fieldset 元素设置了一些影响 width 属性的样式</p>
+                                        </blockquote>
+                                    </div>
                                 </div>
                             </div>
                             <div class="list-group-separator"></div>

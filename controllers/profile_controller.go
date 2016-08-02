@@ -3,9 +3,9 @@ package controllers
 import (
 	"strconv"
 	"encoding/json"
-	"../models/forms"
-	"./../middleware/event"
-	identify "../middleware/values"
+	"gensh.me/goforum/models/forms"
+	"gensh.me/goforum/middleware/event"
+	identify "gensh.me/goforum/middleware/values"
 )
 
 type ProfileController struct {

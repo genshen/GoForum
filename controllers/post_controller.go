@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"github.com/qiniu/api.v7/kodo"
 	"encoding/json"
-	"./../models/forms"
-	"./../middleware/event"
-	"./../models/m"
-	form_check "../middleware/form"
-	identify "../middleware/values"
+	"gensh.me/goforum/models/forms"
+	"gensh.me/goforum/middleware/event"
+	"gensh.me/goforum/models/m"
+	form_check "gensh.me/goforum/middleware/form"
+	identify "gensh.me/goforum/middleware/values"
 )
 
 type PostController struct {

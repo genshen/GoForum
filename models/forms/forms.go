@@ -3,11 +3,11 @@ package forms
 import (
 	"github.com/astaxie/beego/validation"
 	"time"
-	"../../middleware/event"
-	"../../middleware/values"
-	"../database"
-	"../../middleware/auth/security"
-	"../m"
+	"gensh.me/goforum/middleware/event"
+	"gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/models/database"
+	"gensh.me/goforum/middleware/auth/security"
+	"gensh.me/goforum/models/m"
 )
 
 type SignInForm struct {
@@ -24,7 +24,7 @@ type SignUpForm struct {
 
 type PostCreateForm struct {
 	Title   string
-	Summary   string
+	Summary string
 	Content string
 }
 
@@ -90,7 +90,7 @@ func (this *PostCreateForm)Valid() ([]*validation.Error) {
 	valid.Required(this.Title, "title").Message("标题不能为空")
 	valid.Required(this.Content, "conten").Message("内容不能为空")
 	valid.Required(this.Summary, "summary").Message("摘要不能为空")
-	valid.MaxSize(this.Summary,255, "summary").Message("摘要不超过255")
+	valid.MaxSize(this.Summary, 255, "summary").Message("摘要不超过255")
 	if valid.HasErrors() {
 		return valid.Errors
 	}
@@ -99,7 +99,7 @@ func (this *PostCreateForm)Valid() ([]*validation.Error) {
 
 func (this *PostCreateForm)Save(userID uint) uint {
 	//todo check user account first
-	post := m.Posts{TopicID:1, AuthorID:userID, Title:this.Title,Summary:this.Summary,
+	post := m.Posts{TopicID:1, AuthorID:userID, Title:this.Title, Summary:this.Summary,
 		Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
 	database.DB.Create(&post)
 	return post.ID
@@ -116,7 +116,7 @@ type SimpleJsonResponse struct {
 	Addition interface{}
 }
 
-func (this *CommentCreateForm)Create(user_id uint,username string) (result *SimpleJsonResponse) {
+func (this *CommentCreateForm)Create(user_id uint, username string) (result *SimpleJsonResponse) {
 	p := m.Posts{}
 	// use transaction
 	tx := database.DB.Begin()
@@ -127,20 +127,20 @@ func (this *CommentCreateForm)Create(user_id uint,username string) (result *Simp
 			result = &SimpleJsonResponse{Status:0, Addition:"添加回复失败,请重试!"}
 			return
 		}
-		if err :=  tx.Model(&p).UpdateColumn("comment_count", p.CommentCount + 1).Error; err != nil {
+		if err := tx.Model(&p).UpdateColumn("comment_count", p.CommentCount + 1).Error; err != nil {
 			tx.Rollback()
 			result = &SimpleJsonResponse{Status:0, Error:"添加回复失败,请重试!"}
 			return
 		}
 		u := m.Profile{} //update profile attributes
-		tx.Select("user_refer,comment_count").Where("user_refer = ?",user_id).First(&u)
-		if err :=  tx.Table("profile").Where("user_refer = ?",user_id).UpdateColumn("comment_count", u.CommentCount + 1).Error; err != nil {
+		tx.Select("user_refer,comment_count").Where("user_refer = ?", user_id).First(&u)
+		if err := tx.Table("profile").Where("user_refer = ?", user_id).UpdateColumn("comment_count", u.CommentCount + 1).Error; err != nil {
 			tx.Rollback()
 			result = &SimpleJsonResponse{Status:0, Error:"添加回复失败,请重试!"}
 			return
 		}
 		result = &SimpleJsonResponse{Status:1, Addition:comment.ID}
-		event.OnCommentSubmitted(&p,&comment,username)
+		event.OnCommentSubmitted(&p, &comment, username)
 	} else {
 		result = &SimpleJsonResponse{Status:0, Error:"对应文章不存在"}
 	}
@@ -154,13 +154,14 @@ type FollowAddForm struct {
 
 func (this *FollowAddForm)Add(my_id uint) (result *SimpleJsonResponse, isAdded bool) {
 	isAdded = false
-	if(my_id == this.PersonID){
+	if (my_id == this.PersonID) {
 		result = &SimpleJsonResponse{Status:0, Error:"不能关注自己本人哟~"}
 		return
 	}
 	u := m.User{}
 	database.DB.Where("status != ?", values.FREEZING).First(&u, this.PersonID)
-	if u.ID == 0 {  //todo use NewRecord
+	if u.ID == 0 {
+		//todo use NewRecord
 		result = &SimpleJsonResponse{Status:0, Error:"对应用户不存在"}
 	} else {
 		follow := m.Follow{}

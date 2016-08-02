@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"time"
-	"../models/m"
-	"../models/database"
+	"gensh.me/goforum/models/m"
+	"gensh.me/goforum/models/database"
 )
 
 type Person struct {
