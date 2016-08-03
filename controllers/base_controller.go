@@ -2,16 +2,17 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"../models/forms"
-	identify "../middleware/values"
+	"gensh.me/goforum/models/forms"
+	identify "gensh.me/goforum/middleware/values"
 )
 
 const (
 	User = "user"
 	User_Name = "username"
 	Is_Login = "is_login"
-	Login_Json_Err = forms.SimpleJsonResponse{Status:3, Error:"用户未登录"}
 )
+
+var Login_Json_Err = forms.SimpleJsonResponse{Status:3, Error:"用户未登录"}
 
 type Rules interface {
 	getRules(string) int

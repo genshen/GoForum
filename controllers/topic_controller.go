@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"../models/database"
-	"../models/m"
+	"gensh.me/goforum/models/database"
+	"gensh.me/goforum/models/m"
 	"encoding/json"
 )
 
@@ -10,7 +10,7 @@ type TopicController struct {
 	BaseController
 }
 
-const topic_rules = map[string]int{
+var topic_rules = map[string]int{
 }
 
 func (this *TopicController) getRules(action string) int {

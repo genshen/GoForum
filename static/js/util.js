@@ -31,14 +31,14 @@
                     $thisNavIndicator.removeClass('reverse');
                 });
             }
+            $thisNavIndicator.addClass('animate').css({
+                left: (thisLeft - thisNavLeft),
+                right: (thisNavLeft + thisNavWidth - thisLeft - $this.outerWidth())
+            }).one('webkitTransitionEnd oTransitionEnd msTransitionEnd transitionend', function () {
+                $thisNavIndicator.removeClass('animate');
+            });
         }
 
-        $thisNavIndicator.addClass('animate').css({
-            left: (thisLeft - thisNavLeft),
-            right: (thisNavLeft + thisNavWidth - thisLeft - $this.outerWidth())
-        }).one('webkitTransitionEnd oTransitionEnd msTransitionEnd transitionend', function () {
-            $thisNavIndicator.removeClass('animate');
-        });
 
         return this;
     }

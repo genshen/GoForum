@@ -3,16 +3,16 @@ package controllers
 import (
 	"strconv"
 	"encoding/json"
-	"../models/forms"
-	"./../middleware/event"
-	identify "../middleware/values"
+	"gensh.me/goforum/models/forms"
+	"gensh.me/goforum/middleware/event"
+	identify "gensh.me/goforum/middleware/values"
 )
 
 type ProfileController struct {
 	BaseController
 }
 
-const profile_rules = map[string]int{
+var profile_rules = map[string]int{
 	"Follow": identify.Login | identify.JumpBack,
 	"Collection": identify.Login | identify.JumpBack,
 	"FollowAdd":identify.LoginJSON,

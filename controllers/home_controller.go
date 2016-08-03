@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"../models/m"
-	"../models/database"
+	"gensh.me/goforum/models/m"
+	"gensh.me/goforum/models/database"
 	"strconv"
 )
 

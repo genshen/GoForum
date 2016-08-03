@@ -2,16 +2,16 @@ package controllers
 
 import (
 	"strconv"
-	"../models/m"
-	"../models/forms"
-	identify "../middleware/values"
+	"gensh.me/goforum/models/m"
+	"gensh.me/goforum/models/forms"
+	identify "gensh.me/goforum/middleware/values"
 )
 
 type CommentController struct {
 	BaseController
 }
 
-const comment_rules = map[string]int{
+var comment_rules = map[string]int{
 	"View":   0,
 	"CommentAdd":identify.LoginJSON,
 }

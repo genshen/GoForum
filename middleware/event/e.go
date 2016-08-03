@@ -6,9 +6,9 @@ import (
 	"github.com/astaxie/beego/utils"
 	"github.com/astaxie/beego"
 	"net/textproto"
-	"../values"
-	"../../models/m"
-	"./../../models/database"
+	"gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/models/m"
+	"gensh.me/goforum/models/database"
 )
 
 func OnAccountCreated(email string, username string, uid uint) {
@@ -21,16 +21,18 @@ func OnPostCreated() {
 }
 
 //Posts:id,title,comment_count
-func OnCommentSubmitted(post *m.Posts,comment *m.Comment,username string) {
-	var notify = m.Notification{UserID:post.AuthorID, RelatedID:comment.Author,
-		Title:username + "回复了你的帖子",Subject:"评论", SubjectType:values.POST_COMMENT}
-	database.DB.Create(&notify)
+func OnCommentSubmitted(post *m.Posts, comment *m.Comment, username string) {
+	var message = m.PostMessage{RelatedUsername:username, PostID:post.ID, PostTitle:post.Title,Quote:post.Summary,
+		Summary:comment.Content,
+		BaseMessage:m.BaseMessage{UserID:post.AuthorID, RelatedID:comment.Author, SubjectType:values.POST_COMMENT} }
+	database.DB.Create(&message)
+	//多次create,message 可以复用
 }
 
 /*id userId;id_r:related_id;name:*/
 func OnFollowed(id uint, id_r uint, name string) {
-	var notify = m.Notification{UserID:id, RelatedID:id_r, Title:name + "关注了你",
-		Subject:"关注", SubjectType:values.FOLLOW_ADD}
+	var notify = m.Notification{Data:"{\"username\":\"" + name + "\"}",
+		BaseMessage:m.BaseMessage{UserID:id, RelatedID:id_r, SubjectType:values.FOLLOW_ADD}}
 	database.DB.Create(&notify)
 }
 

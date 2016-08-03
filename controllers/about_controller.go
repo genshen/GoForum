@@ -6,8 +6,8 @@ import (
 import (
 	"github.com/astaxie/beego/cache"
 	"github.com/astaxie/beego/utils/captcha"
-	form_check "../middleware/form"
-	"../models/forms"
+	form_check "gensh.me/goforum/middleware/form"
+	"gensh.me/goforum/models/forms"
 )
 
 var cpt *captcha.Captcha
@@ -22,7 +22,7 @@ type AboutController struct {
 	BaseController
 }
 
-const about_rules = map[string]int{
+var about_rules = map[string]int{
 }
 
 func (this *AboutController) getRules(action string) int {

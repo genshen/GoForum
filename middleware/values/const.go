@@ -14,10 +14,14 @@ const (
 	STATUS_ACTIVE
 )
 
-//message type
+//post message type
 const (
 	POST_COMMENT = iota
 	POST_REPLY
-	FOLLOW_ADD
 
+)
+
+//notification type
+const (
+	FOLLOW_ADD = iota
 )
