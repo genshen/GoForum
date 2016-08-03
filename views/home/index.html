@@ -22,12 +22,8 @@
 <main id="app" style="margin-bottom:72px"> <!--footer:60px-->
     <home-grid :home="home"></home-grid>
     <category-grid :category="category"></category-grid>
-    <message-grid :message="message"></message-grid>
+    <message-grid :active="message.active" :tab_index.sync="message.tab_index"></message-grid>
     <user-grid :user="me"></user-grid>
-    <a href="javascript:void(0)" class="btn btn-primary btn-fab"
-       style="position:fixed;right:20px;bottom:80px;padding-top: 14px;">
-        <span class="glyphicon glyphicon-refresh" title="刷新"></span>
-    </a>
 </main>
 <!--home template-->
 <script type="text/x-template" id="home-template">
@@ -107,40 +103,81 @@
 </script>
 <!--message template-->
 <script type="text/x-template" id="message-template">
-    <div class="container" v-show="message.active">
-        <nav class="tab-nav">
-            <ul class="nav nav-justified">
-                <li><a data-toggle="tab" href="#message">动态</a></li>
-                <li><a data-toggle="tab" href="#notification">通知</a></li>
-            </ul>
-        </nav>
-        <div class="container tab-content">
-            <div class="tab-pane" id="message">
-
-            </div>
-            <div class="tab-pane" id="notification">
-
-            </div>
-        </div>
-        <div class="message-control-box">
-            <h1>Mark all Read<i class="material-icons">done_all</i></h1>
-        </div>
-        <div class="row mdl-list-group" id="message-list">
-            <template v-for="msg in message.message_data | orderBy 'IsRead' -1">
-                <div class="mdl-list-group-item">
-                    <div class="row-picture message-list-icon">
-                        <i v-if="msg.SubjectType==0" class="material-icons">reply</i>
-                        <i v-if="msg.SubjectType==2" class="material-icons">poll</i>
+    <div class="container" v-show="active">
+        <div class="row">
+            <nav class="tab-nav" id="message-tab-nav">
+                <ul class="nav nav-justified">
+                    <li><a data-toggle="tab" href="#m-message">消息</a></li>
+                    <li><a data-toggle="tab" href="#m-notification">通知</a></li>
+                </ul>
+            </nav>
+            <div class="tab-content">
+                <div class="tab-pane container" id="m-message">
+                    <div class="message-control-box">
+                        <span class="label label-info">{{unread_messages}}</span><span>条未读</span>
+                        <a href="javascript:void(0)" class="withripple read-mark-action">
+                            <i class="material-icons">done_all</i>
+                        </a>
                     </div>
-                    <div class="row-content">
-                        <div class="action-secondary"><i class="material-icons">done</i></div>
-                        <h6 class="message-list-title list-group-item-heading"><a>{{msg.Title}}</a></h6>
-                        <p class="list-group-item-text">Donec id elit non m</p>
-                    </div>
+                    <div class="row mdl-list-group message-list">
+                        <template v-for="msg in message_data.messages | orderBy 'IsRead' -1">
+                            <div class="mdl-list-group-item">
+                                <div class="row-picture message-list-icon">
+                                    <i class="material-icons">reply</i>
+                                </div>
+                                <div class="row-content">
+                                    <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
+                                        <i class="material-icons">done</i>
+                                    </a>
+                                    <h6 class="single-line message-list-title list-group-item-heading">
+                                        <a :href="'/person/'+msg.RelatedID" v-text="msg.RelatedUsername">Loading</a>
+                                        <span>回复了你的帖子</span>
+                                        <a :href="'/post/'+msg.PostID" v-text="msg.PostTitle">Loading</a>
+                                    </h6>
+                                    <p class="list-group-item-text">
+                                        <a data-toggle="collapse" href="#post_message_collapse" aria-expanded="false" aria-controls="collapseExample">详情</a>
+                                        <span>2016-08-01</span>
+                                    </p>
+                                    <div class="post-message-collapse collapse" id="post_message_collapse">
+                                        <blockquote>
+                                            <p>Firefox 浏览器对 fieldset 元素设置了一些影响 width 属性的样式</p>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-separator"></div>
+                        </template>
+                    </div> <!--/list-group--->
                 </div>
-                <div class="list-group-separator"></div>
-            </template>
-        </div> <!--/list-group--->
+                <div class="tab-pane container" id="m-notification">
+                    <div class="message-control-box">
+                        <span class="label label-info">{{unread_messages}}</span><span>条未读</span>
+                        <a href="javascript:void(0)" class="withripple read-mark-action">
+                            <i class="material-icons">done_all</i>
+                        </a>
+                    </div>
+                    <div class="row mdl-list-group message-list">
+                        <template v-for="msg in message_data.notifications | orderBy 'IsRead' -1">
+                            <div class="mdl-list-group-item">
+                                <div class="row-picture message-list-icon">
+                                    <i class="material-icons">poll</i>
+                                </div>
+                                <div class="row-content">
+                                    <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
+                                        <i class="material-icons">done</i>
+                                    </a>
+                                    <h6 class="message-list-title list-group-item-heading">
+                                        <a :href="'/person/'+msg.RelatedID" v-text="msg.Data.username">Loading</a><span>关注了你</span>
+                                    </h6>
+                                    <p class="list-group-item-text">Donec id elit non m</p>
+                                </div>
+                            </div>
+                            <div class="list-group-separator"></div>
+                        </template>
+                    </div> <!--/list-group--->
+                </div>
+            </div> <!--/tab-content-->
+        </div>
     </div>
 </script>
 <!--me template-->
@@ -209,12 +246,14 @@
 <script src="/static/dist/js/ripples.min.js"></script>
 <script src="/static/dist/js/vue.js"></script>
 <script src="/static/dist/js/owl.carousel.min.js"></script>
+<script src="/static/js/util.js"></script>
 <script>
     $.material.init();
     var SHOW_HOME = 1,
             SHOW_CATEGORY = 2,
             SHOW_MESSAGE = 4,
             SHOW_ME = 8;
+    var Message_Tab_Nav = ["m-message", "m-notification"];
 
     Vue.component('home-grid', {
         template: '#home-template',
@@ -238,10 +277,48 @@
 
     Vue.component('message-grid', {
         template: '#message-template',
-        props: {
-            message: JSON
+        data: function () {
+            return {
+                message_data: {messages: [], notifications: []},
+                message_loaded: 0
+            }
         },
-        methods: {}
+        props: {
+            tab_index: Number,
+            active: Boolean
+        },
+        computed: {
+            unread_messages: function () {
+                return this.countUnRead(this.message_data.messages);
+            },
+            unread_notifications: function () {
+                return this.countUnRead(this.message_data.notifications);
+            }
+        },
+        methods: {
+            countUnRead: function (d) {
+                var count = 0;
+                d.forEach(function (e) {
+                    if (e.IsRead == false) {
+                        count++;
+                    }
+                });
+                return count;
+            }
+        },
+        ready: function () {
+            var self = this;
+            var indexs = ["messages", "notifications"];
+            var urls = ["messages", "notifications"];
+
+            $("#message-tab-nav").on('show.bs.tab', 'a[data-toggle="tab"]', function (e) {
+                var index = $(e.target).parent().index();
+                self.tab_index = index;
+                if (((self.message_loaded >> index) & 1) != 1) {
+                    loadMessageData(self, urls[index], indexs[index], index);
+                }
+            });
+        }
     });
 
     Vue.component('user-grid', {
@@ -300,7 +377,7 @@
                 hot_loading_enable: true
             },
             category: {loaded: false, active: false, tags: [], topics: []},
-            message: {loaded: false, active: false, message_data: []},
+            message: {active: false, tab_index: 0},
             me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "default.png"},
             setting: {}
         },
@@ -356,9 +433,7 @@
                     history.pushState(null, "home", "#message");
                 }
                 this.show(SHOW_MESSAGE);
-                if (!this.message.loaded) {
-                    loadMessageData(this);
-                }
+                $('#message-tab-nav a[href="#' + Message_Tab_Nav[this.message.tab_index] + '"]').tab('show');
             },
             greetMe: function (ispop) {
                 if (ispop !== true) {
@@ -461,16 +536,20 @@
     }
 
     //加载消息页面数据
-    function loadMessageData(self) {
+    function loadMessageData(self, url, index, position) {
         $.ajax({
             type: 'GET',
-            url: "/message",
+            url: "/message/" + url,
             success: function (data) {
-                self.message.message_data = [];
+                self.message_data[index] = [];
                 data.forEach(function (e) {
-                    self.message.message_data.push(e);
+                    if (e.Data != undefined){
+                        e.Data = JSON.parse(e.Data);
+                    }
+                    self.message_data[index].push(e);
                 });
-                self.message.loaded = true;
+                self.message_loaded = self.message_loaded | (1 << position);
+                window.setTimeout(function(){$.material.ripples('.withripple');},300);
             }, error: function (err) {
                 var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
                 $.snackbar(options);

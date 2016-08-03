@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"time"
-	"../models/m"
-	"../models/database"
+	"gensh.me/goforum/models/m"
+	"gensh.me/goforum/models/database"
 )
 
 type Person struct {
@@ -143,22 +143,44 @@ func findFollowsById(id uint) *AllFollows {
 	return &AllFollows{Following:&personFollowing, Followed:&personFollowed}
 }
 
-type Message struct {
+type Notification struct {
 	ID          uint
 	RelatedID   uint
 	SubjectType int
-	Title       string
-	Content     string
+	Data        string
 	IsRead      bool
 }
 
-func findLatestMessages(uid uint) ([]Message) {
+type PostMessage struct {
+	ID              uint
+	RelatedID       uint
+	SubjectType     int
+	RelatedUsername string
+	PostID          uint
+	PostTitle       string
+	IsRead          bool
+}
+
+func findLatestNotifications(uid uint, types []int) ([]Notification) {
+	//todo user id
 	notices := []m.Notification{}
-	database.DB.Find(&notices) //todo
-	messages := make([]Message, 0, len(notices))
+	database.DB.Where("subject_type in (?)", types).Find(&notices)
+	n := make([]Notification, 0, len(notices))
 	for _, no := range notices {
-		messages = append(messages, Message{ID:no.ID, RelatedID:no.RelatedID, SubjectType:no.SubjectType,
-			Title:no.Title, Content:no.Content, IsRead:no.IsRead});
+		n = append(n, Notification{ID:no.ID, RelatedID:no.RelatedID,
+			SubjectType:no.SubjectType, Data:no.Data, IsRead:no.IsRead});
+	}
+	return n
+}
+
+func findLatestPostMessages(uid uint, types []int) ([]PostMessage) {
+	//todo user id
+	db_messages := []m.PostMessage{}
+	database.DB.Where("subject_type in (?)", types).Find(&db_messages)
+	messages := make([]PostMessage, 0, len(db_messages))
+	for _, msg := range db_messages {
+		messages = append(messages, PostMessage{ID:msg.ID, RelatedID:msg.RelatedID, SubjectType:msg.SubjectType,
+			RelatedUsername:msg.RelatedUsername, PostID:msg.PostID, PostTitle:msg.PostTitle, IsRead:msg.IsRead});
 	}
 	return messages
 }

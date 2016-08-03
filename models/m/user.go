@@ -2,7 +2,7 @@ package m
 
 import (
 	"github.com/jinzhu/gorm"
-	"./../database"
+	"gensh.me/goforum/models/database"
 )
 
 type User struct {

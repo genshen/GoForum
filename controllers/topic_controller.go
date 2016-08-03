@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"../models/database"
-	"../models/m"
+	"gensh.me/goforum/models/database"
+	"gensh.me/goforum/models/m"
 	"encoding/json"
 )
 

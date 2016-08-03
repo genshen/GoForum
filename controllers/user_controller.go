@@ -3,10 +3,10 @@ package controllers
 import (
 	"html/template"
 	"github.com/astaxie/beego"
-	"./../models/forms"
-	"../middleware/event"
-	form_check "../middleware/form"
-	identify "../middleware/values"
+	"gensh.me/goforum/models/forms"
+	"gensh.me/goforum/middleware/event"
+	form_check "gensh.me/goforum/middleware/form"
+	identify "gensh.me/goforum/middleware/values"
 )
 
 type UserController struct {
