@@ -14,8 +14,8 @@ type Posts struct {
 	Tags         []Tag `gorm:"many2many:post_tag;"`
 	AuthorID     uint
 	Author       User `gorm:"ForeignKey:AuthorID"`
-	Title        string
-	Summary      string
+	Title        string `gorm:"size:255"`
+	Summary      string `gorm:"size:255"`
 	Content      string
 	IsMobile     bool // 1 for mobile,0 for desktop
 	Sticky       bool  `gorm:"default:false"`
@@ -32,7 +32,7 @@ func (p *Posts) GetPostById(id string) {
 }
 
 func (p *Posts) Exist(id uint) bool {
-	database.DB.Select("id,author_id,title,comment_count").First(&p, id)
+	database.DB.Select("id,author_id,summary,title,comment_count").First(&p, id)
 	return p.ID != 0
 }
 

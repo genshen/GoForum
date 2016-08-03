@@ -28,8 +28,8 @@ type PostMessage struct {
 	RelatedUsername string   `gorm:"default:''"`
 	PostID          uint
 	PostTitle       string
-	Summary         string
-	Quote           string
+	Summary         string `gorm:"size:255"`
+	Quote           string `gorm:"size:255"`
 }
 
 func (PostMessage) TableName() string {

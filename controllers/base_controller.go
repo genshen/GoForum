@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"../models/forms"
+	"gensh.me/goforum/models/forms"
 	identify "gensh.me/goforum/middleware/values"
 )
 

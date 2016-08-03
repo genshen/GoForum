@@ -22,7 +22,8 @@ func OnPostCreated() {
 
 //Posts:id,title,comment_count
 func OnCommentSubmitted(post *m.Posts, comment *m.Comment, username string) {
-	var message = m.PostMessage{RelatedUsername:username, PostID:post.ID, PostTitle:post.Title,
+	var message = m.PostMessage{RelatedUsername:username, PostID:post.ID, PostTitle:post.Title,Quote:post.Summary,
+		Summary:comment.Content,
 		BaseMessage:m.BaseMessage{UserID:post.AuthorID, RelatedID:comment.Author, SubjectType:values.POST_COMMENT} }
 	database.DB.Create(&message)
 	//多次create,message 可以复用
