@@ -4,6 +4,7 @@ import (
 	"gensh.me/goforum/models/database"
 	"github.com/astaxie/beego/orm"
 	"time"
+	"fmt"
 )
 
 func init() {

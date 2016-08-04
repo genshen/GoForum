@@ -33,7 +33,7 @@ func (this *UserController) SignIn() {
 		this.Redirect("/", 302)
 		return
 	}
-	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
+	//this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
 	this.TplName = "account/signin.html"
 }
 
