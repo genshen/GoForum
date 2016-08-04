@@ -34,7 +34,7 @@ func (this *CommentController) Comment() {
 	dbComments := m.LoadComments(id, offset)
 	mComments := make([]Comment, 0, len(dbComments))  //m.Comments to Comments
 	for _, comment := range dbComments {
-		mComments = append(mComments, Comment{Content:comment.Content, ID:comment.ID});
+		mComments = append(mComments, Comment{Content:comment.Content, ID:comment.Id});
 	}
 	this.Data["json"] = &mComments
 	this.ServeJSON()

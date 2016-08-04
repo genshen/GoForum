@@ -22,18 +22,18 @@ func OnPostCreated() {
 
 //Posts:id,title,comment_count
 func OnCommentSubmitted(post *m.Posts, comment *m.Comment, username string) {
-	var message = m.PostMessage{RelatedUsername:username, PostID:post.ID, PostTitle:post.Title,Quote:post.Summary,
+	var message = m.PostMessage{RelatedUsername:username, PostID:post.Id, PostTitle:post.Title,Quote:post.Summary,
 		Summary:comment.Content,
-		BaseMessage:m.BaseMessage{UserID:post.AuthorID, RelatedID:comment.Author, SubjectType:values.POST_COMMENT} }
-	database.DB.Create(&message)
+		UserID:post.Author.Id, RelatedID:comment.Author, SubjectType:values.POST_COMMENT }
+	database.O.Insert(&message)
 	//多次create,message 可以复用
 }
 
 /*id userId;id_r:related_id;name:*/
 func OnFollowed(id uint, id_r uint, name string) {
 	var notify = m.Notification{Data:"{\"username\":\"" + name + "\"}",
-		BaseMessage:m.BaseMessage{UserID:id, RelatedID:id_r, SubjectType:values.FOLLOW_ADD}}
-	database.DB.Create(&notify)
+		UserID:id, RelatedID:id_r, SubjectType:values.FOLLOW_ADD}
+	database.O.Insert(&notify)
 }
 
 func OnUnFollowed() {

@@ -8,6 +8,7 @@ import (
 	"gensh.me/goforum/models/database"
 	"gensh.me/goforum/middleware/auth/security"
 	"gensh.me/goforum/models/m"
+	"github.com/astaxie/beego/orm"
 )
 
 type SignInForm struct {
@@ -45,14 +46,16 @@ func (this *SignInForm)SignInVerify() ([]*validation.Error, uint) {
 
 func (this *SignInForm) validPassword(v *validation.Validation) uint {
 	u := m.User{};
-	database.DB.Where("email = ? AND password_hash = ?", this.Username, security.Hash(this.Password)).First(&u)
-	if u.ID == 0 {
+	database.O.QueryTable("user").Filter("email",this.Username).
+	Filter("password_hash", security.Hash(this.Password)).One(&u)
+	//RW database.DB.Where("email = ? AND password_hash = ?", this.Username,.First(&u)
+	if u.Id == 0 {
 		v.SetError("name", "用户名或密码错误")
 		v.SetError("pass", "用户名或密码错误")
 	} else {
 		this.Username = u.Name  //use name to replace email or tel
 	}
-	return u.ID
+	return u.Id
 }
 
 func (this *SignUpForm)Valid() ([]*validation.Error) {
@@ -74,14 +77,15 @@ func (this *SignUpForm)Valid() ([]*validation.Error) {
 
 func (this *SignUpForm)validOrSave(v *validation.Validation) {
 	u := m.User{};
-	database.DB.Where("email = ?", this.Email).First(&u) //todo use NewRecord
-	if u.ID != 0 {
+	database.O.QueryTable("user").Filter("email",this.Email).One(&u)
+	//database.DB.Where("email = ?", this.Email).First(&u) //todo use NewRecord
+	if u.Id != 0 {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
 		user := m.User{Email:this.Email, Name:this.Nickname, Password:security.Hash(this.Password), Status:values.UNACTIVATED,
-			Profile:m.Profile{Avatar:"/static/img/default.png"}}
-		database.DB.Create(&user)
-		this.UserID = u.ID
+			Profile:&m.Profile{Avatar:"/static/img/default.png"}} //todo Profile
+		database.O.Insert(&user)//RW
+		this.UserID = u.Id
 	}
 }
 
@@ -98,11 +102,11 @@ func (this *PostCreateForm)Valid() ([]*validation.Error) {
 }
 
 func (this *PostCreateForm)Save(userID uint) uint {
-	//todo check user account first
-	post := m.Posts{TopicID:1, AuthorID:userID, Title:this.Title, Summary:this.Summary,
+	//todo check user account first  AND save TopicId:1, AuthorId:userID,
+	post := m.Posts{Title:this.Title, Summary:this.Summary,
 		Content:this.Content, IsMobile:true, LastReplayAt:time.Now()};
-	database.DB.Create(&post)
-	return post.ID
+	database.O.Insert(&post)//RW
+	return post.Id
 }
 
 type CommentCreateForm struct {
@@ -116,35 +120,44 @@ type SimpleJsonResponse struct {
 	Addition interface{}
 }
 
+//RW all
 func (this *CommentCreateForm)Create(user_id uint, username string) (result *SimpleJsonResponse) {
 	p := m.Posts{}
 	// use transaction
-	tx := database.DB.Begin()
+	o := orm.NewOrm()
+	o.Begin()
+	//tx := database.DB.Begin()
 	if (p.Exist(this.PostID) ) {
 		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
-		if err := tx.Create(&comment).Error; err != nil {
-			tx.Rollback();
+		if _,err := o.Insert(&comment); err != nil {
+			//tx.Rollback();
+			err = o.Rollback()
 			result = &SimpleJsonResponse{Status:0, Addition:"添加回复失败,请重试!"}
 			return
 		}
-		if err := tx.Model(&p).UpdateColumn("comment_count", p.CommentCount + 1).Error; err != nil {
-			tx.Rollback()
+		p.CommentCount++;
+		if _,err := o.Update(&p); err != nil {
+			//tx.Rollback()
+			err = o.Rollback()
 			result = &SimpleJsonResponse{Status:0, Error:"添加回复失败,请重试!"}
 			return
 		}
 		u := m.Profile{} //update profile attributes
-		tx.Select("user_refer,comment_count").Where("user_refer = ?", user_id).First(&u)
-		if err := tx.Table("profile").Where("user_refer = ?", user_id).UpdateColumn("comment_count", u.CommentCount + 1).Error; err != nil {
-			tx.Rollback()
+		o.QueryTable("profile").Filter("user_refer",user_id).One(&u,"user_refer","comment_count")
+		//RW Select("user_refer,comment_count").Where("user_refer = ?", user_id).First(&u)
+		u.CommentCount++
+		if _,err := o.Update(&u); err != nil {
+			//tx.Rollback()
+			err = o.Rollback()
 			result = &SimpleJsonResponse{Status:0, Error:"添加回复失败,请重试!"}
 			return
 		}
-		result = &SimpleJsonResponse{Status:1, Addition:comment.ID}
+		result = &SimpleJsonResponse{Status:1, Addition:comment.Id}
 		event.OnCommentSubmitted(&p, &comment, username)
 	} else {
 		result = &SimpleJsonResponse{Status:0, Error:"对应文章不存在"}
 	}
-	tx.Commit()
+	o.Commit()
 	return
 }
 
@@ -159,15 +172,17 @@ func (this *FollowAddForm)Add(my_id uint) (result *SimpleJsonResponse, isAdded b
 		return
 	}
 	u := m.User{}
-	database.DB.Where("status != ?", values.FREEZING).First(&u, this.PersonID)
-	if u.ID == 0 {
+	database.O.QueryTable("user").Filter("id", this.PersonID).Filter("status", values.FREEZING).One(&u) //todo FREEZING
+	if u.Id == 0 {
 		//todo use NewRecord
 		result = &SimpleJsonResponse{Status:0, Error:"对应用户不存在"}
 	} else {
 		follow := m.Follow{}
-		if database.DB.Where("follower_id = ? AND following_id = ?", my_id, this.PersonID).First(&follow);
+		//if database.DB.Where("follower_id = ? AND following_id = ?", my_id, this.PersonID).First(&follow);
+		//follow.FollowerID == 0 && follow.FollowingID == 0 {
+		if database.O.QueryTable("follows").Filter("follower_id",my_id).Filter("following_id",this.PersonID).One(&follow);
 		follow.FollowerID == 0 && follow.FollowingID == 0 {
-			database.DB.Create(&m.Follow{FollowerID:my_id, FollowingID:this.PersonID})
+			database.O.Insert(&m.Follow{FollowerID:my_id, FollowingID:this.PersonID})//RW
 			result = &SimpleJsonResponse{Status:1, Addition:this.PersonID}
 			isAdded = true
 		} else {
@@ -200,6 +215,6 @@ func (this *FeedbackForm)Valid(uid uint) ([]*validation.Error) {
 		return v.Errors
 	}
 	feedback := m.Feedback{UserID:uid, Type:this.Type, Content:this.Feedback, Contact:this.Contact}
-	database.DB.Create(&feedback)
+	database.O.Insert(&feedback) //RW
 	return nil
 }

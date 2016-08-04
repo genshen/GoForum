@@ -23,7 +23,8 @@ func (this *HomeController) LoadSwipe() {
 func (this *HomeController) Hot() {
 	start, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
 	dbHotPosts := []m.Posts{}
-	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Preload("Author.Profile").Find(&dbHotPosts);
+	//todo Preload("Author.Profile")
+	database.O.QueryTable("posts").Filter("visible", true).Limit(20,uint(start)).RelatedSel("Author").One(&dbHotPosts);
 	mHot := DBHotPostsConvert(&dbHotPosts)
 	this.Data["json"] = mHot
 	this.ServeJSON()
@@ -45,7 +46,7 @@ func (this *HomeController)Me() {
 		me.ID = this.getUserId()
 		me.Name = this.getUsername()
 		profile := m.Profile{}  //load avatar info from database(while id username from session)
-		database.DB.Select("avatar").Where("user_refer = ?",me.ID).First(&profile)
+		database.O.QueryTable("profile").Filter("user_refer",me.ID).One(&profile,"avatar")
 		me.Avatar = profile.Avatar
 	}
 	this.Data["json"] = &me

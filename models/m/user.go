@@ -1,49 +1,59 @@
 package m
 
 import (
-	"github.com/jinzhu/gorm"
 	"gensh.me/goforum/models/database"
+	"time"
 )
 
 type User struct {
-	gorm.Model
+	Id         uint        `orm:"pk"`
+	CreatedAt  time.Time   `orm:"auto_now_add"`
+	UpdatedAt  time.Time   `orm:"auto_now"`
+	DeletedAt  time.Time
+
 	Email      string
 	Tel        string
 	Name       string
-	Password   string  `gorm:"column:password_hash"`
-	AuthKey    string  `gorm:"column:auth_key"`
-	ResetToken string  `gorm:"column:password_reset_token"`
-	Status     int     `gorm:"default:1"` //todo UNACTIVATED
-	Profile    Profile `gorm:"ForeignKey:UserRefer"`
+	Password   string   `orm:"column(password_hash)"`
+	AuthKey    string   `orm:"column(auth_key)"`
+	ResetToken string   `orm:"column(password_reset_token)"`
+	Status     int      `orm:"default(1)"` //todo UNACTIVATED
+	Profile    *Profile `orm:"rel(one)"`
 }
 
 type Profile struct {
 	//ID uint `gorm:"primary_key"`
-	UserRefer      uint
-	Avatar         string  `gorm:"default:'default.png'"`
-	Coins          int     `gorm:"default:0"`
-	PostCount      int     `gorm:"default:0"`
-	CommentCount   int     `gorm:"default:0"`
-	FollowedCount  int     `gorm:"default:0"`
-	FollowingCount int     `gorm:"default:0"`
-	Bio            string  `gorm:"default:'这家伙很懒,什么都没有'"`
+	UserRefer      uint    `orm:"pk"`
+	Avatar         string  `orm:"default('default.png')"`
+	Coins          int     `orm:"default(0)"`
+	PostCount      int     `orm:"default(0)"`
+	CommentCount   int     `orm:"default(0)"`
+	FollowedCount  int     `orm:"default(0)"`
+	FollowingCount int     `orm:"default(0)"`
+	Bio            string  `orm:"default('这家伙很懒,什么都没有')"`
 }
 
-func (Profile) TableName() string {
+func (this *Profile) TableName() string {
 	return "profile"
 }
 
-func (User) TableName() string {
+func (this *User) TableName() string {
 	return "user"
 }
 
 func (u *User) GetUserById(id uint) {
-	database.DB.Preload("Profile").First(&u, id)
+	//database.DB.Preload("Profile").First(&u, id)
+	database.O.QueryTable("user").Filter("id", id).RelatedSel().One(u)
 }
 
 type Follow struct {
-	Follower    User
-	Following   User
+	Follower    *User  `orm:"rel(fk)"`
+	Following   *User  `orm:"rel(fk)"`
+	Id          uint   `orm:"pk"`
 	FollowerID  uint
 	FollowingID uint
+}
+
+func (this *Follow) TableName() string {
+	return "follows"
 }

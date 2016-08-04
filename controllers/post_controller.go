@@ -80,13 +80,13 @@ func (this *PostController) UploadToken() {
 
 func (this *PostController) View() {
 	mPost := m.Posts{}
-	mPost.GetPostById(this.Ctx.Input.Param(":id"))
-	if mPost.ID != 0 {
+	err := mPost.GetPostById(this.Ctx.Input.Param(":id"))
+	if err == nil {
 		mPostDetail := PostDetail{}
 		mPostDetail.NewInstant(&mPost)
 		mUser := m.User{}
-		mUser.GetUserById(mPost.AuthorID) //todo query user profile,do not show Author(in mPost) information
-		person := Person{ID:mUser.ID, Name:mUser.Name, Avatar:mUser.Profile.Avatar}
+		mUser.GetUserById(mPost.Author.Id) //todo query user profile,do not show Author(in mPost) information
+		person := Person{ID:mUser.Id, Name:mUser.Name, Avatar:mUser.Profile.Avatar}
 		data := PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
 		json, err := json.Marshal(data)
 		if err == nil {

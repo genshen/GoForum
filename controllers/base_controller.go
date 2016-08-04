@@ -13,8 +13,6 @@ const (
 )
 var Login_Json_Err = forms.SimpleJsonResponse{Status:3, Error:"用户未登录"}
 
-var Login_Json_Err = forms.SimpleJsonResponse{Status:3, Error:"用户未登录"}
-
 type Rules interface {
 	getRules(string) int
 }
