@@ -3,7 +3,7 @@ package controllers
 import (
 	"html/template"
 	"strconv"
-	"github.com/qiniu/api.v7/kodo"
+	"qiniupkg.com/api.v7/kodo"
 	"encoding/json"
 	"gensh.me/goforum/models/forms"
 	"gensh.me/goforum/middleware/event"

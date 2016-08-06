@@ -22,7 +22,7 @@ _cgo_export.*
 
 _testmain.go
 
-conf/database.conf
+goforum
 *.exe~
 *.exe
 *.test
