@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"html/template"
 	"github.com/astaxie/beego"
 	"gensh.me/goforum/models/forms"
 	"gensh.me/goforum/middleware/event"
