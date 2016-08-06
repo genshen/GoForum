@@ -12,11 +12,11 @@ var O orm.Ormer
 func init() {
 	err := orm.RegisterDriver(beego.AppConfig.String("db_type"), orm.DRMySQL)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("err to connect to registe database drive")
 	}
 	orm.RegisterDataBase("default", beego.AppConfig.String("db_type"), beego.AppConfig.String("db_config"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("err to connect to database")
 	}
 	orm.Debug = beego.AppConfig.DefaultBool("db_debug", false)
 }
