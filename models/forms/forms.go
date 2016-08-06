@@ -128,9 +128,10 @@ func (this *CommentCreateForm)Create(user_id uint, username string) (result *Sim
 	o.Begin()
 	//tx := database.DB.Begin()
 	if (p.Exist(this.PostID) ) {
-		comment := m.Comment{PostID:this.PostID, Author:user_id, Content:this.Content}
+		comment := m.Comment{PostId:this.PostID, Author:user_id, Content:this.Content}
 		if _,err := o.Insert(&comment); err != nil {
 			//tx.Rollback();
+			//fmt.Println(err,err ==nil )
 			err = o.Rollback()
 			result = &SimpleJsonResponse{Status:0, Addition:"添加回复失败,请重试!"}
 			return
@@ -214,7 +215,7 @@ func (this *FeedbackForm)Valid(uid uint) ([]*validation.Error) {
 	if v.HasErrors() {
 		return v.Errors
 	}
-	feedback := m.Feedback{UserID:uid, Type:this.Type, Content:this.Feedback, Contact:this.Contact}
+	feedback := m.Feedback{UserId:uid, Type:this.Type, Content:this.Feedback, Contact:this.Contact}
 	database.O.Insert(&feedback) //RW
 	return nil
 }

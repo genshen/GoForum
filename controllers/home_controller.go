@@ -46,7 +46,7 @@ func (this *HomeController)Me() {
 		me.ID = this.getUserId()
 		me.Name = this.getUsername()
 		profile := m.Profile{}  //load avatar info from database(while id username from session)
-		database.O.QueryTable("profile").Filter("user_refer",me.ID).One(&profile,"avatar")
+		database.O.QueryTable("profile").Filter("user_refer",me.ID).Limit(1).One(&profile,"avatar")
 		me.Avatar = profile.Avatar
 	}
 	this.Data["json"] = &me

@@ -4,7 +4,7 @@ import (
 	"gensh.me/goforum/models/database"
 	"github.com/astaxie/beego/orm"
 	"time"
-	"fmt"
+	"strconv"
 )
 
 func init() {
@@ -47,11 +47,13 @@ func (this *Posts)TableName() string{
 func (p *Posts) GetPostById(id string) error {
 	//todo string to uint
 	//database.O.One(&p, id)
-	return database.O.Read(&p);
+	pid, _ := strconv.Atoi(id)
+	p.Id = uint(pid)
+	return database.O.Read(p);
 }
 
 func (p *Posts) Exist(id uint) bool {
-	database.O.Raw("SELECT id, author_id,summary,title,comment_count FROM user WHERE id = ? LIMIT 1", id).QueryRow(&p)
+	database.O.Raw("SELECT id, author_id,summary,title,comment_count FROM posts WHERE id = ? LIMIT 1", id).QueryRow(&p)
 	//database.O.Select("id,author_id,summary,title,comment_count").First(&p, id)
 	return p.Id != 0
 }
@@ -62,7 +64,7 @@ type Comment struct {
 	UpdatedAt time.Time   `orm:"auto_now"`
 	DeletedAt time.Time
 
-	PostID  uint
+	PostId  uint
 	Author  uint
 	Parent  uint   `orm:"default(0)"`
 	Content string
@@ -141,7 +143,7 @@ type Feedback struct {
 	UpdatedAt time.Time   `orm:"auto_now"`
 	DeletedAt time.Time
 
-	UserID  uint
+	UserId  uint
 	Type    int8
 	Content string
 	Contact string

@@ -14,8 +14,8 @@ type Notification struct {
 	DeletedAt time.Time
 	User        *User    `orm:"rel(fk)"`
 	Related     *User    `orm:"rel(fk)"`
-	UserID      uint
-	RelatedID   uint     `orm:"default(0)"`
+	//UserId      uint
+	//RelatedId   uint     `orm:"default(0)"`
 	SubjectType int
 	IsRead      bool     `orm:"default(false)"`
 
@@ -33,13 +33,13 @@ type PostMessage struct {
 	DeletedAt time.Time
 	User        *User    `orm:"rel(fk)"`
 	Related     *User    `orm:"rel(fk)"`
-	UserID      uint
-	RelatedID   uint     `orm:"default(0)"`
+	//UserId      uint
+	//RelatedId   uint     `orm:"default(0)"`
 	SubjectType int
 	IsRead      bool     `orm:"default(false)"`
 
 	RelatedUsername string   `orm:"default('')"`
-	PostID          uint
+	PostId          uint
 	PostTitle       string
 	Summary         string  `orm:"size(255)"`
 	Quote           string  `orm:"size(255)"`

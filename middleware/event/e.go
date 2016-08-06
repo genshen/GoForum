@@ -22,9 +22,9 @@ func OnPostCreated() {
 
 //Posts:id,title,comment_count
 func OnCommentSubmitted(post *m.Posts, comment *m.Comment, username string) {
-	var message = m.PostMessage{RelatedUsername:username, PostID:post.Id, PostTitle:post.Title,Quote:post.Summary,
+	var message = m.PostMessage{RelatedUsername:username, PostId:post.Id, PostTitle:post.Title,Quote:post.Summary,
 		Summary:comment.Content,
-		UserID:post.Author.Id, RelatedID:comment.Author, SubjectType:values.POST_COMMENT }
+		User:&m.User{Id:post.Author.Id},Related:&m.User{Id:comment.Author}, SubjectType:values.POST_COMMENT }
 	database.O.Insert(&message)
 	//多次create,message 可以复用
 }
@@ -32,7 +32,7 @@ func OnCommentSubmitted(post *m.Posts, comment *m.Comment, username string) {
 /*id userId;id_r:related_id;name:*/
 func OnFollowed(id uint, id_r uint, name string) {
 	var notify = m.Notification{Data:"{\"username\":\"" + name + "\"}",
-		UserID:id, RelatedID:id_r, SubjectType:values.FOLLOW_ADD}
+		User:&m.User{Id:id},Related:&m.User{Id:id_r}, SubjectType:values.FOLLOW_ADD}
 	database.O.Insert(&notify)
 }
 

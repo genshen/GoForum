@@ -22,8 +22,9 @@ type User struct {
 }
 
 type Profile struct {
-	//ID uint `gorm:"primary_key"`
-	UserRefer      uint    `orm:"pk"`
+	Id             uint    `orm:"pk"`
+	User           *User   `orm:"reverse(one)"`
+	UserRefer      uint
 	Avatar         string  `orm:"default('default.png')"`
 	Coins          int     `orm:"default(0)"`
 	PostCount      int     `orm:"default(0)"`
