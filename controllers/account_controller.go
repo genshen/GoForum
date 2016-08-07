@@ -31,10 +31,7 @@ func (this *AccountController) SignIn() {
 		this.Redirect("/", 302)
 		return
 	}
-<<<<<<< HEAD:controllers/user_controller.go
-=======
 	//this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
->>>>>>> orm:controllers/account_controller.go
 	this.TplName = "account/signin.html"
 }
 
