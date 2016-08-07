@@ -1,80 +1,158 @@
 package m
 
 import (
-	"github.com/jinzhu/gorm"
+	"gensh.me/goforum/models/database"
+	"github.com/astaxie/beego/orm"
 	"time"
-	"./../database"
+	"strconv"
 )
 
-const (
-	STATUS_ACTIVE int = 10
-)
-
-type User struct {
-	gorm.Model
-	Email      string
-	Tel        string
-	Name       string
-	Password   string  `gorm:"column:password_hash"`
-	AuthKey    string  `gorm:"column:auth_key"`
-	ResetToken string  `gorm:"column:password_reset_token"`
-	Status     int     `gorm:"default:10"`
-	Posts      []Posts `gorm:"ForeignKey:Author"`
+func init() {
+	orm.RegisterModel(new(User), new(Profile), new(Follow))
+	orm.RegisterModel(new(Posts), new(Comment), new(Topic), new(Tag))
+	orm.RegisterModel(new(PostMessage), new(Notification))
+	orm.RegisterModel(new(Swipe), new(Feedback))
+	database.O = orm.NewOrm()
 }
 
-func (User) TableName() string {
-	return "user"
-}
-
-func (u *User) GetUserById(id uint) {
-	database.DB.First(&u, id)
-}
 
 //User         User `gorm:"ForeignKey:Author"`
 type Posts struct {
-	gorm.Model
-	Topic        uint
-	Author       uint
-	Title        string
+	Id           uint        `orm:"pk"`
+	CreatedAt    time.Time   `orm:"auto_now_add"`
+	UpdatedAt    time.Time   `orm:"auto_now_add"`
+	DeletedAt    time.Time
+			  //TopicId      uint
+	Topic        *Topic  `orm:"rel(fk)"`
+	Tags         []*Tag  `orm:"rel(m2m);rel_table(post_tag)"`
+			  //AuthorId     uint
+	Author       *Profile `orm:"rel(fk)"`
+	Title        string   `orm:"size(255)"`
+	Summary      string   `orm:"size(255)"`
 	Content      string
 	IsMobile     bool // 1 for mobile,0 for desktop
-	Sticky       bool  `gorm:"default:false"`
-	CommentCount int   `gorm:"default:0"`
-	ViewCount    int   `gorm:"default:0"`
-	Visible      bool  `gorm:"default:true"`
+	Sticky       bool   `orm:"default(false)"`
+	CommentCount int    `orm:"default(0)"`
+	ViewCount    int    `orm:"default(0)"`
+	Visible      bool   `orm:"default(true)"`
 	LastReplayAt time.Time
-	Comment      []Comment `gorm:"ForeignKey:PostID"`
+			  //Comment      []Comment  `gorm:"ForeignKey:PostID"` //todo
 }
 
-func (p *Posts) GetPostById(id string) {
+func (this *Posts)TableName() string {
+	return "posts"
+}
+
+func (p *Posts) GetPostById(id string) (err error) {
 	//todo string to uint
-	database.DB.First(&p, id)
+	//database.O.One(&p, id)
+	pid, _ := strconv.Atoi(id)
+	p.Id = uint(pid)
+	if err := database.O.Read(p); err == nil {
+		_, e := database.O.LoadRelated(p, "Author")
+		return e
+	}
+	return
 }
 
 func (p *Posts) Exist(id uint) bool {
-	database.DB.Select("id,comment_count").First(&p, id)
-	if p.ID == 0 {
-		return false
-	}
-	return true
+	database.O.QueryTable("posts").Filter("id",id).Limit(1).
+	One(p,"id", "author_id","summary","title","comment_count")
+	//database.O.Select("id,author_id,summary,title,comment_count").First(&p, id)
+	return p.Id != 0
 }
 
 type Comment struct {
-	gorm.Model
-	PostID  uint
-	Author  uint
-	Parent  uint `gorm:"default=0"`
-	Content string
-	Visible bool  `gorm:"default:true"`
+	Id        uint        `orm:"pk"`
+	CreatedAt time.Time   `orm:"auto_now_add"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
+	DeletedAt time.Time
+
+	PostId    uint
+	Author    uint
+	Parent    uint   `orm:"default(0)"`
+	Content   string
+	Visible   bool   `orm:"default(true)"`
 }
 
-func (Comment) TableName() string {
+func (c *Comment) TableName() string {
 	return "comment"
 }
 
 func LoadComments(id int, offset int) []Comment {
-
 	var comments []Comment
-	database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
+	database.O.QueryTable("comment").Filter("post_id", id).Offset(uint(offset)).Limit(20).All(&comments)
+	//database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
 	return comments
+}
+
+type Topic struct {
+	Id        uint        `orm:"pk"`
+	CreatedAt time.Time   `orm:"auto_now_add"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
+	DeletedAt time.Time
+
+	Name      string
+	Describe  string
+	Slug      string
+	Visible   bool    `orm:"default(true)"`
+	Color     string
+}
+
+func (this *Topic) TableName() string {
+	return "topic"
+}
+
+type Tag struct {
+	Id        uint        `orm:"pk"`
+	CreatedAt time.Time   `orm:"auto_now_add"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
+	DeletedAt time.Time
+
+	Name      string
+	Describe  string
+	Visible   bool   `orm:"default(true)"`
+	Color     string
+}
+
+func (this *Tag) TableName() string {
+	return "tag"
+}
+
+type Swipe struct {
+	Id        uint        `orm:"pk"`
+	CreatedAt time.Time   `orm:"auto_now_add"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
+	DeletedAt time.Time
+
+	Url       string
+	Img       string
+	Content   string
+	Visible   bool    `orm:"default(true)"`
+}
+
+func (this *Swipe) TableName() string {
+	return "swipe"
+}
+
+func LoadSwipes() (swipes []Swipe) {
+	database.O.QueryTable("swipe").Filter("visible", true).Limit(20).All(&swipes)
+	//database.DB.Where("visible = ?", true).Limit(8).Find(&swipes)
+	return
+}
+
+type Feedback struct {
+	Id        uint        `orm:"pk"`
+	CreatedAt time.Time   `orm:"auto_now_add"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
+	DeletedAt time.Time
+
+	UserId    uint
+	Type      int8
+	Content   string
+	Contact   string
+}
+
+func (this *Feedback) TableName() string {
+	return "feedback"
 }

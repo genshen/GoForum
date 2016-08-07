@@ -1,12 +1,530 @@
-{{define "content"}}{{template "header" .}}{{template "navbar" .}}
-<main id="app">
-
+﻿{{define "content"}}{{template "header" .}}{{template "header_foo" .}}
+<main id="app" style="margin-bottom:72px"> <!--footer:60px-->
+    <home-grid :home="home"></home-grid>
+    <category-grid :category="category"></category-grid>
+    <message-grid :active="message.active" :tab_index.sync="message.tab_index"></message-grid>
+    <user-grid :user="me"></user-grid>
 </main>
+<!--home template-->
+<script type="text/x-template" id="home-template">
+    <div class="container" v-show="home.active">
+        <div v-show="home.loaded">
+            <h1>Home</h1>
+            <div class="row">
+                <!-- Carousel Card -->
+                <div id="home-owl" class="owl-carousel">
+                    <div v-for="swipe in home.swipes">
+                        <a :href="{{" swipe.Url"}}" target="_blank">
+                        <img :src="{{" swipe.Img"}}" alt="Awesome Image">
+                        </a>
+                    </div>
+                </div>  <!--owl-carousel-->
+            </div>  <!--/row--->
+            <div class="row">
+                <div class="col-md-8 mdl-list-group">
+                    <template v-for="hot in home.hot_posts">
+                        <div class="mdl-list-group-item">
+                            <div class="row-picture">
+                                <a :href="'/person/'+hot.ID"><img class="circle" :src="hot.Avatar" alt="Avatar"/></a>
+                            </div>
+                            <div class="row-content without-arrow">
+                                <div class="home-list-top-info"><!--class="list-group-item-heading"-->
+                                    <a :href="'/person/'+hot.ID" class="hot-list-author">
+                                        <small>{{"{{hot.Name}}"}}</small>
+                                    </a>
+                                    <small class="pull-right">
+                                        <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{"{{hot.ViewCount}}"}}&nbsp;&nbsp;</span>
+                                        <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{"{{hot.CommentCount}}"}}&nbsp;&nbsp;</span>
+                                    </small>
+                                </div>
+                                <p class="hot-list-item-date">
+                                    <small>2016.7.11</small>
+                                </p>
+                                <h5 class="list-group-item-text" style="margin-top:0;">
+                                    <a :href="'/post/'+hot.PostID">{{"{{hot.Title}}"}}</a>
+                                </h5>
+                            </div><!--class="row-content"-->
+                        </div><!--class="list-group-item"-->
+                        <div class="list-group-separator"></div>
+                    </template>
+                </div><!--calss="list-group"-->
+            </div>
+            <a @click="loadMore" :disabled="!home.loading_enable">{{"{{home.hot_loading_text}}"}}</a>
+        </div>
+        <div v-show="!home.loaded">
+            <span>正在加载...</span>
+        </div> <!--/home.loaded-->
+    </div>  <!--/home.active-->
+</script>
+<!--category template-->
+<script type="text/x-template" id="category-template">
+    <div class="container" v-show="category.active">
+        <div v-show="category.loaded">
+            <h1>category</h1>
+            <h4>热门标签</h4>
+            <div class="tag-container">
+                <a v-for="tag in category.tags" class="category-tag" :style="{background:tag.Color}">
+                    {{"{{tag.Name}}"}}
+                </a>
+            </div>
+            <h4>话题</h4>
+            <div class="topic-container">
+                <div v-for="topic in category.topics" :style="{background:topic.Color}"
+                     class="col-md-3 col-md-4 col-sm-6 category-topic">
+                    <h4><a :href="'/topic/'+topic.Slug">{{"{{topic.Name}}"}}</a></h4>
+                    <span class="text-info">{{"{{topic.Describe}}"}}</span>
+                </div>
+            </div>  <!--/topic-container-->
+        </div>
+        <div v-show="!category.loaded">
+            正在加载...
+        </div> <!--/category.loaded-->
+    </div> <!--/category.active-->
+</script>
+<!--message template-->
+<script type="text/x-template" id="message-template">
+    <div class="container" v-show="active">
+        <div class="row">
+            <nav class="tab-nav" id="message-tab-nav">
+                <ul class="nav nav-justified">
+                    <li><a data-toggle="tab" href="#m-message">消息</a></li>
+                    <li><a data-toggle="tab" href="#m-notification">通知</a></li>
+                </ul>
+            </nav>
+            <div class="tab-content">
+                <div class="tab-pane container" id="m-message">
+                    <div class="message-control-box">
+                        <span class="label label-info">{{"{{unread_messages}}"}}</span><span>条未读</span>
+                        <a href="javascript:void(0)" class="withripple read-mark-action">
+                            <i class="material-icons">done_all</i>
+                        </a>
+                    </div>
+                    <div class="row mdl-list-group message-list">
+                        <template v-for="msg in message_data.messages | orderBy 'IsRead' -1">
+                            <div class="mdl-list-group-item">
+                                <div class="row-picture message-list-icon">
+                                    <i class="material-icons">reply</i>
+                                </div>
+                                <div class="row-content">
+                                    <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
+                                        <i class="material-icons">done</i>
+                                    </a>
+                                    <h6 class="single-line message-list-title list-group-item-heading">
+                                        <a :href="'/person/'+msg.RelatedID" v-text="msg.RelatedUsername">Loading</a>
+                                        <span>回复了你的帖子</span>
+                                        <a :href="'/post/'+msg.PostID" v-text="msg.PostTitle">Loading</a>
+                                    </h6>
+                                    <p class="list-group-item-text">
+                                        <a data-toggle="collapse" href="#post_message_collapse" aria-expanded="false" aria-controls="collapseExample">详情</a>
+                                        <span>2016-08-01</span>
+                                    </p>
+                                    <div class="post-message-collapse collapse" id="post_message_collapse">
+                                        <blockquote>
+                                            <p>Firefox 浏览器对 fieldset 元素设置了一些影响 width 属性的样式</p>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-separator"></div>
+                        </template>
+                    </div> <!--/list-group--->
+                </div>
+                <div class="tab-pane container" id="m-notification">
+                    <div class="message-control-box">
+                        <span class="label label-info">{{"{{unread_notifications}}"}}</span><span>条未读</span>
+                        <a href="javascript:void(0)" class="withripple read-mark-action">
+                            <i class="material-icons">done_all</i>
+                        </a>
+                    </div>
+                    <div class="row mdl-list-group message-list">
+                        <template v-for="msg in message_data.notifications | orderBy 'IsRead' -1">
+                            <div class="mdl-list-group-item">
+                                <div class="row-picture message-list-icon">
+                                    <i class="material-icons">poll</i>
+                                </div>
+                                <div class="row-content">
+                                    <a v-if="!msg.IsRead" href="javascript:void(0)" class="withripple read-mark-action action-secondary">
+                                        <i class="material-icons">done</i>
+                                    </a>
+                                    <h6 class="message-list-title list-group-item-heading">
+                                        <a :href="'/person/'+msg.RelatedID" v-text="msg.Data.username">Loading</a><span>关注了你</span>
+                                    </h6>
+                                    <p class="list-group-item-text">Donec id elit non m</p>
+                                </div>
+                            </div>
+                            <div class="list-group-separator"></div>
+                        </template>
+                    </div> <!--/list-group--->
+                </div>
+            </div> <!--/tab-content-->
+        </div>
+    </div>
+</script>
+<!--me template-->
+<script type="text/x-template" id="user-template">
+    <div class="container" v-show="user.active">
+        <ul class="row cell-menu-list list-unstyled">
+            <li class="me-profile withripple" @click="toProfile">
+                <a>
+                    <img class="img-circle" :src="user.avatar" alt="正在加载"/>
+                    <span class="me-profile-username">{{"{{user.name}}"}}</span>
+                    <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+                </a>
+            </li>
+            <li v-for="list in lists"
+                :class="{ 'cell-white-space':list.is_space,'cell-list-info':!list.is_space,'withripple':!list.is_space }">
+                <div v-if="!list.is_space" :class="{'cell-split-line-ignore':list.islast}"
+                     :onclick="'jumpDelay(\''+list.link+'\')'" class="cell-list-container">
+                    <a herf="#">
+                        <span :class="list.icon" class="cell-list-left-icon glyphicon glyphicon-left"></span>
+                        <span class="cell-list-text">{{"{{list.name}}"}}</span>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</script>
+{{template "tabbar" .}}
 {{template "script" .}}
 <script src="/static/dist/js/vue.js"></script>
-<script src="/static/dist/js/snackbar.min.js"></script>
+<script src="/static/dist/js/owl.carousel.min.js"></script>
+<script src="/static/js/util.js"></script>
 <script>
+    $.material.init();
+    var SHOW_HOME = 1,
+            SHOW_CATEGORY = 2,
+            SHOW_MESSAGE = 4,
+            SHOW_ME = 8;
+    var Message_Tab_Nav = ["m-message", "m-notification"];
 
+    Vue.component('home-grid', {
+        template: '#home-template',
+        props: {
+            home: JSON
+        },
+        methods: {
+            loadMore: function () {
+                requestHotPosts(this, this.home.hot_start);
+            }
+        }
+    });
+
+    Vue.component('category-grid', {
+        template: '#category-template',
+        props: {
+            category: JSON
+        },
+        methods: {}
+    });
+
+    Vue.component('message-grid', {
+        template: '#message-template',
+        data: function () {
+            return {
+                message_data: {messages: [], notifications: []},
+                message_loaded: 0
+            }
+        },
+        props: {
+            tab_index: Number,
+            active: Boolean
+        },
+        computed: {
+            unread_messages: function () {
+                return this.countUnRead(this.message_data.messages);
+            },
+            unread_notifications: function () {
+                return this.countUnRead(this.message_data.notifications);
+            }
+        },
+        methods: {
+            countUnRead: function (d) {
+                var count = 0;
+                d.forEach(function (e) {
+                    if (e.IsRead == false) {
+                        count++;
+                    }
+                });
+                return count;
+            }
+        },
+        ready: function () {
+            var self = this;
+            var indexs = ["messages", "notifications"];
+            var urls = ["messages", "notifications"];
+
+            $("#message-tab-nav").on('show.bs.tab', 'a[data-toggle="tab"]', function (e) {
+                var index = $(e.target).parent().index();
+                self.tab_index = index;
+                if (((self.message_loaded >> index) & 1) != 1) {
+                    loadMessageData(self, urls[index], indexs[index], index);
+                }
+            });
+        }
+    });
+
+    Vue.component('user-grid', {
+        template: '#user-template',
+        props: {
+            user: JSON
+        },
+        data: function () {
+            return {
+                lists: [
+                    {is_space: true},
+                    {is_space: false, islast: false, name: "我的帖子", icon: "glyphicon-home", link: "#1"},
+                    {is_space: false, islast: false, name: "关注的人", icon: "glyphicon-user", link: "/profile/following"},
+                    {
+                        is_space: false,
+                        islast: false,
+                        name: "我的粉丝",
+                        icon: "glyphicon-heart-empty",
+                        link: "/profile/followed"
+                    },
+                    {
+                        is_space: false,
+                        islast: true,
+                        name: "我的收藏",
+                        icon: "glyphicon-star-empty",
+                        link: "/profile/collection"
+                    },
+                    {is_space: true},
+                    {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
+                    {is_space: true},
+                    {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "/about"},
+                    {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "/about/feedback"}]
+            }
+        }, methods: {
+            toProfile: function () {
+                if (this.user.isLogin) {
+                    jumpDelay("/person/" + this.user.id);
+                } else {
+                    jumpDelay("/account/signin");
+                }
+            }
+        }
+    });
+
+    var vue = new Vue({
+        el: "html",
+        data: {
+            title: "首页",
+            home: {
+                loaded: false,
+                active: true,
+                swipes: [],
+                hot_posts: [],
+                hot_start: 0,
+                hot_loading_text: "加载更多",
+                hot_loading_enable: true
+            },
+            category: {loaded: false, active: false, tags: [], topics: []},
+            message: {active: false, tab_index: 0},
+            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "default.png"},
+            setting: {}
+        },
+        ready: function () {
+            var hash = window.location.hash;
+            var self = this;
+            this.initByHash(hash, false);
+            $(window).on("popstate", function (event) {
+//              console.log(window.location.hash);
+                self.initByHash(window.location.hash, true);
+            });
+        },
+        methods: {
+            initByHash: function (hash, ispop) {
+                if (hash == "" || hash == "#home") {
+                    this.greetHome(ispop);
+                } else if (hash == "#category") {
+                    this.greetCategory(ispop);
+                } else if (hash == "#message") {
+                    this.greetMessage(ispop);
+                } else if (hash == "#me") {
+                    this.greetMe(ispop);
+                }
+            },
+            //status = 1/2/4/8 only
+            show: function (status) {
+                this.home.active = (status & SHOW_HOME) == SHOW_HOME;
+                this.category.active = (status & SHOW_CATEGORY) == SHOW_CATEGORY;
+                this.message.active = (status & SHOW_MESSAGE) == SHOW_MESSAGE;
+                this.me.active = (status & SHOW_ME) == SHOW_ME;
+            },
+            //初始化与点击tab时,history.pushState;
+            greetHome: function (ispop) {
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#home");
+                }
+                this.show(SHOW_HOME);
+                if (!this.home.loaded) {
+                    requestHomeData(this);
+                }
+            },
+            greetCategory: function (ispop) {
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#category");
+                }
+                this.show(SHOW_CATEGORY);
+                if (!this.category.loaded) {
+                    requestCategoryData(this);
+                }
+            },
+            greetMessage: function (ispop) {
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#message");
+                }
+                this.show(SHOW_MESSAGE);
+                $('#message-tab-nav a[href="#' + Message_Tab_Nav[this.message.tab_index] + '"]').tab('show');
+            },
+            greetMe: function (ispop) {
+                if (ispop !== true) {
+                    history.pushState(null, "home", "#me");
+                }
+                this.show(SHOW_ME);
+                if (!this.me.loaded) {
+                    getUserStatus(this);
+                }
+            }
+        }
+    });
+
+    //第一次加载失败(swipt 与 hot),可以通过点击首页重试
+    function requestHomeData(self) {
+        $.ajax({
+            type: 'GET',
+            url: "/home/swipe/",
+            success: function (data) {
+                if (data.length == 0) { //todo
+                    //  未找到相关内容;
+                }
+                self.home.swipes = []; //防止重试加载时会数据重叠
+                data.forEach(function (e) {
+                    self.home.swipes.push(e);
+                });
+                self.home.hot_loading_text = "正在加载";
+                self.home.hot_loading_enable = false;
+                requestHotPosts(self, self.home.hot_start);
+            }, error: function (err) {
+                // 加载失败,重新加载
+                var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
+                $.snackbar(options);
+                //  console.log(err);
+            }
+        });
+    }
+
+    //请求热门帖子的数据
+    //第一次由父组件调用,以后加载更多及失败的重试都由子组件负责
+    function requestHotPosts(self, start) {
+        $.ajax({
+            type: 'GET',
+            url: "/home/hot/" + start,
+            success: function (data) { //todo use try catch: data may be not json format
+                if (data.length == 0) { //todo
+                    self.home.hot_loading_enable = false;
+                    self.home.hot_loading_text = "没有更多内容了";
+                    return;
+                }
+                data.forEach(function (e) {
+                    self.home.hot_posts.push(e);
+                });
+                self.home.hot_start += data.length;
+                self.home.loaded = true;
+                self.home.hot_loading_text = "加载更多";
+                self.home.hot_loading_enable = true;
+                $("#home-owl").owlCarousel({
+                    autoPlay: 4000,
+                    stopOnHover: true,
+                    pagination: true,
+                    slideSpeed: 300,
+                    paginationSpeed: 400,
+                    singleItem: true
+                }); //初始化轮播图
+                // $("#home-owl").owlCarousel({autoplay:true,autoplayTimeout:5000,autoplayHoverPause:true,center: true,loop:true,autoWidth:true,items:1});   //2.0初始化轮播图
+            }, error: function (err) {
+                self.home.hot_loading_enable = true;
+                self.home.hot_loading_text = "加载失败,请重试";
+                var options = {content: "加载失败,请重试", timeout: 2000};
+                $.snackbar(options);
+                // console.log(err);
+            }
+        });
+    }
+
+    //请求发现页面的数据
+    function requestCategoryData(self) {
+        $.ajax({
+            type: 'GET',
+            url: "/home/category/",
+            success: function (data) {
+                //todo if length ==0 未找到相关内容;
+                self.category.tags = []; //防止重试加载时会数据重叠
+                self.category.topic = [];
+                data.Tags.forEach(function (e) {
+                    self.category.tags.push(e);
+                });
+                data.Topics.forEach(function (e) {
+                    self.category.topics.push(e);
+                });
+                self.category.loaded = true;
+            }, error: function (err) {
+                // 加载失败,重新加载
+                var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
+                $.snackbar(options);
+                //  console.log(err);
+            }
+        });
+    }
+
+    //加载消息页面数据
+    function loadMessageData(self, url, index, position) {
+        $.ajax({
+            type: 'GET',
+            url: "/message/" + url,
+            success: function (data) {
+                self.message_data[index] = [];
+                data.forEach(function (e) {
+                    if (e.Data != undefined){
+                        e.Data = JSON.parse(e.Data);
+                    }
+                    self.message_data[index].push(e);
+                });
+                self.message_loaded = self.message_loaded | (1 << position);
+                window.setTimeout(function(){$.material.ripples('.withripple');},300);
+            }, error: function (err) {
+                var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
+                $.snackbar(options);
+            }
+        });
+    }
+
+    //获取用户信息
+    function getUserStatus(self) {
+        $.ajax({
+            type: 'GET',
+            url: "/home/me/",
+            success: function (data) {
+                self.me.isLogin = data.IsLogin;
+                if (data.IsLogin) {
+                    self.me.id = data.ID;
+                    self.me.name = data.Name;
+                    self.me.avatar = data.Avatar;
+                }
+                self.me.loaded = true;
+                $.material.ripples('.withripple'); //set ripple
+            }, error: function (err) {
+                var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
+                $.snackbar(options);
+            }
+        });
+    }
+
+    function jumpDelay(url) {
+        window.setTimeout(function () {
+            window.location.href = url;
+        }, 300);
+    }
 </script>
 {{template "footer" .}}
 {{end}}

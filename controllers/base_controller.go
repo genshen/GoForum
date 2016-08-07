@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	identify "./../verify/auth"
+	"gensh.me/goforum/components/utils"
 )
 
 const (
@@ -11,6 +11,11 @@ const (
 	Is_Login = "is_login"
 )
 
+<<<<<<< HEAD
+=======
+var Login_Json_Err = utils.SimpleJsonResponse{Status:3, Error:"用户未登录"}
+
+>>>>>>> orm
 type Rules interface {
 	getRules(string) int
 }
@@ -19,20 +24,23 @@ type BaseController struct {
 	beego.Controller
 }
 
-type Person struct {
-	ID   uint
-	Name string
-	Head string
-}
-
-
 // Prepare implemented Prepare method for baseRouter.
 func (this *BaseController) Prepare() {
-	var _, action = this.GetControllerAndAction()
 	if app, ok := this.AppController.(Rules); ok {
-		if (app.getRules(action) & identify.Login) != 0 && !this.IsUserLogin() {
-			//not login
-			this.Redirect("/account/signin", 302)
+		var _, action = this.GetControllerAndAction()
+		rule := app.getRules(action)
+		is_login := this.IsUserLogin()
+		if ((rule & utils.Login) == utils.Login) && !is_login {
+			if rule & utils.JumpBack == utils.JumpBack {
+				//"&query=" + this.Ctx.Request.URL.RawQuery
+				this.Redirect("/account/signin?next=" + this.Ctx.Request.URL.Path, 302)
+			} else {
+				this.Redirect("/account/signin", 302)
+			}
+		} else if ((rule & utils.LoginJSON) == utils.LoginJSON) && !is_login {
+			this.Data["json"] = &Login_Json_Err
+			this.ServeJSON()
+			this.StopRun()
 		}
 	}
 }
@@ -60,6 +68,20 @@ func (this *BaseController) LogoutUser() bool {
 	return true
 }
 
+//get user's id. returns user's id if has signed in,or 0 otherwise
 func (this *BaseController) getUserId() uint {
-	return (this.GetSession(User)).(uint)
+	u := this.GetSession(User)
+	if u == nil {
+		return 0
+	}
+	return u.(uint)
+}
+
+//get username if has signed in,or "" otherwise
+func (this *BaseController) getUsername() string {
+	name := this.GetSession(User_Name)
+	if (name == nil) {
+		return ""
+	}
+	return name.(string)
 }

@@ -1,0 +1,154 @@
+// Copyright 2012 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+// +build !plan9
+
+package main
+
+import (
+	"log"
+	"os"
+	"strings"
+	"io/ioutil"
+	"encoding/json"
+	"text/template"
+	"github.com/fsnotify/fsnotify"
+)
+
+type Data struct {
+	Title string `json:"title"`
+}
+
+type WatchConfig struct {
+	Layouts      []string  `json:"layouts"`
+	Templates    map[string]Data     `json:"template"`
+	WatchFolders []WatchFolder  `json:"watched_folder"`
+}
+
+type WatchFolder struct {
+	Folder string `json:"folder"`
+}
+
+var (
+	config_path = "watch_config.json"
+	view_temp = "view_temp/"
+	view_out = "views/"
+	generate_all = false
+	has_error = false
+	watch_config WatchConfig
+)
+
+func init() {
+	arg_len := len(os.Args)
+	if arg_len < 1 {
+		has_error = true;
+		return
+	}
+	if arg_len > 1 {
+		if os.Args[1] == "-g" {
+			//fn -g
+			generate_all = true
+		} else {
+			//fn goforum OR fn goforum -g
+			config_path = os.Args[1] + "/" + config_path
+			view_temp = os.Args[1] + "/" + view_temp
+			view_out = os.Args[1] + "/" + view_out
+		}
+	}
+	if arg_len > 2 && os.Args[2] == "-g" {
+		//fn goforum -g
+		generate_all = true
+	}
+	//init config
+	f, err := os.Open(config_path)
+	if err != nil {
+		has_error = true
+		log.Fatal(err)
+		return
+	}
+	config, err := ioutil.ReadAll(f)
+	if err != nil {
+		has_error = true
+		log.Fatal(err)
+		return
+	}
+	if err := json.Unmarshal(config, &watch_config); err != nil {
+		has_error = true
+		log.Fatalf("JSON unmarshaling failed: %s", err)
+	}
+}
+
+func main() {
+	if (has_error) {
+		return
+	}
+
+	if (generate_all) {
+		generateAllTemplate()
+		return
+	}
+
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case event := <-watcher.Events:
+			//log.Println("event:", event)
+				if event.Op & fsnotify.Write == fsnotify.Write {
+					generateTemplate(event, false)
+				} else if event.Op & fsnotify.Create == fsnotify.Create {
+					generateTemplate(event, true)
+				}
+			case err := <-watcher.Errors:
+				log.Println("error:", err)
+			}
+		}
+	}()
+
+	//add  watcher
+	for _, folder := range watch_config.WatchFolders {
+		err = watcher.Add(view_temp + folder.Folder)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	<-done
+}
+
+func generateTemplate(event fsnotify.Event, isCreate bool) {
+	if !strings.HasSuffix(event.Name, ".html") {
+		return
+	}
+	var filePath string = strings.Replace(event.Name, "\\", "/", -1)
+	if isCreate {
+		log.Println("create file:", filePath)
+	} else {
+		log.Println("modified file:", filePath)
+	}
+	fileName := strings.Replace(filePath, view_temp, "", 1)
+	generate(filePath, view_out + fileName, watch_config.Templates[fileName])
+	log.Println("released file: ", view_out + fileName)
+}
+
+func generateAllTemplate() {
+	for name, data := range watch_config.Templates {
+		log.Println("released file: ", view_temp + name)
+		generate(view_temp + name, view_out + name, data)
+	}
+}
+
+func generate(container string, out string, data Data) {
+	s1, _ := template.ParseFiles(container)
+	for _, layout := range watch_config.Layouts {
+		s1.ParseFiles(view_temp + layout)
+	}
+	file, _ := os.Create(out);
+	s1.ExecuteTemplate(file, "content", data)
+}

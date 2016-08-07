@@ -2,27 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="/static/img/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
-    <meta name="theme-color" content="#db5945">
+    <meta name="theme-color" content="#1ba10f">
     <title>创建帖子</title>
     <!-- Material Design fonts -->
-    <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
-     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">  -->
+     <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css" rel="stylesheet">
      <!-- Bootstrap -->
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="/static/dist/css/material/base.min.css" rel="stylesheet">-->
     <!-- Bootstrap Material Design -->
     <link href="/static/dist/css/bootstrap-material-design.css" rel="stylesheet">
     <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="/static/css/editor/editor-mobile.min.css">
 </head>
 <body>
-
 <main id="app">
     <div class="container">
         <h1>Create Post</h1>
-
         <form id="post_form" action="" method="post">
             <<< .xsrf_token >>>
             <input type="hidden" id="post_content" name="post_content">
+            <input type="hidden" id="post_summary" name="post_summary">
             <div class="form-group">
                 <label for="post_title" class="col-md-2 control-label">标题</label>
                 <div class="col-md-10">
@@ -42,11 +47,11 @@
 
     </div>
 </main>
-<link type="text/css" rel="stylesheet" href="/static/css/editor/editor-mobile.min.css">
 <!-- jQuery -->
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
 <!-- Twitter Bootstrap -->
 <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<!--<script src="/static/dist/js/material/base.min.js"></script>-->
 <!-- Material Design for Bootstrap -->
 <script src="/static/dist/js/material.min.js"></script>
 <script src="/static/dist/js/ripples.min.js"></script>
@@ -88,7 +93,12 @@
 
     function submitPost() {
         var content = editor.$txt.html().replace(editor.config.imgUploadConfig.domain, editor.config.imgUrlTag);
+        var summary = content.replace(/<[^>]+>/g,"");//去掉所有的html标记
+        if(summary.length > 300) {
+            summary = title.substring(0,255);
+        }
         $("#post_content").val(content);
+        $("#post_summary").val(summary);
         $("#post_form").submit();
     }
 </script>

@@ -1,0 +1,67 @@
+{
+  "layouts": [
+    "layouts/header.html",
+    "layouts/header_foo.html",
+    "layouts/tabbar.html",
+    "layouts/center_script.html",
+    "layouts/footer.html"
+  ],
+  "template": {
+    "about/index.html":{
+      "title": "<title>关于我们</title>"
+    },
+    "about/feedback.html":{
+      "title": "<title>意见反馈</title>"
+    },
+    "account/signin.html": {
+      "title": "<title>登录</title>"
+    },
+    "account/signup.html": {
+      "title": "<title>注册</title>"
+    },
+    "account/signup_success.html": {
+      "title": "<title>注册成功</title>"
+    },
+    "profile/person.html": {
+      "title": "<title v-text='person.Name'>正在加载</title>"
+    },
+    "profile/follow.html": {
+      "title": "<title v-text='title'>正在加载</title>"
+    },
+    "home/index.html": {
+      "title": "<title>首页</title>"
+    },
+    "topic/index.html": {
+      "title": "<title v-text='\"X Froum--\"+slug'>X Froum--正在加载</title>"
+    },
+    "post/create_jump.html": {
+      "title": "<title>跳转中...</title>"
+    },
+    "post/view.html": {
+      "title": "<title v-text='\"X Froum--\"+Post.Title'>X Froum--正在加载</title>"
+    },
+    "post/create_mobile.html": {
+      "title": "<title>创建帖子</title>"
+    }
+  },
+  "watched_folder": [
+    {
+      "folder": "about"
+    },
+    {
+      "folder": "home"
+    },
+    {
+      "folder": "account"
+    },
+    {
+      "folder": "profile"
+    },
+    {
+      "folder": "post"
+    },
+    {
+      "folder": "topic"
+    }
+  ]
+}

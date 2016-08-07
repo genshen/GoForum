@@ -1,14 +1,10 @@
 package main
 
 import (
-	_ "./routers"
-	"./models/database"
+	_ "gensh.me/goforum/routers"
+	_"gensh.me/goforum/models/database" //init database
 	"github.com/astaxie/beego"
 )
-
-func init() {
-	database.InitDB()
-}
 
 func main() {
 	beego.Run()

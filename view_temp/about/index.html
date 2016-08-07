@@ -1,0 +1,54 @@
+{{define "content"}}{{template "header" .}}
+<style>
+#app {  min-height: 100%;  height: auto;  margin-bottom: -60px;  padding-bottom: 80px;  }
+.logo-section {  text-align: center;  padding-bottom: 3px;  }  .logo{width: 120px;  height: 120px;  margin-top: 30px;}
+.beta{color: #959595;text-align: center;  }
+.cell-list-container{padding-top: 10px;  padding-bottom: 10px;  }
+.copyright{color: #959595;text-align: center;}
+</style>{{template "header_foo" .}}
+<main id="app">
+    <div class="container">
+        <div class="row">
+            <div class="logo-section">
+                <img src="/static/img/logo.png" class="logo" alt="clothesplus-logo">
+                <h4 class="beta">V0.1.4 beta</h4>
+            </div>
+            <ul class="cell-menu-list list-unstyled">
+                <li v-for="list in lists" class="cell-list-info withripple">
+                    <div  :class="{'cell-split-line-ignore':list.islast}" class="cell-list-container">
+                        <span v-text="list.text" class="cell-list-text" >正在加载</span>
+                        <div class="cell-right-block">
+                            <span v-text="list.subtext" class="cell-right-text">loading</span>
+                            <i class="material-icons">chevron_right</i>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="copyright">
+        <h5>北京库洛斯科技有限公司版权所有</h5>
+        <h6>Powered by Clothes+</h6>
+    </div>
+</footer>
+{{template "script" .}}
+<script src="/static/dist/js/vue.js"></script>
+<script type="text/javascript">
+    $.material.init();
+    var vue = new Vue({
+        el: "#app",
+        ready:function(){
+            $.material.ripples('.withripple');
+        },
+        data: {
+            lists:[{text:"官方网站",subtext:"www.kuluosi.com",url:"http://www.kuluosi.com"},
+                {text:"微信公众号",subtext:"clothesplus",url:"http://www.kuluosi.com"},
+                {text:"官方微博",subtext:"clothesplus",url:"http://www.kuluosi.com"},
+                {text:"商务合作",subtext:"zhaost@kuluosi.com",url:"mail-to:zhaost@kuluosi.com"},
+                {islast:true,text:"用户协议",subtext:"",url:"http://www.kuluosi.com"}]
+        }});
+</script>
+{{template "footer" .}}
+{{end}}
