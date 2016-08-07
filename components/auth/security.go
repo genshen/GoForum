@@ -1,4 +1,4 @@
-package security
+package auth
 
 import (
 	"crypto/sha1"

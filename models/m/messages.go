@@ -1,22 +1,22 @@
 package m
 
+import ()
 import (
-	"github.com/jinzhu/gorm"
+	"time"
 )
 
-type BaseMessage struct {
-	gorm.Model
-	User        User
-	RelatedUser User    `gorm:"ForeignKey:RelatedID"`
-	UserID      uint
-	RelatedID   uint    `gorm:"default:0"`
-	SubjectType int
-	IsRead      bool     `gorm:"default:false"`
-}
-
 type Notification struct {
-	BaseMessage
-	Data string   `gorm:"default:''"`
+	Id          uint        `orm:"pk"`
+	CreatedAt   time.Time   `orm:"auto_now_add"`
+	UpdatedAt   time.Time   `orm:"auto_now_add"`
+	DeletedAt   time.Time
+	User        *Profile    `orm:"rel(fk)"`
+	Related     *Profile    `orm:"rel(fk)"`
+	//UserId      uint
+	//RelatedId   uint     `orm:"default(0)"`
+	SubjectType int
+	IsRead      bool     `orm:"default(false)"`
+	Data        string   `orm:"default('')"`
 }
 
 func (Notification) TableName() string {
@@ -24,12 +24,22 @@ func (Notification) TableName() string {
 }
 
 type PostMessage struct {
-	BaseMessage
-	RelatedUsername string   `gorm:"default:''"`
-	PostID          uint
+	Id              uint        `orm:"pk"`
+	CreatedAt       time.Time   `orm:"auto_now_add"`
+	UpdatedAt       time.Time   `orm:"auto_now_add"`
+	DeletedAt       time.Time
+	User            *Profile    `orm:"rel(fk)"`
+	Related         *Profile    `orm:"rel(fk)"`
+	//UserId      uint
+	//RelatedId   uint     `orm:"default(0)"`
+	SubjectType     int
+	IsRead          bool     `orm:"default(false)"`
+
+	RelatedUsername string   `orm:"default('')"`
+	PostId          uint
 	PostTitle       string
-	Summary         string `gorm:"size:255"`
-	Quote           string `gorm:"size:255"`
+	Summary         string  `orm:"size(255)"`
+	Quote           string  `orm:"size(255)"`
 }
 
 func (PostMessage) TableName() string {

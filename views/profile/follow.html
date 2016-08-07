@@ -53,12 +53,12 @@
                         <template v-for="follow in following">
                             <li v-if="$index != 0" class="mdl-list-separator"></li>
                             <li class="mdl-list-item" :click="toPerson">
-                                <a :href="'/person/'+follow.ID">
-                                    <img :src="follow.Avatar" class="mdl-list-item-avatar img-circle"/>
+                                <a :href="'/person/'+follow.id">
+                                    <img :src="follow.avatar" class="mdl-list-item-avatar img-circle"/>
                                 </a>
                                 <div class="mdl-list-item-primary-content">
-                                    <a :href="'/person/'+follow.ID">{{follow.Name}}</a><br>
-                                    <span class="mdl-list-item-describe">{{follow.Bio}}</span>
+                                    <a :href="'/person/'+follow.id">{{follow.name}}</a><br>
+                                    <span class="mdl-list-item-describe">{{follow.bio}}</span>
                                 </div>
                             </li>
                         </template>
@@ -73,12 +73,12 @@
                         <template v-for="follow in followed">
                             <li v-if="$index != 0" class="mdl-list-separator"></li>
                             <li class="mdl-list-item">
-                                <a :href="'/person/'+follow.ID">
-                                    <img :src="follow.Avatar" class="mdl-list-item-avatar img-circle"/>
+                                <a :href="'/person/'+follow.id">
+                                    <img :src="follow.avatar" class="mdl-list-item-avatar img-circle"/>
                                 </a>
                                 <div class="mdl-list-item-primary-content">
-                                    <a :href="'/person/'+follow.ID">{{follow.Name}}</a><br>
-                                    <span class="mdl-list-item-describe">{{follow.Bio}}</span>
+                                    <a :href="'/person/'+follow.id">{{follow.name}}</a><br>
+                                    <span class="mdl-list-item-describe">{{follow.bio}}</span>
                                 </div>
                                 <div class="mdl-list-item-action">
                                     <button :disabled="follow.Status!=0" @click="followAction($index)"
@@ -109,15 +109,23 @@
     var FOLLOWED_TITLE = "我的粉丝";
     $.material.init();
     var follows = JSON.parse("<<< .follows>>>");
+
+    if (!follows.Followed) {  //follows.Followed may be null
+        follows.Followed = [];
+    }
+    if (!follows.Following) {
+        follows.Following = [];
+    }
+
     //add status
     follows.Followed.forEach(function (e) {
-        e.Status = hasFollowingId(e.ID) ? 1 : 0;  //0:未关注，1:已经关注，2:正在关注
+        e.Status = hasFollowingId(e.id) ? 1 : 0;  //0:未关注，1:已经关注，2:正在关注
     });
 
     function hasFollowingId(id) {
         var flag = false;
         follows.Following.forEach(function (e) {
-            if (e.ID == id) {
+            if (e.id == id) {
                 flag = true;
             }
         });
@@ -149,19 +157,19 @@
                 $.ajax({
                     type: 'POST',
                     url: "/profile/follow/add",
-                    data: {_xsrf: xsrf, id: f.ID},
+                    data: {_xsrf: xsrf, id: f.id},
                     success: function (data) {
                         try {
                             Util.simpleParseError.init(data.Status, data.Error, {
                                 onSuccess: function () {
                                     options.content = "关注成功";
                                     f.Status = 1;
-                                    self.following.push({Avatar: f.Avatar, Bio: f.Bio, Name: f.Name});
-                                },errorCallback:function (msg) {
+                                    self.following.push({avatar: f.avatar, bio: f.bio, name: f.name});
+                                }, errorCallback: function (msg) {
                                     options.content = msg;
                                     f.Status = 0;
                                 },
-                                onUnAuth:function () {
+                                onUnAuth: function () {
                                     options.content = "请<a href='/account/signin?next=" + document.location.pathname + "'>登录</a>后进行关注";
                                     f.Status = 0;
                                 }

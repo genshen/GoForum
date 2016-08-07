@@ -2,8 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"gensh.me/goforum/models/forms"
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/utils"
 )
 
 const (
@@ -11,8 +10,12 @@ const (
 	User_Name = "username"
 	Is_Login = "is_login"
 )
-var Login_Json_Err = forms.SimpleJsonResponse{Status:3, Error:"用户未登录"}
 
+<<<<<<< HEAD
+=======
+var Login_Json_Err = utils.SimpleJsonResponse{Status:3, Error:"用户未登录"}
+
+>>>>>>> orm
 type Rules interface {
 	getRules(string) int
 }
@@ -27,14 +30,14 @@ func (this *BaseController) Prepare() {
 		var _, action = this.GetControllerAndAction()
 		rule := app.getRules(action)
 		is_login := this.IsUserLogin()
-		if ((rule & identify.Login) == identify.Login) && !is_login {
-			if rule & identify.JumpBack == identify.JumpBack {
+		if ((rule & utils.Login) == utils.Login) && !is_login {
+			if rule & utils.JumpBack == utils.JumpBack {
 				//"&query=" + this.Ctx.Request.URL.RawQuery
 				this.Redirect("/account/signin?next=" + this.Ctx.Request.URL.Path, 302)
 			} else {
 				this.Redirect("/account/signin", 302)
 			}
-		} else if ((rule & identify.LoginJSON) == identify.LoginJSON) && !is_login {
+		} else if ((rule & utils.LoginJSON) == utils.LoginJSON) && !is_login {
 			this.Data["json"] = &Login_Json_Err
 			this.ServeJSON()
 			this.StopRun()

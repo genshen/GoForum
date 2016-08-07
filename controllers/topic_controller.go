@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"encoding/json"
 	"gensh.me/goforum/models/database"
 	"gensh.me/goforum/models/m"
-	"encoding/json"
+	"gensh.me/goforum/components/context/posts"
 )
 
 type TopicController struct {
@@ -21,8 +22,8 @@ func (this *TopicController) Slug() {
 	slug := this.Ctx.Input.Param("slug")
 	start := 0
 	dbPosts :=  []m.Posts{}
-	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Preload("Author.Profile").Find(&dbPosts);
-	mItems := DBHotPostsConvert(&dbPosts)
+	database.O.QueryTable("posts").Filter("visible", true).Limit(20,uint(start)).RelatedSel("Author").All(&dbPosts);
+	mItems := posts.DBHotPostsConvert(&dbPosts)
 	this.Data["slug"] = slug
 	json,err := json.Marshal(mItems)
 	if err == nil {

@@ -1,7 +1,8 @@
 package controllers
 
 import (
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/context/message"
+	"gensh.me/goforum/components/utils"
 )
 
 type MessageController struct {
@@ -9,7 +10,7 @@ type MessageController struct {
 }
 
 var message_rules = map[string]int{
-	"Message": identify.LoginJSON,
+	"Message": utils.LoginJSON,
 }
 
 func (this *MessageController) getRules(action string) int {
@@ -17,13 +18,13 @@ func (this *MessageController) getRules(action string) int {
 }
 
 func (this *MessageController) Messages(){
-	mMessages := findLatestPostMessages(this.getUserId(),[]int{identify.POST_COMMENT,identify.POST_REPLY})
+	mMessages := message.FindLatestPostMessages(this.getUserId(),[]int{utils.POST_COMMENT,utils.POST_REPLY})
 	this.Data["json"] = &mMessages
 	this.ServeJSON()
 }
 
 func (this *MessageController) Notifications(){
-	mNotifications := findLatestNotifications(this.getUserId(),[]int{identify.FOLLOW_ADD})
+	mNotifications := message.FindLatestNotifications(this.getUserId(),[]int{utils.FOLLOW_ADD})
 	this.Data["json"] = &mNotifications
 	this.ServeJSON()
 }

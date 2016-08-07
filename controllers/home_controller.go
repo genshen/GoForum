@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"strconv"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/models/database"
-	"strconv"
+	"gensh.me/goforum/components/context/posts"
+	"gensh.me/goforum/components/utils"
 )
 
 type HomeController struct {
@@ -23,21 +25,22 @@ func (this *HomeController) LoadSwipe() {
 func (this *HomeController) Hot() {
 	start, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
 	dbHotPosts := []m.Posts{}
-	database.DB.Where("visible = ?", true).Offset(uint(start)).Limit(20).Preload("Author").Preload("Author.Profile").Find(&dbHotPosts);
-	mHot := DBHotPostsConvert(&dbHotPosts)
+	//todo Preload("Author.Profile")
+	database.O.QueryTable("posts").Filter("visible", true).Limit(20, uint(start)).RelatedSel("Author").All(&dbHotPosts);
+	mHot := posts.DBHotPostsConvert(&dbHotPosts)
 	this.Data["json"] = mHot
 	this.ServeJSON()
 }
 
-func (this *HomeController)Category() {
-	mCategory := Category{}
+func (this *HomeController) Category() {
+	mCategory :=  posts.Category{}
 	mCategory.NewInstant()
 	this.Data["json"] = &mCategory
 	this.ServeJSON()
 }
 
-func (this *HomeController)Me() {
-	var me UserStatus
+func (this *HomeController) Me() {
+	var me utils.UserStatus
 	if !this.IsUserLogin() {
 		me.IsLogin = false
 	} else {
@@ -45,7 +48,7 @@ func (this *HomeController)Me() {
 		me.ID = this.getUserId()
 		me.Name = this.getUsername()
 		profile := m.Profile{}  //load avatar info from database(while id username from session)
-		database.DB.Select("avatar").Where("user_refer = ?",me.ID).First(&profile)
+		database.O.QueryTable("profile").Filter("id", me.ID).Limit(1).One(&profile, "avatar")
 		me.Avatar = profile.Avatar
 	}
 	this.Data["json"] = &me

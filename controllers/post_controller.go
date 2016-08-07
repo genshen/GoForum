@@ -1,15 +1,18 @@
 package controllers
 
 import (
-	"html/template"
 	"strconv"
+<<<<<<< HEAD
 	"qiniupkg.com/api.v7/kodo"
+=======
+	"html/template"
+>>>>>>> orm
 	"encoding/json"
-	"gensh.me/goforum/models/forms"
-	"gensh.me/goforum/middleware/event"
+	"github.com/qiniu/api.v7/kodo"
+	"gensh.me/goforum/components/event"
 	"gensh.me/goforum/models/m"
-	form_check "gensh.me/goforum/middleware/form"
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/context/posts"
+	"gensh.me/goforum/components/utils"
 )
 
 type PostController struct {
@@ -22,10 +25,10 @@ type QiNiuToken struct {
 
 var post_rules = map[string]int{
 	"View":   0,
-	"CreateJump": identify.Login | identify.JumpBack,
-	"CreateMobile": identify.Login | identify.JumpBack,
-	"POST_CreateMobile": identify.Login | identify.JumpBack,
-	"UploadToken":identify.LoginJSON,
+	"CreateJump": utils.Login | utils.JumpBack,
+	"CreateMobile": utils.Login | utils.JumpBack,
+	"POST_CreateMobile": utils.Login | utils.JumpBack,
+	"UploadToken":utils.LoginJSON,
 }
 
 func (this *PostController) getRules(action string) int {
@@ -47,17 +50,17 @@ func (this *PostController) POST_CreateMobile() {
 	title := this.GetString("post_title")
 	content := this.GetString("post_content")
 	summary := this.GetString("post_summary")
-	form := forms.PostCreateForm{Title:title, Summary:summary, Content:content}
-	if errs := form.Valid(); errs == nil {
-		if id := form.Save(this.getUserId()); id != 0 {
-			this.Redirect("/post/" + strconv.FormatInt(int64(id), 10), 302)
-			event.OnPostCreated()
+	form := posts.PostCreateForm{Title:title, Summary:summary, Content:content}
+	if errs := form.Valid(this.getUserId()); errs == nil {
+		//if id := form.Save(this.getUserId()); id != 0 {
+			this.Redirect("/post/" + strconv.FormatInt(int64(form.PostID), 10), 302)
+			event.OnPostCreated() //&form
 			//or use : beego.URLFor("",id)
 			return
-		}
+		//}
 	} else {
 		//todo set error
-		s := form_check.NewInstantToByte(errs, map[string]string{"title":  title, "summary":summary, "content": content})
+		s := utils.NewInstantToByte(errs, map[string]string{"title":  title, "summary":summary, "content": content})
 		this.Data["form_check"] = string(s)
 	}
 	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
@@ -80,14 +83,12 @@ func (this *PostController) UploadToken() {
 
 func (this *PostController) View() {
 	mPost := m.Posts{}
-	mPost.GetPostById(this.Ctx.Input.Param(":id"))
-	if mPost.ID != 0 {
-		mPostDetail := PostDetail{}
+	err := mPost.GetPostById(this.Ctx.Input.Param(":id"))
+	if err == nil {
+		mPostDetail :=  posts.PostDetail{}
 		mPostDetail.NewInstant(&mPost)
-		mUser := m.User{}
-		mUser.GetUserById(mPost.AuthorID) //todo query user profile,do not show Author(in mPost) information
-		person := Person{ID:mUser.ID, Name:mUser.Name, Avatar:mUser.Profile.Avatar}
-		data := PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
+		person := utils.Person{ID:mPost.Author.Id, Name:mPost.Author.Name, Avatar:mPost.Author.Avatar}
+		data :=  posts.PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
 		json, err := json.Marshal(data)
 		if err == nil {
 			this.Data["data"] = string(json)

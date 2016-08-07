@@ -3,8 +3,8 @@ package controllers
 import (
 	"strconv"
 	"gensh.me/goforum/models/m"
-	"gensh.me/goforum/models/forms"
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/utils"
+	"gensh.me/goforum/components/context/comments"
 )
 
 type CommentController struct {
@@ -13,7 +13,7 @@ type CommentController struct {
 
 var comment_rules = map[string]int{
 	"View":   0,
-	"CommentAdd":identify.LoginJSON,
+	"CommentAdd":utils.LoginJSON,
 }
 
 func (this *CommentController) getRules(action string) int {
@@ -34,7 +34,7 @@ func (this *CommentController) Comment() {
 	dbComments := m.LoadComments(id, offset)
 	mComments := make([]Comment, 0, len(dbComments))  //m.Comments to Comments
 	for _, comment := range dbComments {
-		mComments = append(mComments, Comment{Content:comment.Content, ID:comment.ID});
+		mComments = append(mComments, Comment{Content:comment.Content, ID:comment.Id});
 	}
 	this.Data["json"] = &mComments
 	this.ServeJSON()
@@ -43,10 +43,10 @@ func (this *CommentController) Comment() {
 //post only
 // 0 for article deleted; 1 for success,3 for no login;
 func (this *CommentController) CommentAdd() {
-	var result *forms.SimpleJsonResponse
+	var result *utils.SimpleJsonResponse
 	id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
 	content := this.GetString("content")
-	ccf := forms.CommentCreateForm{PostID:uint(id), Content:content}
+	ccf := comments.CommentCreateForm{PostID:uint(id), Content:content}
 	result = ccf.Create(this.getUserId(),this.getUsername())
 	this.Data["json"] = result
 	this.ServeJSON()
