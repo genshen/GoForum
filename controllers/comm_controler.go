@@ -5,7 +5,6 @@ import (
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/components/utils"
 	"gensh.me/goforum/components/context/comments"
-	identify "gensh.me/goforum/models/values"
 )
 
 type CommentController struct {
@@ -14,7 +13,7 @@ type CommentController struct {
 
 var comment_rules = map[string]int{
 	"View":   0,
-	"CommentAdd":identify.LoginJSON,
+	"CommentAdd":utils.LoginJSON,
 }
 
 func (this *CommentController) getRules(action string) int {

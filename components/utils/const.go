@@ -1,4 +1,4 @@
-package values
+package utils
 
 const (
 	Login = 2 << iota    //if Login included,indicate that we must visit this page after login

@@ -6,7 +6,6 @@ import (
 	"gensh.me/goforum/components/context/profile"
 	"gensh.me/goforum/components/utils"
 	"gensh.me/goforum/components/event"
-	identify "gensh.me/goforum/models/values"
 )
 
 type ProfileController struct {
@@ -14,9 +13,9 @@ type ProfileController struct {
 }
 
 var profile_rules = map[string]int{
-	"Follow": identify.Login | identify.JumpBack,
-	"Collection": identify.Login | identify.JumpBack,
-	"FollowAdd":identify.LoginJSON,
+	"Follow": utils.Login | utils.JumpBack,
+	"Collection": utils.Login | utils.JumpBack,
+	"FollowAdd":utils.LoginJSON,
 }
 
 func (this *ProfileController) getRules(action string) int {
@@ -26,7 +25,7 @@ func (this *ProfileController) getRules(action string) int {
 func (this *ProfileController) Person() {
 	id, _ := strconv.Atoi(this.Ctx.Input.Param(":uid"))
 	uid := uint(id)
-	profile, exists := GetProfileById(this.getUserId(), uid)
+	profile, exists := profile.GetProfileById(this.getUserId(), uid)
 	if exists {
 		json, err := json.Marshal(profile)
 		if err == nil {
@@ -40,7 +39,7 @@ func (this *ProfileController) Person() {
 
 /*those persons i'am focusing or be followed */
 func (this *ProfileController) Follow() {
-	follows := findFollowsById(this.getUserId())
+	follows := profile.FindFollowsById(this.getUserId())
 	json, err := json.Marshal(follows)
 	if err == nil {
 		this.Data["follows"] = string(json)
@@ -56,9 +55,9 @@ func (this *ProfileController) FollowAdd() {
 	if err == nil {
 		faf := profile.FollowAddForm{PersonID:uint(id)}
 		myID := this.getUserId()
-		create_result, is_created := faf.Add(myID)
+		create_result, created := faf.Add(myID)
 		result = create_result
-		if is_created {
+		if created {
 			event.OnFollowed(uint(id), myID, this.getUsername())
 		}
 	} else {

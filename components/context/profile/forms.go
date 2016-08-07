@@ -2,9 +2,13 @@ package profile
 
 import (
 	"gensh.me/goforum/models/m"
-	"gensh.me/goforum/models/values"
 	"gensh.me/goforum/components/utils"
 	"gensh.me/goforum/models/database"
+	models_utils "gensh.me/goforum/models/utils"
+)
+
+const (
+	InsertFollowSQL = "insert into follows values(?,?)"
 )
 
 type FollowAddForm struct {
@@ -18,16 +22,18 @@ func (this *FollowAddForm)Add(my_id uint) (result *utils.SimpleJsonResponse, isA
 		return
 	}
 	u := m.User{}
-	database.O.QueryTable("user").Filter("id", this.PersonID).Filter("status", values.STATUS_ACTIVE).Limit(1).One(&u,"id") //todo FREEZING
+	database.O.QueryTable("user").Filter("id", this.PersonID).Filter("status", utils.STATUS_ACTIVE).Limit(1).One(&u, "id") //todo FREEZING
 	if u.Id == 0 {
 		result = &utils.SimpleJsonResponse{Status:0, Error:"对应用户不存在"}
 	} else {
-		follow := m.Follow{}
-		if database.O.QueryTable("follows").Filter("follower_id", my_id).Filter("following_id", this.PersonID).Limit(1).One(&follow);
-		follow.Follower.Id == 0 && follow.Following.Id == 0 {
-			database.O.Insert(&m.Follow{Follower:follow.Follower, Following:follow.Following})
-			result = &utils.SimpleJsonResponse{Status:1, Addition:this.PersonID}
-			isAdded = true
+		if models_utils.Counts("follows", "follower_id = ? and following_id = ?", my_id, this.PersonID) == 0 {
+			_, err := database.O.Raw(InsertFollowSQL, my_id, this.PersonID).Exec()
+			if err == nil {
+				result = &utils.SimpleJsonResponse{Status:1, Addition:this.PersonID}
+				isAdded = true
+			} else {
+				result = &utils.SimpleJsonResponse{Status:0, Error:"关注失败,请重试"}
+			}
 		} else {
 			result = &utils.SimpleJsonResponse{Status:0, Error:"已经关注了改用户"}
 		}

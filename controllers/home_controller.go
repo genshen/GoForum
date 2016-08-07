@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"strconv"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/models/database"
-	"strconv"
+	"gensh.me/goforum/components/context/posts"
+	"gensh.me/goforum/components/utils"
 )
 
 type HomeController struct {
@@ -25,20 +27,20 @@ func (this *HomeController) Hot() {
 	dbHotPosts := []m.Posts{}
 	//todo Preload("Author.Profile")
 	database.O.QueryTable("posts").Filter("visible", true).Limit(20, uint(start)).RelatedSel("Author").All(&dbHotPosts);
-	mHot := DBHotPostsConvert(&dbHotPosts)
+	mHot := posts.DBHotPostsConvert(&dbHotPosts)
 	this.Data["json"] = mHot
 	this.ServeJSON()
 }
 
 func (this *HomeController) Category() {
-	mCategory := Category{}
+	mCategory :=  posts.Category{}
 	mCategory.NewInstant()
 	this.Data["json"] = &mCategory
 	this.ServeJSON()
 }
 
 func (this *HomeController) Me() {
-	var me UserStatus
+	var me utils.UserStatus
 	if !this.IsUserLogin() {
 		me.IsLogin = false
 	} else {

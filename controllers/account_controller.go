@@ -6,7 +6,6 @@ import (
 	"gensh.me/goforum/components/utils"
 	"gensh.me/goforum/components/event"
 	"gensh.me/goforum/components/context/account"
-	identify "gensh.me/goforum/models/values"
 )
 
 type AccountController struct {
@@ -15,7 +14,7 @@ type AccountController struct {
 
 var rules = map[string]int{
 	"Login":   0,
-	"Logout": identify.Login,
+	"Logout": utils.Login,
 }
 
 type SignResult struct {

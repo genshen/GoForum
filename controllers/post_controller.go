@@ -1,15 +1,14 @@
 package controllers
 
 import (
+	"strconv"
 	"html/template"
-	"github.com/qiniu/api.v7/kodo"
 	"encoding/json"
+	"github.com/qiniu/api.v7/kodo"
 	"gensh.me/goforum/components/event"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/components/context/posts"
 	"gensh.me/goforum/components/utils"
-	identify "gensh.me/goforum/models/values"
-	"strconv"
 )
 
 type PostController struct {
@@ -22,10 +21,10 @@ type QiNiuToken struct {
 
 var post_rules = map[string]int{
 	"View":   0,
-	"CreateJump": identify.Login | identify.JumpBack,
-	"CreateMobile": identify.Login | identify.JumpBack,
-	"POST_CreateMobile": identify.Login | identify.JumpBack,
-	"UploadToken":identify.LoginJSON,
+	"CreateJump": utils.Login | utils.JumpBack,
+	"CreateMobile": utils.Login | utils.JumpBack,
+	"POST_CreateMobile": utils.Login | utils.JumpBack,
+	"UploadToken":utils.LoginJSON,
 }
 
 func (this *PostController) getRules(action string) int {
@@ -82,10 +81,10 @@ func (this *PostController) View() {
 	mPost := m.Posts{}
 	err := mPost.GetPostById(this.Ctx.Input.Param(":id"))
 	if err == nil {
-		mPostDetail := PostDetail{}
+		mPostDetail :=  posts.PostDetail{}
 		mPostDetail.NewInstant(&mPost)
-		person := Person{ID:mPost.Author.Id, Name:mPost.Author.Name, Avatar:mPost.Author.Avatar}
-		data := PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
+		person := utils.Person{ID:mPost.Author.Id, Name:mPost.Author.Name, Avatar:mPost.Author.Avatar}
+		data :=  posts.PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
 		json, err := json.Marshal(data)
 		if err == nil {
 			this.Data["data"] = string(json)

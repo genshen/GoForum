@@ -4,8 +4,8 @@ import (
 	"github.com/astaxie/beego/validation"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/components/auth"
-	"gensh.me/goforum/models/values"
 	"gensh.me/goforum/models/database"
+	"gensh.me/goforum/components/utils"
 )
 
 type SignInForm struct {
@@ -75,7 +75,7 @@ func (this *SignUpForm)validOrSave(v *validation.Validation) {
 		v.SetError("email", "该邮箱已经被使用")
 	} else {
 		//todo 事务
-		user := m.User{Email:this.Email, Name:this.Nickname, Password:auth.Hash(this.Password), Status:values.UNACTIVATED}
+		user := m.User{Email:this.Email, Name:this.Nickname, Password:auth.Hash(this.Password), Status:utils.UNACTIVATED}
 		if id, err := database.O.Insert(&user); err == nil {
 			profile := m.Profile{Id:uint(id), UserRefer:&m.User{Id:uint(id)}, Name:this.Nickname, Avatar:"/static/img/default.png"}
 			if _, err := database.O.Insert(&profile); err == nil {
