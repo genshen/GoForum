@@ -24,8 +24,7 @@ func (this *HomeController) Hot() {
 	start, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
 	dbHotPosts := []m.Posts{}
 	//todo Preload("Author.Profile")
-	database.O.QueryTable("posts").Filter("visible", true).Limit(20, uint(start)).
-	RelatedSel("Author__Profile").All(&dbHotPosts);
+	database.O.QueryTable("posts").Filter("visible", true).Limit(20, uint(start)).RelatedSel("Author").All(&dbHotPosts);
 	mHot := DBHotPostsConvert(&dbHotPosts)
 	this.Data["json"] = mHot
 	this.ServeJSON()
@@ -47,7 +46,7 @@ func (this *HomeController) Me() {
 		me.ID = this.getUserId()
 		me.Name = this.getUsername()
 		profile := m.Profile{}  //load avatar info from database(while id username from session)
-		database.O.QueryTable("profile").Filter("user_refer", me.ID).Limit(1).One(&profile, "avatar")
+		database.O.QueryTable("profile").Filter("id", me.ID).Limit(1).One(&profile, "avatar")
 		me.Avatar = profile.Avatar
 	}
 	this.Data["json"] = &me

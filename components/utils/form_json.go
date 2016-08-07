@@ -1,4 +1,4 @@
-package form
+package utils
 
 import (
 	"github.com/astaxie/beego/validation"

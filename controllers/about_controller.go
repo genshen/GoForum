@@ -1,13 +1,10 @@
 package controllers
 
 import (
-//"../models/forms"
-)
-import (
 	"github.com/astaxie/beego/cache"
 	"github.com/astaxie/beego/utils/captcha"
-	form_check "gensh.me/goforum/middleware/form"
-	"gensh.me/goforum/models/forms"
+	"gensh.me/goforum/components/context/about"
+	"gensh.me/goforum/components/utils"
 )
 
 var cpt *captcha.Captcha
@@ -38,7 +35,7 @@ func (this *AboutController) Feedback() {
 }
 
 func (this *AboutController)POST_Feedback() {
-	post_result := forms.SimpleJsonResponse{Status:1}
+	post_result := utils.SimpleJsonResponse{Status:1}
 	captcha := cpt.VerifyReq(this.Ctx.Request)
 	feedback := this.GetString("feedback")
 	contact := this.GetString("contact")
@@ -47,12 +44,12 @@ func (this *AboutController)POST_Feedback() {
 		ty = -1;
 	}
 
-	feedback_form := forms.FeedbackForm{Type:ty, Captcha:captcha, Feedback:feedback, Contact:contact}
+	feedback_form := about.FeedbackForm{Type:ty, Captcha:captcha, Feedback:feedback, Contact:contact}
 	if errs := feedback_form.Valid(this.getUserId()); errs == nil {
 		post_result.Addition = "tokens"
 	} else {
 		post_result.Status = 0
-		s := form_check.NewInstant(errs, map[string]string{"type":"", "feedback":"", "captcha": ""})
+		s := utils.NewInstant(errs, map[string]string{"type":"", "feedback":"", "captcha": ""})
 		post_result.Error = &s
 	}
 	this.Data["json"] = &post_result;

@@ -20,7 +20,7 @@
     <link href="/static/css/main.css" rel="stylesheet"></head>
 <body>
 <main id="app">
-    <h2>Slug</h2>
+    <h2>slug</h2>
     <posts-grid :posts="posts"></posts-grid>
     <a href="/post/create/jump" class="btn btn-warning btn-fab"  style="position:fixed;right:20px;bottom:20px;">
         <i class="material-icons">add</i>
@@ -60,7 +60,7 @@
 <script src="/static/dist/js/vue.js"></script>
 <script>
     var posts = JSON.parse("<<<.post_items>>>");
-//    var slug = "<<<.slug>>>";
+    var slug = "<<<.slug>>>";
     Vue.component('posts-grid', {
         template: '#posts-template',
         props: {
@@ -71,7 +71,7 @@
         el: "html",
         data: {
             posts: posts,
-            slg: "slug"
+            slug: "slug"
         }
     });
 </script>

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	identify "gensh.me/goforum/middleware/values"
+	identify "gensh.me/goforum/models/values"
 )
 
 type MessageController struct {

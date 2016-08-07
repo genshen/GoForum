@@ -3,13 +3,13 @@ package controllers
 import (
 	"html/template"
 	"github.com/astaxie/beego"
-	"gensh.me/goforum/models/forms"
-	"gensh.me/goforum/middleware/event"
-	form_check "gensh.me/goforum/middleware/form"
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/utils"
+	"gensh.me/goforum/components/event"
+	"gensh.me/goforum/components/context/account"
+	identify "gensh.me/goforum/models/values"
 )
 
-type UserController struct {
+type AccountController struct {
 	BaseController
 }
 
@@ -23,11 +23,11 @@ type SignResult struct {
 	Status bool   `json:"status"`
 }
 
-func (this *UserController) getRules(action string) int {
+func (this *AccountController) getRules(action string) int {
 	return rules[action]
 }
 
-func (this *UserController) SignIn() {
+func (this *AccountController) SignIn() {
 	if (this.IsUserLogin()) {
 		//if has login,then go home
 		this.Redirect("/", 302)
@@ -37,14 +37,14 @@ func (this *UserController) SignIn() {
 	this.TplName = "account/signin.html"
 }
 
-func (this *UserController) POST_SignIn() {
+func (this *AccountController) POST_SignIn() {
 	if (this.IsUserLogin()) {
 		this.Redirect("/", 302)
 		return
 	}
 	username := this.GetString("username")
 	password := this.GetString("password")
-	sign_in_form := forms.SignInForm{Username:username, Password: password}
+	sign_in_form := account.SignInForm{Username:username, Password: password}
 	if errs, userID := sign_in_form.SignInVerify(); errs == nil {
 		//验证通过
 		this.LoginUser(userID, sign_in_form.Username)
@@ -52,15 +52,15 @@ func (this *UserController) POST_SignIn() {
 		if len(next) > 0 && next[0] != '/' {
 			next = "/" + next
 		}
-		this.Data["json"] = &forms.SimpleJsonResponse{Status:1, Addition:next}
+		this.Data["json"] = &utils.SimpleJsonResponse{Status:1, Addition:next}
 	} else {
-		s := form_check.NewInstant(errs, map[string]string{"name":  username, "pass": ""})
-		this.Data["json"] = &forms.SimpleJsonResponse{Status:0, Error:&s}
+		s := utils.NewInstant(errs, map[string]string{"name":  username, "pass": ""})
+		this.Data["json"] = &utils.SimpleJsonResponse{Status:0, Error:&s}
 	}
 	this.ServeJSON()
 }
 
-func (this *UserController) SignUp() {
+func (this *AccountController) SignUp() {
 	if (this.IsUserLogin()) {
 		this.Redirect("/", 302)
 		return
@@ -69,7 +69,7 @@ func (this *UserController) SignUp() {
 	this.TplName = "account/signup.html"
 }
 
-func (this *UserController) POST_SignUp() {
+func (this *AccountController) POST_SignUp() {
 	if (this.IsUserLogin()) {
 		this.Redirect("/", 302)
 		return
@@ -77,21 +77,21 @@ func (this *UserController) POST_SignUp() {
 	email := this.GetString("email")
 	nickname := this.GetString("nickname")
 	password := this.GetString("password")
-	sign_up_form := forms.SignUpForm{Email:email, Nickname:nickname, Password: password}
+	sign_up_form := account.SignUpForm{Email:email, Nickname:nickname, Password: password}
 	if errs := sign_up_form.Valid(); errs == nil {
-		this.Data["json"] = &forms.SimpleJsonResponse{Status:1}
+		this.Data["json"] = &utils.SimpleJsonResponse{Status:1}
 		flash := beego.NewFlash()
 		flash.Success(email)
 		flash.Store(&this.Controller)
 		event.OnAccountCreated(email, nickname, sign_up_form.UserID) //todo
 	} else {
-		s := form_check.NewInstant(errs, map[string]string{"email":  email, "password": ""})
-		this.Data["json"] = &forms.SimpleJsonResponse{Status:0, Error:&s}
+		s := utils.NewInstant(errs, map[string]string{"email":  email, "password": ""})
+		this.Data["json"] = &utils.SimpleJsonResponse{Status:0, Error:&s}
 	}
 	this.ServeJSON()
 }
 
-func (this *UserController) SignUpSuccess() {
+func (this *AccountController) SignUpSuccess() {
 	flash := beego.ReadFromRequest(&this.Controller)
 	if s, ok := flash.Data["success"]; ok {
 		this.Data["email"] = s
@@ -101,7 +101,7 @@ func (this *UserController) SignUpSuccess() {
 	}
 }
 
-func (this *UserController) SignOut() {
+func (this *AccountController) SignOut() {
 	this.LogoutUser()
 	this.Redirect("/account/signin", 302)
 }

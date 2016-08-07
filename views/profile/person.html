@@ -166,7 +166,7 @@
                 </div>
                 <div class="panel-body">
                     <p><i class="material-icons">sentiment_neutral</i>
-                        <span style="font-size:16px;vertical-align: super">这人这里空空如也~user id:{{person.UserRefer}}</span>
+                        <span style="font-size:16px;vertical-align: super">这人这里空空如也~user id:{{person.Id}}</span>
                     </p>
                 </div>
             </div>
@@ -213,7 +213,7 @@
                     $.ajax({
                         type: 'POST',
                         url: "/profile/follow/add",
-                        data: {_xsrf: xsrf, id: this.person.UserRefer},
+                        data: {_xsrf: xsrf, id: this.person.Id},
                         success: function (data) {
                             try {
                                 Util.simpleParseError.init(data.Status, data.Error, {

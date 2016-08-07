@@ -11,7 +11,7 @@ func init() {
 	orm.RegisterModel(new(User), new(Profile), new(Follow))
 	orm.RegisterModel(new(Posts), new(Comment), new(Topic), new(Tag))
 	orm.RegisterModel(new(PostMessage), new(Notification))
-	orm.RegisterModel(new(Swipe),new(Feedback))
+	orm.RegisterModel(new(Swipe), new(Feedback))
 	database.O = orm.NewOrm()
 }
 
@@ -20,16 +20,15 @@ func init() {
 type Posts struct {
 	Id           uint        `orm:"pk"`
 	CreatedAt    time.Time   `orm:"auto_now_add"`
-	UpdatedAt    time.Time   `orm:"auto_now"`
+	UpdatedAt    time.Time   `orm:"auto_now_add"`
 	DeletedAt    time.Time
-
-	//TopicId      uint
+			  //TopicId      uint
 	Topic        *Topic  `orm:"rel(fk)"`
 	Tags         []*Tag  `orm:"rel(m2m);rel_table(post_tag)"`
-	//AuthorId     uint
-	Author       *User   `orm:"rel(fk)"`
-	Title        string  `orm:"size(255)"`
-	Summary      string  `orm:"size(255)"`
+			  //AuthorId     uint
+	Author       *Profile `orm:"rel(fk)"`
+	Title        string   `orm:"size(255)"`
+	Summary      string   `orm:"size(255)"`
 	Content      string
 	IsMobile     bool // 1 for mobile,0 for desktop
 	Sticky       bool   `orm:"default(false)"`
@@ -40,20 +39,25 @@ type Posts struct {
 			  //Comment      []Comment  `gorm:"ForeignKey:PostID"` //todo
 }
 
-func (this *Posts)TableName() string{
+func (this *Posts)TableName() string {
 	return "posts"
 }
 
-func (p *Posts) GetPostById(id string) error {
+func (p *Posts) GetPostById(id string) (err error) {
 	//todo string to uint
 	//database.O.One(&p, id)
 	pid, _ := strconv.Atoi(id)
 	p.Id = uint(pid)
-	return database.O.Read(p);
+	if err := database.O.Read(p); err == nil {
+		_, e := database.O.LoadRelated(p, "Author")
+		return e
+	}
+	return
 }
 
 func (p *Posts) Exist(id uint) bool {
-	database.O.Raw("SELECT id, author_id,summary,title,comment_count FROM posts WHERE id = ? LIMIT 1", id).QueryRow(&p)
+	database.O.QueryTable("posts").Filter("id",id).Limit(1).
+	One(p,"id", "author_id","summary","title","comment_count")
 	//database.O.Select("id,author_id,summary,title,comment_count").First(&p, id)
 	return p.Id != 0
 }
@@ -61,14 +65,14 @@ func (p *Posts) Exist(id uint) bool {
 type Comment struct {
 	Id        uint        `orm:"pk"`
 	CreatedAt time.Time   `orm:"auto_now_add"`
-	UpdatedAt time.Time   `orm:"auto_now"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
 	DeletedAt time.Time
 
-	PostId  uint
-	Author  uint
-	Parent  uint   `orm:"default(0)"`
-	Content string
-	Visible bool   `orm:"default(true)"`
+	PostId    uint
+	Author    uint
+	Parent    uint   `orm:"default(0)"`
+	Content   string
+	Visible   bool   `orm:"default(true)"`
 }
 
 func (c *Comment) TableName() string {
@@ -85,14 +89,14 @@ func LoadComments(id int, offset int) []Comment {
 type Topic struct {
 	Id        uint        `orm:"pk"`
 	CreatedAt time.Time   `orm:"auto_now_add"`
-	UpdatedAt time.Time   `orm:"auto_now"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
 	DeletedAt time.Time
 
-	Name     string
-	Describe string
-	Slug     string
-	Visible  bool    `orm:"default(true)"`
-	Color    string
+	Name      string
+	Describe  string
+	Slug      string
+	Visible   bool    `orm:"default(true)"`
+	Color     string
 }
 
 func (this *Topic) TableName() string {
@@ -102,13 +106,13 @@ func (this *Topic) TableName() string {
 type Tag struct {
 	Id        uint        `orm:"pk"`
 	CreatedAt time.Time   `orm:"auto_now_add"`
-	UpdatedAt time.Time   `orm:"auto_now"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
 	DeletedAt time.Time
 
-	Name     string
-	Describe string
-	Visible  bool   `orm:"default(true)"`
-	Color    string
+	Name      string
+	Describe  string
+	Visible   bool   `orm:"default(true)"`
+	Color     string
 }
 
 func (this *Tag) TableName() string {
@@ -118,13 +122,13 @@ func (this *Tag) TableName() string {
 type Swipe struct {
 	Id        uint        `orm:"pk"`
 	CreatedAt time.Time   `orm:"auto_now_add"`
-	UpdatedAt time.Time   `orm:"auto_now"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
 	DeletedAt time.Time
 
-	Url     string
-	Img     string
-	Content string
-	Visible bool    `orm:"default(true)"`
+	Url       string
+	Img       string
+	Content   string
+	Visible   bool    `orm:"default(true)"`
 }
 
 func (this *Swipe) TableName() string {
@@ -140,13 +144,13 @@ func LoadSwipes() (swipes []Swipe) {
 type Feedback struct {
 	Id        uint        `orm:"pk"`
 	CreatedAt time.Time   `orm:"auto_now_add"`
-	UpdatedAt time.Time   `orm:"auto_now"`
+	UpdatedAt time.Time   `orm:"auto_now_add"`
 	DeletedAt time.Time
 
-	UserId  uint
-	Type    int8
-	Content string
-	Contact string
+	UserId    uint
+	Type      int8
+	Content   string
+	Contact   string
 }
 
 func (this *Feedback) TableName() string {

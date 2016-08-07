@@ -3,9 +3,10 @@ package controllers
 import (
 	"strconv"
 	"encoding/json"
-	"gensh.me/goforum/models/forms"
-	"gensh.me/goforum/middleware/event"
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/context/profile"
+	"gensh.me/goforum/components/utils"
+	"gensh.me/goforum/components/event"
+	identify "gensh.me/goforum/models/values"
 )
 
 type ProfileController struct {
@@ -25,8 +26,8 @@ func (this *ProfileController) getRules(action string) int {
 func (this *ProfileController) Person() {
 	id, _ := strconv.Atoi(this.Ctx.Input.Param(":uid"))
 	uid := uint(id)
-	profile := GetProfileById(this.getUserId(), uid)
-	if profile.Profile.UserRefer != 0 {
+	profile, exists := GetProfileById(this.getUserId(), uid)
+	if exists {
 		json, err := json.Marshal(profile)
 		if err == nil {
 			this.Data["person"] = string(json)
@@ -50,10 +51,10 @@ func (this *ProfileController) Follow() {
 }
 
 func (this *ProfileController) FollowAdd() {
-	var result *forms.SimpleJsonResponse
+	var result *utils.SimpleJsonResponse
 	id, err := this.GetInt("id")
 	if err == nil {
-		faf := forms.FollowAddForm{PersonID:uint(id)}
+		faf := profile.FollowAddForm{PersonID:uint(id)}
 		myID := this.getUserId()
 		create_result, is_created := faf.Add(myID)
 		result = create_result
@@ -61,7 +62,7 @@ func (this *ProfileController) FollowAdd() {
 			event.OnFollowed(uint(id), myID, this.getUsername())
 		}
 	} else {
-		result = &forms.SimpleJsonResponse{Status:0, Error:"ID不合法"}
+		result = &utils.SimpleJsonResponse{Status:0, Error:"ID不合法"}
 	}
 	this.Data["json"] = result
 	this.ServeJSON()

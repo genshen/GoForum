@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"html/template"
-	"strconv"
 	"github.com/qiniu/api.v7/kodo"
 	"encoding/json"
-	"gensh.me/goforum/models/forms"
-	"gensh.me/goforum/middleware/event"
+	"gensh.me/goforum/components/event"
 	"gensh.me/goforum/models/m"
-	form_check "gensh.me/goforum/middleware/form"
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/context/posts"
+	"gensh.me/goforum/components/utils"
+	identify "gensh.me/goforum/models/values"
+	"strconv"
 )
 
 type PostController struct {
@@ -47,17 +47,17 @@ func (this *PostController) POST_CreateMobile() {
 	title := this.GetString("post_title")
 	content := this.GetString("post_content")
 	summary := this.GetString("post_summary")
-	form := forms.PostCreateForm{Title:title, Summary:summary, Content:content}
-	if errs := form.Valid(); errs == nil {
-		if id := form.Save(this.getUserId()); id != 0 {
-			this.Redirect("/post/" + strconv.FormatInt(int64(id), 10), 302)
-			event.OnPostCreated()
+	form := posts.PostCreateForm{Title:title, Summary:summary, Content:content}
+	if errs := form.Valid(this.getUserId()); errs == nil {
+		//if id := form.Save(this.getUserId()); id != 0 {
+			this.Redirect("/post/" + strconv.FormatInt(int64(form.PostID), 10), 302)
+			event.OnPostCreated() //&form
 			//or use : beego.URLFor("",id)
 			return
-		}
+		//}
 	} else {
 		//todo set error
-		s := form_check.NewInstantToByte(errs, map[string]string{"title":  title, "summary":summary, "content": content})
+		s := utils.NewInstantToByte(errs, map[string]string{"title":  title, "summary":summary, "content": content})
 		this.Data["form_check"] = string(s)
 	}
 	this.Data["xsrf_token"] = template.HTML(this.XSRFFormHTML())
@@ -84,9 +84,7 @@ func (this *PostController) View() {
 	if err == nil {
 		mPostDetail := PostDetail{}
 		mPostDetail.NewInstant(&mPost)
-		mUser := m.User{}
-		mUser.GetUserById(mPost.Author.Id) //todo query user profile,do not show Author(in mPost) information
-		person := Person{ID:mUser.Id, Name:mUser.Name, Avatar:mUser.Profile.Avatar}
+		person := Person{ID:mPost.Author.Id, Name:mPost.Author.Name, Avatar:mPost.Author.Avatar}
 		data := PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
 		json, err := json.Marshal(data)
 		if err == nil {

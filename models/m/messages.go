@@ -1,25 +1,22 @@
 package m
 
-import (
-)
+import ()
 import (
 	"time"
 )
 
-
 type Notification struct {
-	Id        uint        `orm:"pk"`
-	CreatedAt time.Time   `orm:"auto_now_add"`
-	UpdatedAt time.Time   `orm:"auto_now"`
-	DeletedAt time.Time
-	User        *User    `orm:"rel(fk)"`
-	Related     *User    `orm:"rel(fk)"`
+	Id          uint        `orm:"pk"`
+	CreatedAt   time.Time   `orm:"auto_now_add"`
+	UpdatedAt   time.Time   `orm:"auto_now_add"`
+	DeletedAt   time.Time
+	User        *Profile    `orm:"rel(fk)"`
+	Related     *Profile    `orm:"rel(fk)"`
 	//UserId      uint
 	//RelatedId   uint     `orm:"default(0)"`
 	SubjectType int
 	IsRead      bool     `orm:"default(false)"`
-
-	Data string   `orm:"default('')"`
+	Data        string   `orm:"default('')"`
 }
 
 func (Notification) TableName() string {
@@ -27,16 +24,16 @@ func (Notification) TableName() string {
 }
 
 type PostMessage struct {
-	Id        uint        `orm:"pk"`
-	CreatedAt time.Time   `orm:"auto_now_add"`
-	UpdatedAt time.Time   `orm:"auto_now"`
-	DeletedAt time.Time
-	User        *User    `orm:"rel(fk)"`
-	Related     *User    `orm:"rel(fk)"`
+	Id              uint        `orm:"pk"`
+	CreatedAt       time.Time   `orm:"auto_now_add"`
+	UpdatedAt       time.Time   `orm:"auto_now_add"`
+	DeletedAt       time.Time
+	User            *Profile    `orm:"rel(fk)"`
+	Related         *Profile    `orm:"rel(fk)"`
 	//UserId      uint
 	//RelatedId   uint     `orm:"default(0)"`
-	SubjectType int
-	IsRead      bool     `orm:"default(false)"`
+	SubjectType     int
+	IsRead          bool     `orm:"default(false)"`
 
 	RelatedUsername string   `orm:"default('')"`
 	PostId          uint

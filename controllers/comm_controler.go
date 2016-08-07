@@ -3,8 +3,9 @@ package controllers
 import (
 	"strconv"
 	"gensh.me/goforum/models/m"
-	"gensh.me/goforum/models/forms"
-	identify "gensh.me/goforum/middleware/values"
+	"gensh.me/goforum/components/utils"
+	"gensh.me/goforum/components/context/comments"
+	identify "gensh.me/goforum/models/values"
 )
 
 type CommentController struct {
@@ -43,10 +44,10 @@ func (this *CommentController) Comment() {
 //post only
 // 0 for article deleted; 1 for success,3 for no login;
 func (this *CommentController) CommentAdd() {
-	var result *forms.SimpleJsonResponse
+	var result *utils.SimpleJsonResponse
 	id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))  //string to int
 	content := this.GetString("content")
-	ccf := forms.CommentCreateForm{PostID:uint(id), Content:content}
+	ccf := comments.CommentCreateForm{PostID:uint(id), Content:content}
 	result = ccf.Create(this.getUserId(),this.getUsername())
 	this.Data["json"] = result
 	this.ServeJSON()

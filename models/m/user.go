@@ -8,7 +8,7 @@ import (
 type User struct {
 	Id         uint        `orm:"pk"`
 	CreatedAt  time.Time   `orm:"auto_now_add"`
-	UpdatedAt  time.Time   `orm:"auto_now"`
+	UpdatedAt  time.Time   `orm:"auto_now_add"`
 	DeletedAt  time.Time
 
 	Email      string
@@ -18,13 +18,13 @@ type User struct {
 	AuthKey    string   `orm:"column(auth_key)"`
 	ResetToken string   `orm:"column(password_reset_token)"`
 	Status     int      `orm:"default(1)"` //todo UNACTIVATED
-	Profile    *Profile `orm:"rel(one)"`
+	Profile    *Profile `orm:"reverse(one)"`
 }
 
 type Profile struct {
 	Id             uint    `orm:"pk"`
-	User           *User   `orm:"reverse(one)"`
-	UserRefer      uint
+	UserRefer      *User   `orm:"rel(one)"` //UserReferId is total the same as Id
+	Name           string  `orm:"default('')"`
 	Avatar         string  `orm:"default('default.png')"`
 	Coins          int     `orm:"default(0)"`
 	PostCount      int     `orm:"default(0)"`
@@ -44,15 +44,13 @@ func (this *User) TableName() string {
 
 func (u *User) GetUserById(id uint) {
 	//database.DB.Preload("Profile").First(&u, id)
-	database.O.QueryTable("user").Filter("id", id).RelatedSel().One(u)
+	database.O.QueryTable("user").Filter("id", id).Limit(1).One(u)
 }
 
 type Follow struct {
-	Follower    *User  `orm:"rel(fk)"`
-	Following   *User  `orm:"rel(fk)"`
-	Id          uint   `orm:"pk"`
-	FollowerID  uint
-	FollowingID uint
+	Follower  *Profile  `orm:"rel(fk)"`
+	Following *Profile  `orm:"rel(fk)"`
+	Id        uint      `orm:"pk"`
 }
 
 func (this *Follow) TableName() string {
