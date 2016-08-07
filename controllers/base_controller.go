@@ -11,11 +11,7 @@ const (
 	Is_Login = "is_login"
 )
 
-<<<<<<< HEAD
-=======
 var Login_Json_Err = utils.SimpleJsonResponse{Status:3, Error:"用户未登录"}
-
->>>>>>> orm
 type Rules interface {
 	getRules(string) int
 }

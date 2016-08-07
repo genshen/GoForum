@@ -2,11 +2,7 @@ package controllers
 
 import (
 	"strconv"
-<<<<<<< HEAD
-	"qiniupkg.com/api.v7/kodo"
-=======
 	"html/template"
->>>>>>> orm
 	"encoding/json"
 	"github.com/qiniu/api.v7/kodo"
 	"gensh.me/goforum/components/event"
