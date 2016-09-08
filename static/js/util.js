@@ -6,7 +6,9 @@
  * 4.jquery.cookie.js
  * 5.snackbar.js
  * */
-
+var Config = {
+    listMax: {hot_post: 20, post_list: 20, comment: 20}
+};
 // tab switch
 (function ($) {
     'use strict';
@@ -539,7 +541,7 @@ var Util = {
                     this.options.errorCallback(error);
                     return false;
                 case 1:
-                    if(this.options.onSuccess != null){
+                    if (this.options.onSuccess != null) {
                         this.options.onSuccess();
                     }
                     return true;

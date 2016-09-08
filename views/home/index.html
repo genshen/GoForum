@@ -5,7 +5,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/static/img/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="theme-color" content="#1ba10f">
     <title>首页</title>
     <!-- Material Design fonts -->
@@ -461,7 +461,6 @@
                     self.home.swipes.push(e);
                 });
                 self.home.hot_loading_text = "正在加载";
-                self.home.hot_loading_enable = false;
                 requestHotPosts(self, self.home.hot_start);
             }, error: function (err) {
                 // 加载失败,重新加载
@@ -475,22 +474,27 @@
     //请求热门帖子的数据
     //第一次由父组件调用,以后加载更多及失败的重试都由子组件负责
     function requestHotPosts(self, start) {
+        if(!self.home.hot_loading_enable){
+            return;
+        }
+        self.home.hot_loading_enable = false;
         $.ajax({
             type: 'GET',
             url: "/home/hot/" + start,
             success: function (data) { //todo use try catch: data may be not json format
-                if (data.length == 0) { //todo
-                    self.home.hot_loading_enable = false;
-                    self.home.hot_loading_text = "没有更多内容了";
-                    return;
-                }
                 data.forEach(function (e) {
                     self.home.hot_posts.push(e);
                 });
                 self.home.hot_start += data.length;
                 self.home.loaded = true;
-                self.home.hot_loading_text = "加载更多";
-                self.home.hot_loading_enable = true;
+                if (data.length < Config.listMax.hot_post) { //todo
+                    self.home.hot_loading_enable = false;
+                    self.home.hot_loading_text = "没有更多内容了";
+                }else{
+                    self.home.hot_loading_text = "加载更多";
+                    self.home.hot_loading_enable = true;
+                }
+
                 $("#home-owl").owlCarousel({
                     autoPlay: 4000,
                     stopOnHover: true,

@@ -260,16 +260,16 @@
                         type: 'GET',
                         url: "/comment/" + ID + "/" + start,
                         success: function (data) {
-                            if (data.length == 0) {
+                            if (data.length <Config.listMax.comment) {
                                 self.load_text = "没有更多内容了";
                                 self.loading_enable = false;
-                                return;
+                            }else{
+                                self.load_text = "加载更多";
+                                self.loading_enable = true;
                             }
                             data.forEach(function (e) {
                                 self.comments.push(e);
                             });
-                            self.load_text = "加载更多";
-                            self.loading_enable = true;
                             self.start += data.length;
                         }, error: function (err) {
                             self.load_text = "加载失败,重新加载";
