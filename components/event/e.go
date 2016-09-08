@@ -1,18 +1,13 @@
 package event
 
 import (
-	"fmt"
-	"log"
-	"net/textproto"
-	"github.com/astaxie/beego/utils"
-	"github.com/astaxie/beego"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/models/database"
 	u "gensh.me/goforum/components/utils"
 )
 
 func OnAccountCreated(email string, username string, uid uint) {
-	go sendMail(email, "激活账号", "Text Message")
+//todo none
 }
 
 //todo: none
@@ -38,24 +33,4 @@ func OnFollowed(id uint, id_r uint, name string) {
 
 func OnUnFollowed() {
 
-}
-
-func sendMail(to string, subject string, content string) {
-	port, _ := beego.AppConfig.Int("mail_port")
-	var mail = utils.Email{
-		Username:beego.AppConfig.String("mail_user"),
-		Password:beego.AppConfig.String("mail_password"),
-		Host:beego.AppConfig.String("mail_host"),
-		Port:port,
-		From:beego.AppConfig.String("mail_from"),
-	}
-	mail.Headers = textproto.MIMEHeader{}
-	mail.To = []string{to}
-	mail.Subject = subject
-	mail.HTML = content
-	err := mail.Send()
-	if err != nil {
-		log.Println("send to:" + to)
-		log.Println(fmt.Sprintf("Send Mail Error:%v", err))
-	}
 }
