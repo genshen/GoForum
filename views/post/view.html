@@ -68,11 +68,15 @@
         background-color: #ffffff;
         padding: 20px 30px 10px 20px;
     }
+
+    /*post-content*/
+    #post-content img{
+        max-width: 100%;
+    }
 </style>
 </head>
 <body>
 <main id="app">
-
     <div class="modal fade" id="discard-confirm">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -154,7 +158,7 @@
     <div class="row">
         <div class="col-md-12">
             <h2>{{post.Title}}</h2>
-            {{post.Content}}
+            <article id="post-content" v-html="post.Content">正在加载...</article>
         </div>
 
         <div class="col-md-12 hr-block">
@@ -188,10 +192,13 @@
 <script src="/static/dist/js/material.min.js"></script>
 <script src="/static/dist/js/ripples.min.js"></script>
 <script src="/static/dist/js/vue.js"></script>
+<script src="/static/dist/js/xss.min.js"></script>
 <script src="/static/js/util.js"></script>
 <script>
     var D = JSON.parse("<<<.data>>>");
     var ID = D.Post.ID;
+    D.Post.Content = D.Post.Content.replace("#BASE_URL#","http://7xtb5x.com1.z0.glb.clouddn.com/");
+    D.Post.Content = filter(D.Post.Content);//filter xss
 
     $.material.init();
     var loginOptions = {content: "请<a href='/account/signin?next=/post/" + ID + "'>登录</a>后回复", timeout: 4000};
@@ -209,12 +216,16 @@
         }
     }
 
+    function filter(s){
+        return filterXSS(s);
+    }
+
     function submit() {
         var value = $("#editor-box").val();
         if (value) {
             if (D.IsLogin) {
-                value = value.replace(/</g, "&nbs");
-                value = value.replace(/>/g, "&nbs");
+                value = value.replace(/</g, "&lt");
+                value = value.replace(/>/g, "&gt");
                 try { //cookie may be null or something else bad data
                     xsrf = base64_decode(Cookies.get('_xsrf').split("|")[0]);
                 } catch (err) {
