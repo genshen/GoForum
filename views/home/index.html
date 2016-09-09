@@ -34,8 +34,8 @@
                 <!-- Carousel Card -->
                 <div id="home-owl" class="owl-carousel">
                     <div v-for="swipe in home.swipes">
-                        <a :href=" swipe.Url" target="_blank">
-                        <img :src=" swipe.Img" alt="Awesome Image">
+                        <a :href="swipe.Url" target="_blank">
+                        <img :src="swipe.Img" alt="Awesome Image">
                         </a>
                     </div>
                 </div>  <!--owl-carousel-->
@@ -45,23 +45,23 @@
                     <template v-for="hot in home.hot_posts">
                         <div class="mdl-list-group-item">
                             <div class="row-picture">
-                                <a :href="'/person/'+hot.ID"><img class="circle" :src="hot.Avatar" alt="Avatar"/></a>
+                                <a :href="'/person/'+hot.user_id"><img class="circle" :src="hot.avatar" alt="Avatar"/></a>
                             </div>
                             <div class="row-content without-arrow">
                                 <div class="home-list-top-info"><!--class="list-group-item-heading"-->
-                                    <a :href="'/person/'+hot.ID" class="hot-list-author">
-                                        <small>{{hot.Name}}</small>
+                                    <a :href="'/person/'+hot.user_id" class="hot-list-author">
+                                        <small>{{hot.name}}</small>
                                     </a>
                                     <small class="pull-right">
-                                        <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{hot.ViewCount}}&nbsp;&nbsp;</span>
-                                        <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{hot.CommentCount}}&nbsp;&nbsp;</span>
+                                        <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{hot.view_count}}&nbsp;&nbsp;</span>
+                                        <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{hot.comment_count}}&nbsp;&nbsp;</span>
                                     </small>
                                 </div>
                                 <p class="hot-list-item-date">
-                                    <small>2016.7.11</small>
+                                    <small>{{hot.created_at|format_time}}</small>
                                 </p>
                                 <h5 class="list-group-item-text" style="margin-top:0;">
-                                    <a :href="'/post/'+hot.PostID">{{hot.Title}}</a>
+                                    <a :href="'/post/'+hot.id">{{hot.title}}</a>
                                 </h5>
                             </div><!--class="row-content"-->
                         </div><!--class="list-group-item"-->
@@ -259,6 +259,9 @@
         template: '#home-template',
         props: {
             home: JSON
+        },
+        filters: {
+            format_time: Util.formatTime
         },
         methods: {
             loadMore: function () {

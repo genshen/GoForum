@@ -51,7 +51,7 @@
     }
 
     /*post-content*/
-    #post-content img{
+    #post-content img {
         max-width: 100%;
     }
 </style>
@@ -77,7 +77,8 @@
     </div><!-- /.modal -->
 
     <div class="container">
-        <post-grid :post="Post" :is_login="IsLogin" :author="Author" :start.sync="start" :comments="Comments"></post-grid>
+        <post-grid :post="Post" :is_login="IsLogin" :author="Author" :start.sync="start"
+                   :comments="Comments"></post-grid>
     </div>
 
     <div id="shell-box">
@@ -134,10 +135,30 @@
     </div>
 </main>
 <!-- component template -->
-<script type="text/x-template" id="grid-template">
+<script type="text/x-template" id="post-grid-template">
     <div class="row">
         <div class="col-md-12">
-            <h2>{{ "{{post.Title}}"}}</h2>
+            <div class="row mdl-list-group post-detail-author">
+                <div class="mdl-list-group-item">
+                    <div class="row-picture">
+                         <a :href="'/person/'+author.ID"><img class="circle" :src="author.Avatar"/></a>
+                    </div>
+                    <div class="row-content">
+                        <a href="javascript:void(0)" class="withripple action-secondary">
+                            <i class="material-icons">done</i>
+                        </a>
+                        <h6 class="single-line list-group-item-heading">
+                            <a :href="'/person/'+author.ID"><span>{{"{{author.Name}}"}}</span></a>
+                        </h6>
+                        <p class="list-group-item-text">
+                            <span>{{"{{post.CreatedAt|format_time}}"}}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h2><b>{{ "{{post.Title}}"}}</b></h2>
             <article id="post-content" v-html="post.Content">正在加载...</article>
         </div>
 
@@ -170,7 +191,7 @@
 <script>
     var D = JSON.parse("<<<.data>>>");
     var ID = D.Post.ID;
-    D.Post.Content = D.Post.Content.replace("#BASE_URL#","http://7xtb5x.com1.z0.glb.clouddn.com/");
+    D.Post.Content = D.Post.Content.replace("#BASE_URL#", "http://7xtb5x.com1.z0.glb.clouddn.com/");
     D.Post.Content = filter(D.Post.Content);//filter xss
 
     $.material.init();
@@ -189,7 +210,7 @@
         }
     }
 
-    function filter(s){
+    function filter(s) {
         return filterXSS(s);
     }
 
@@ -218,10 +239,10 @@
                                     D.Comments.push({Content: value, ID: data.Addition});
                                     D.start++; //todo bug here:如果后面还有未加载的,会隐藏一条.如果没有未加载的则正确.
                                     replyBox.close(false);
-                                },errorCallback:function (msg) {
-                                    $.snackbar( {content: msg, timeout: 2000});
+                                }, errorCallback: function (msg) {
+                                    $.snackbar({content: msg, timeout: 2000});
                                 },
-                                onUnAuth:function () {
+                                onUnAuth: function () {
                                     $.snackbar(loginOptions);
                                 }
                             });
@@ -244,13 +265,16 @@
 </script>
 <script>
     Vue.component('post-grid', {
-        template: '#grid-template',
+        template: '#post-grid-template',
         props: {
             is_login: Boolean,
             start: Number,
             comments: Array,
             post: JSON,
             author: JSON
+        },
+        filters: {
+            format_time: Util.formatTime
         },
         ready: function () {
             this.loadMore();
@@ -265,15 +289,16 @@
         methods: {
             loadMore: function (btn) {
                 var self = this;
+
                 function loadComments(start) {
                     $.ajax({
                         type: 'GET',
                         url: "/comment/" + ID + "/" + start,
                         success: function (data) {
-                            if (data.length <Config.listMax.comment) {
+                            if (data.length < Config.listMax.comment) {
                                 self.load_text = "没有更多内容了";
                                 self.loading_enable = false;
-                            }else{
+                            } else {
                                 self.load_text = "加载更多";
                                 self.loading_enable = true;
                             }
@@ -288,6 +313,7 @@
                         }
                     });
                 }
+
                 loadComments(this.start);
                 this.load_text = "正在加载";
                 this.loading_enable = false;

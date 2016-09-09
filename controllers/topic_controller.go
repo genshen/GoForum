@@ -21,13 +21,13 @@ func (this *TopicController) getRules(action string) int {
 func (this *TopicController) Slug() {
 	slug := this.Ctx.Input.Param("slug")
 	start := 0
-	dbPosts :=  []m.Posts{}
-	database.O.QueryTable("posts").Filter("visible", true).Limit(20,uint(start)).RelatedSel("Author").All(&dbPosts);
+	dbPosts := []m.Posts{}
+	database.O.QueryTable("posts").Filter("visible", true).Limit(20, uint(start)).RelatedSel("Author").All(&dbPosts);
 	mItems := posts.DBHotPostsConvert(&dbPosts)
 	this.Data["slug"] = slug
-	json,err := json.Marshal(mItems)
+	data, err := json.Marshal(mItems)
 	if err == nil {
-		this.Data["post_items"] = string(json)
+		this.Data["post_items"] = string(data)
 		this.TplName = "topic/index.html"
 		return
 	}

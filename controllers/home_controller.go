@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"strconv"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/models/database"
 	"gensh.me/goforum/components/context/posts"
@@ -23,12 +22,8 @@ func (this *HomeController) LoadSwipe() {
 }
 
 func (this *HomeController) Hot() {
-	start, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
-	dbHotPosts := []m.Posts{}
-	//todo Preload("Author.Profile")
-	database.O.QueryTable("posts").Filter("visible", true).Limit(20, uint(start)).RelatedSel("Author").All(&dbHotPosts);
-	mHot := posts.DBHotPostsConvert(&dbHotPosts)
-	this.Data["json"] = mHot
+	start := this.Ctx.Input.Param(":start")
+	this.Data["json"] = posts.LoadHotPost(start)
 	this.ServeJSON()
 }
 

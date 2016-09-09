@@ -7,16 +7,6 @@ import (
 	"time"
 )
 
-//<post item >
-type PostItem struct {
-	utils.Person
-	PostID       uint
-	Title        string
-	ViewCount    int
-	CommentCount int
-}
-
-
 /**<used for Post detail> */
 type PostDetail struct {
 	ID           uint
@@ -51,17 +41,6 @@ type PostView struct {
 	Author  utils.Person
 }
 /*</used for Post detail> */
-
-func DBHotPostsConvert(dbHotPosts *[]m.Posts) (*[]PostItem) {
-	postItems := make([]PostItem, 0, len(*dbHotPosts))  //dbHotPosts to mHotPosts
-	for _, db_hot := range *dbHotPosts {
-		postItems = append(postItems, PostItem{PostID:db_hot.Id, Title:db_hot.Title,
-			ViewCount:db_hot.ViewCount, CommentCount:db_hot.CommentCount,
-			Person:utils.Person{ID:db_hot.Author.Id, Name:db_hot.Author.Name, Avatar:db_hot.Author.Avatar}});
-	}
-	return &postItems
-}
-//</post item >
 
 
 // <structs for Category >

@@ -31,14 +31,14 @@
         <div v-for="post in posts" class="list-group">
             <div class="list-group-item">
                 <div class="row-picture">
-                    <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
+                    <img class="circle" :src="post.Avatar" alt="icon">
                 </div>
                 <div class="row-content">
                     <span> {{post.Name}}</span> <!--class="list-group-item-heading"-->
                     <span class="glyphicon glyphicon-eye-open"></span><span>{{post.ViewCount}}</span>
                     <span class="glyphicon glyphicon-dashboard"></span><span>{{post.CommentCount}}</span>
                     <p class="list-group-item-text">
-                        <a v-bind:href="'/post/'+post.PostID">{{post.Title}}</a>
+                        <a :href="'/post/'+post.PostID">{{post.Title}}</a>
                     </p>
                 </div>
             </div>
@@ -75,5 +75,6 @@
         }
     });
 </script>
+
 </body>
 </html>

@@ -688,3 +688,12 @@ html,body {
 .mdl-list-group.message-list .message-list-title{
     font-size:15px;
 }
+
+/*post-detail*/
+.post-detail-author{
+margin-top: 16px;
+}
+.post-detail-author .list-group-item-heading{
+    font-size: 16px;
+    font-weight: 600;
+ }
