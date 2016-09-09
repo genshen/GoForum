@@ -15,8 +15,8 @@ var (
 
 func init() {
 	qb, _ := orm.NewQueryBuilder(beego.AppConfig.String("db_type"))
-	qb.Select("posts.id", "posts.title", "posts.comment_count", "posts.view_count", "posts.created_at",
-		"profile.id as user_id", "profile.name", "profile.avatar").
+	qb.Select("posts.id","posts.author_id", "posts.title", "posts.comment_count", "posts.view_count", "posts.created_at",
+		 "profile.name", "profile.avatar").
 		From("posts").
 		InnerJoin("profile").On("posts.author_id = profile.id").
 		Where("visible = true").

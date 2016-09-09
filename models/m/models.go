@@ -1,10 +1,10 @@
 package m
 
 import (
-	"gensh.me/goforum/models/database"
-	"github.com/astaxie/beego/orm"
 	"time"
 	"strconv"
+	"gensh.me/goforum/models/database"
+	"github.com/astaxie/beego/orm"
 )
 
 func init() {
@@ -69,8 +69,8 @@ type Comment struct {
 	DeletedAt time.Time
 
 	PostId    uint
-	Author    uint
-	Parent    uint   `orm:"default(0)"`
+	Author    *Profile `orm:"rel(fk)"`
+	Parent    uint     `orm:"default(0)"`
 	Content   string
 	Visible   bool   `orm:"default(true)"`
 }
@@ -79,12 +79,6 @@ func (c *Comment) TableName() string {
 	return "comment"
 }
 
-func LoadComments(id int, offset int) []Comment {
-	var comments []Comment
-	database.O.QueryTable("comment").Filter("post_id", id).Offset(uint(offset)).Limit(20).All(&comments)
-	//database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
-	return comments
-}
 
 type Topic struct {
 	Id        uint        `orm:"pk"`

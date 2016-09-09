@@ -685,6 +685,7 @@ html,body {
     font-size: 30px;
     color: white;
 }
+
 .mdl-list-group.message-list .message-list-title{
     font-size:15px;
 }
@@ -697,3 +698,28 @@ margin-top: 16px;
     font-size: 16px;
     font-weight: 600;
  }
+.post-detail-bookmark{
+    margin-top: 1.0em;
+}
+
+.comment-author .comment-author-avatar{
+ display: inline-block;
+}
+.comment-author-avatar img{
+    width:46px;
+    height:46px;
+    border-radius: 100%;
+}
+.comment-author-refer{
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(100% - 106px);
+    overflow-x: hidden;
+}
+.comment-author-refer span{
+    font-size:12px;
+}
+.comment-author-href{
+    display: inline-block;
+    float: right;
+}

@@ -25,11 +25,11 @@
                     <template v-for="hot in home.hot_posts">
                         <div class="mdl-list-group-item">
                             <div class="row-picture">
-                                <a :href="'/person/'+hot.user_id"><img class="circle" :src="hot.avatar" alt="Avatar"/></a>
+                                <a :href="'/person/'+hot.author_id"><img class="circle" :src="hot.avatar" alt="Avatar"/></a>
                             </div>
                             <div class="row-content without-arrow">
                                 <div class="home-list-top-info"><!--class="list-group-item-heading"-->
-                                    <a :href="'/person/'+hot.user_id" class="hot-list-author">
+                                    <a :href="'/person/'+hot.author_id" class="hot-list-author">
                                         <small>{{"{{hot.name}}"}}</small>
                                     </a>
                                     <small class="pull-right">

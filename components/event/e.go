@@ -19,7 +19,7 @@ func OnPostCreated() {
 func OnCommentSubmitted(post *m.Posts, comment *m.Comment, username string) {
 	var message = m.PostMessage{RelatedUsername:username, PostId:post.Id, PostTitle:post.Title, Quote:post.Summary,
 		Summary:comment.Content, SubjectType:u.POST_COMMENT,
-		User:&m.Profile{Id:post.Author.Id}, Related:&m.Profile{Id:comment.Author}}
+		User:&m.Profile{Id:post.Author.Id}, Related:&m.Profile{Id:comment.Author.Id}}
 	database.O.Insert(&message)
 	//多次create,message 可以复用
 }
