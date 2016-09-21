@@ -337,7 +337,9 @@ html,body {
     min-height: 150px;
     background: url(AjaxLoader.gif) no-repeat center center
 }
+.home-logo{
 
+}
 #home-owl .owl-item img {
     display: block;
     width: 100%;

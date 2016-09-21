@@ -7,6 +7,7 @@
  * 5.snackbar.js
  * */
 var Config = {
+    Home:{Cover:"/static/img/cover"},
     listMax: {hot_post: 20, post_list: 20, comment: 20}
 };
 // tab switch

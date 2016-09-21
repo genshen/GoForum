@@ -85,9 +85,9 @@ func (this *PostController) View() {
 		mPostDetail.NewInstant(&mPost)
 		person := utils.Person{ID:mPost.Author.Id, Name:mPost.Author.Name, Avatar:mPost.Author.Avatar}
 		data :=  posts.PostView{IsLogin:this.IsUserLogin(), Post:mPostDetail, Author:person}
-		json, err := json.Marshal(data)
+		j, err := json.Marshal(data)
 		if err == nil {
-			this.Data["data"] = string(json)
+			this.Data["data"] = string(j)
 			this.TplName = "post/view.html"
 			return
 		}
