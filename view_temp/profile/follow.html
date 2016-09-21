@@ -28,8 +28,13 @@
         <!-- Tab panes -->
         <div class="tab-pane" id="following">
             <div class="row">
-                <div class="col-xs-12" style="background-color: #FFF">
-                    <ul class="mdl-list">
+                <div v-if="!following.length" class="col-xs-12" >
+                    <div class="alert alert-info"  style="margin-top:12px;">
+                        <strong>Heads up!</strong><span>你目前还没有关注任何人呢，先去论坛逛逛吧~</span>
+                    </div>
+                </div>
+                <div v-else class="col-xs-12" style="background-color: #FFF">
+                    <ul class="mdl-list" >
                         <template v-for="follow in following">
                             <li v-if="$index != 0" class="mdl-list-separator"></li>
                             <li class="mdl-list-item" :click="toPerson">
@@ -48,7 +53,12 @@
         </div>
         <div class="tab-pane" id="followed">
             <div class="row">
-                <div class="col-xs-12" style="background-color: #FFF">
+                <div  v-if="!followed.length" class="col-xs-12" >
+                    <div class="alert alert-info"  style="margin-top:12px;">
+                        <strong>Heads up!</strong><span>你目前还没有粉丝呢，先去论坛逛逛吧~</span>
+                    </div>
+                </div>
+                <div v-else class="col-xs-12" style="background-color: #FFF">
                     <ul class="mdl-list">
                         <template v-for="follow in followed">
                             <li v-if="$index != 0" class="mdl-list-separator"></li>

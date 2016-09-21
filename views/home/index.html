@@ -29,10 +29,23 @@
 <script type="text/x-template" id="home-template">
     <div v-show="home.active">
         <div v-show="home.loaded">
-            <div class="container-fluid home-logo">
-                <h1>Home</h1>
+            <div class="home-logo">
+                <img class="logo-bg" :src="config.cover">
                 <img class="logo-icon" :src="config.logo">
-                <div></div>
+                <div class="title">
+                    <p class="primary-title" v-text="config.title"></p>
+                    <p class="subtitle" v-text="config.subtitle"></p>
+                </div>
+                <div href="javascript:void(0)" class="sign-action-box">
+                    <i class="material-icons">insert_invitation</i>
+                    <span>签到</span>
+                </div>
+            </div>
+            <div class="clearfix home-sticky-article container">
+            <div class="clearfix home-sticky-article container">
+                <div class="row">
+                    置顶置顶
+                </div>
             </div>
             <div  class="container">
                 <div class="row">
@@ -88,21 +101,26 @@
 <script type="text/x-template" id="category-template">
     <div class="container" v-show="category.active">
         <div v-show="category.loaded">
-            <h1>category</h1>
-            <h4>热门标签</h4>
-            <div class="tag-container">
-                <a v-for="tag in category.tags" class="category-tag" :style="{background:tag.Color}">
-                    {{tag.Name}}
-                </a>
-            </div>
-            <h4>话题</h4>
-            <div class="topic-container">
-                <div v-for="topic in category.topics" :style="{background:topic.Color}"
-                     class="col-md-3 col-md-4 col-sm-6 category-topic">
-                    <h4><a :href="'/topic/'+topic.Slug">{{topic.Name}}</a></h4>
-                    <span class="text-info">{{topic.Describe}}</span>
+            <div class="row">
+                <h4 class="category-primary-title text-muted">热门标签</h4>
+                <div class="tag-container">
+                    <a v-for="tag in category.tags" class="category-tag" :style="{background:tag.Color}">
+                        {{tag.Name}}
+                    </a>
                 </div>
-            </div>  <!--/topic-container-->
+            </div>
+            <div class="row">
+                <h4 class="category-primary-title text-muted">话题</h4>
+                <div class="topic-container">
+                    <div v-for="topic in category.topics" class="col-md-3 col-md-4 col-sm-6 category-topic">
+                        <img class="topic-cover" :src="topic.Icon">
+                        <div class="topic-right-ref">
+                            <a class="title" :href="'/topic/'+topic.Slug">{{topic.Name}}</a>
+                            <span class="text-info">{{topic.Describe}}</span>
+                        </div>
+                    </div>
+                </div>  <!--/topic-container-->
+            </div>
         </div>
         <div v-show="!category.loaded">
             正在加载...
@@ -279,8 +297,7 @@
                 requestHotPosts(this, this.home.hot_start);
             }
         },
-        ready:function(){ 
-            $(".home-logo").css("background","url("+this.config.cover+")");
+        ready:function(){
         }
     });
 
@@ -363,8 +380,8 @@
                         icon: "glyphicon-star-empty",
                         link: "/profile/collection"
                     },
-                    {is_space: true},
-                    {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
+//                    {is_space: true},
+//                    {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
                     {is_space: true},
                     {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "/about"},
                     {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "/about/feedback"}]
@@ -395,7 +412,7 @@
             },
             category: {loaded: false, active: false, tags: [], topics: []},
             message: {active: false, tab_index: 0},
-            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "default.png"},
+            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "/static/img/avatars/avatar-green.jpg"},
             setting: {}
         },
         ready: function () {
