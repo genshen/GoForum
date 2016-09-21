@@ -31,6 +31,8 @@
         <div v-show="home.loaded">
             <div class="container-fluid home-logo">
                 <h1>Home</h1>
+                <img class="logo-icon" :src="config.logo">
+                <div></div>
             </div>
             <div  class="container">
                 <div class="row">
@@ -266,6 +268,9 @@
         props: {
             home: JSON
         },
+        data:function(){
+            return {config:Config.home};
+        },
         filters: {
             format_time: Util.formatTime
         },
@@ -275,7 +280,7 @@
             }
         },
         ready:function(){ 
-            $(".home-logo").css("background","url(/static/img/top_banner.jpg)");
+            $(".home-logo").css("background","url("+this.config.cover+")");
         }
     });
 

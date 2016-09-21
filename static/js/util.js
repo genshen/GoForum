@@ -7,7 +7,7 @@
  * 5.snackbar.js
  * */
 var Config = {
-    Home:{Cover:"/static/img/cover"},
+    home:{title:"Clothes Plus",subtitle:"",logo:"/static/img/logo.png",cover:"/static/img/top_cover.jpg"},
     listMax: {hot_post: 20, post_list: 20, comment: 20}
 };
 // tab switch

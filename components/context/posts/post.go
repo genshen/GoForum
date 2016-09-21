@@ -1,10 +1,9 @@
 package posts
 
 import (
+	"time"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/components/utils"
-	"gensh.me/goforum/models/database"
-	"time"
 )
 
 /**<used for Post detail> */
