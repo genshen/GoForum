@@ -21,12 +21,6 @@
                     <span>签到</span>
                 </div>
             </div>
-            <div class="clearfix home-sticky-article container">
-            <div class="clearfix home-sticky-article container">
-                <div class="row">
-                    置顶置顶
-                </div>
-            </div>
             <div  class="container">
                 <div class="row">
                     <!-- Carousel Card -->
@@ -70,8 +64,8 @@
                     </div><!--calss="mdl-list-group"-->
                 </div> <!--/row-->
                 <a class="center-block text-center" @click="loadMore" :disabled="!home.loading_enable">{{"{{home.hot_loading_text}}"}}</a>
-            </div>
-            </div>
+            </div><!--container-->
+        </div>
         <div class="container" v-show="!home.loaded">
             <span>正在加载...</span>
         </div> <!--/home.loaded-->
@@ -81,7 +75,7 @@
 <script type="text/x-template" id="category-template">
     <div class="container" v-show="category.active">
         <div v-show="category.loaded">
-            <div class="row">
+            <div v-if="false" class="row">
                 <h4 class="category-primary-title text-muted">热门标签</h4>
                 <div class="tag-container">
                     <a v-for="tag in category.tags" class="category-tag" :style="{background:tag.Color}">
@@ -90,7 +84,7 @@
                 </div>
             </div>
             <div class="row">
-                <h4 class="category-primary-title text-muted">话题</h4>
+                <h4 v-if="false" class="category-primary-title text-muted">话题</h4>
                 <div class="topic-container">
                     <div v-for="topic in category.topics" class="col-md-3 col-md-4 col-sm-6 category-topic">
                         <img class="topic-cover" :src="topic.Icon">
@@ -100,8 +94,8 @@
                         </div>
                     </div>
                 </div>  <!--/topic-container-->
-            </div>
-        </div>
+            </div>  <!---/row--->
+        </div>   <!---/v-show="category.loaded"--->
         <div v-show="!category.loaded">
             正在加载...
         </div> <!--/category.loaded-->
