@@ -143,6 +143,9 @@
                             <a class="title" :href="'/topic/'+topic.Slug">{{topic.Name}}</a>
                             <span class="text-info">{{topic.Describe}}</span>
                         </div>
+                        <div class="topic-right-nav">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </div>
                     </div>
                 </div>  <!--/topic-container-->
             </div>  <!---/row--->
@@ -528,7 +531,7 @@
         });
     }
 
-    //加载消息页面数据
+    //加载消页面息数据
     function loadMessageData(self, url, index, position) {
         $.ajax({
             type: 'GET',
