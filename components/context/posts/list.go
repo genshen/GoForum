@@ -11,18 +11,31 @@ import (
 
 var (
 	hot_post_sql string
+	post_by_topic_id_sql string
 )
 
 func init() {
 	qb, _ := orm.NewQueryBuilder(beego.AppConfig.String("db_type"))
-	qb.Select("posts.id","posts.author_id", "posts.title", "posts.comment_count", "posts.view_count", "posts.created_at",
-		 "profile.name", "profile.avatar").
+	qb.Select("posts.id", "posts.author_id", "posts.title", "posts.comment_count", "posts.view_count", "posts.created_at",
+		"profile.name", "profile.avatar").
 		From("posts").
 		InnerJoin("profile").On("posts.author_id = profile.id").
 		Where("visible = true").
-	//OrderBy("id").Dec()
+	//
 		Limit(20)
 	hot_post_sql = qb.String()
+
+	qb_t, _ := orm.NewQueryBuilder(beego.AppConfig.String("db_type"))
+	qb_t.Select("posts.id", "posts.author_id", "posts.title", "posts.sticky", "posts.comment_count",
+		"posts.view_count", "posts.created_at",
+		"profile.name", "profile.avatar").
+		From("posts").
+		InnerJoin("profile").On("posts.author_id = profile.id").
+		Where("visible = true").
+		And("topic_id = ?").
+		OrderBy("sticky").Desc().
+		Limit(20)
+	post_by_topic_id_sql = qb_t.String()
 }
 
 //<post item >
@@ -48,6 +61,12 @@ func DBHotPostsConvert(dbHotPosts *[]m.Posts) (*[]PostItem) {
 
 func LoadHotPost(start string) *[]orm.Params {
 	var maps []orm.Params
-	database.O.Raw(hot_post_sql+" offset "+start).Values(&maps)
+	database.O.Raw(hot_post_sql + " offset " + start).Values(&maps)
+	return &maps
+}
+
+func LoadPostsByTopicId(id string,start string)*[]orm.Params {
+	var maps []orm.Params
+	database.O.Raw(post_by_topic_id_sql + " offset " + start,id).Values(&maps)
 	return &maps
 }

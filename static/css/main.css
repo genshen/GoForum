@@ -443,6 +443,144 @@ html, body {
     display: inline-block;
 }
 
+/*hot_item*/
+.hot-list-author {
+    color: #333
+}
+
+.hot-list-author:hover, .hot-list-author:active, .hot-list-author:focus, .hot-list-author:visited {
+    color: #333;
+    text-decoration: none;
+}
+
+.hot-list-item-date {
+    margin-bottom: 3px;
+    /*font-size:12px;*/
+}
+
+/*message lists*/
+.single-line { /*fixed width */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.message-control-box {
+    padding-left: 12px;
+    margin-bottom: 12px;
+    margin-top: 8px;
+}
+
+.message-control-box .read-mark-action {
+    float: right
+}
+
+#m-message .row-content .post-message-collapse {
+    max-width: 100%;
+}
+
+.message-list .row-content .post-message-collapse blockquote {
+    margin-bottom: 0;
+    font-size: 12px;
+    padding: 6px 10px;
+    color: rgba(0, 0, 0, 0.58);
+}
+
+.mdl-list-group .read-mark-action, .message-control-box .read-mark-action {
+    display: inline-block;
+    padding: 2px;
+}
+
+.mdl-list-group.message-list .message-list-icon {
+    vertical-align: super;
+}
+
+.mdl-list-group.message-list .message-list-icon i {
+    background: #4CAF50;
+    font-size: 30px;
+    color: white;
+}
+
+.mdl-list-group.message-list .message-list-title {
+    font-size: 15px;
+}
+/*post list (topic)*/
+.topic-detail-header{
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom:1.2rem;
+    position: relative;
+}
+.topic-detail .topic-detail-cover{
+    width:4.4rem;
+    height:4.4rem;
+    border-radius: 100%;
+}
+.topic-detail .topic-detail-right-ref{
+    display:inline-block;
+    width: calc(100% - 4.4rem - 12px);
+    margin-left:6px;
+    vertical-align: middle;
+}
+.sticky-block{
+    background-color: #fff;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    margin-bottom: 1.8rem;
+}
+.sticky-title{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 4rem);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/*post-detail*/
+.post-detail-author {
+    margin-top: 16px;
+}
+
+.post-detail-author .list-group-item-heading {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.post-detail-bookmark {
+    margin-top: 1.0em;
+}
+
+.comment-author .comment-author-avatar {
+    display: inline-block;
+}
+
+.comment-author-avatar img {
+    width: 46px;
+    height: 46px;
+    border-radius: 100%;
+}
+
+.comment-author-refer {
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(100% - 106px);
+    overflow-x: hidden;
+}
+
+.comment-author-refer span {
+    font-size: 12px;
+}
+
+.comment-author-href {
+    display: inline-block;
+    float: right;
+}
+
+
+
+
 /*  cell  css     */
 .cell-menu-list {
     margin-top: 20px;
@@ -709,106 +847,4 @@ html, body {
 .tab-pane.active {
     display: block;
     visibility: visible;
-}
-
-/*hot_item*/
-.hot-list-author {
-    color: #333
-}
-
-.hot-list-author:hover, .hot-list-author:active, .hot-list-author:focus, .hot-list-author:visited {
-    color: #333;
-    text-decoration: none;
-}
-
-.hot-list-item-date {
-    margin-bottom: 3px;
-    /*font-size:12px;*/
-}
-
-/*message lists*/
-.single-line { /*fixed width */
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.message-control-box {
-    padding-left: 12px;
-    margin-bottom: 12px;
-    margin-top: 8px;
-}
-
-.message-control-box .read-mark-action {
-    float: right
-}
-
-#m-message .row-content .post-message-collapse {
-    max-width: 100%;
-}
-
-.message-list .row-content .post-message-collapse blockquote {
-    margin-bottom: 0;
-    font-size: 12px;
-    padding: 6px 10px;
-    color: rgba(0, 0, 0, 0.58);
-}
-
-.mdl-list-group .read-mark-action, .message-control-box .read-mark-action {
-    display: inline-block;
-    padding: 2px;
-}
-
-.mdl-list-group.message-list .message-list-icon {
-    vertical-align: super;
-}
-
-.mdl-list-group.message-list .message-list-icon i {
-    background: #4CAF50;
-    font-size: 30px;
-    color: white;
-}
-
-.mdl-list-group.message-list .message-list-title {
-    font-size: 15px;
-}
-
-/*post-detail*/
-.post-detail-author {
-    margin-top: 16px;
-}
-
-.post-detail-author .list-group-item-heading {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.post-detail-bookmark {
-    margin-top: 1.0em;
-}
-
-.comment-author .comment-author-avatar {
-    display: inline-block;
-}
-
-.comment-author-avatar img {
-    width: 46px;
-    height: 46px;
-    border-radius: 100%;
-}
-
-.comment-author-refer {
-    display: inline-block;
-    vertical-align: middle;
-    width: calc(100% - 106px);
-    overflow-x: hidden;
-}
-
-.comment-author-refer span {
-    font-size: 12px;
-}
-
-.comment-author-href {
-    display: inline-block;
-    float: right;
 }

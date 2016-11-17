@@ -20,17 +20,16 @@ func (this *TopicController) getRules(action string) int {
 }
 
 func (c *TopicController) Posts() {
-	//start := c.Ctx.Input.Param("slug")
-	dbPosts := []m.Posts{}
-	database.O.QueryTable("posts").Filter("visible", true).Limit(20, 20).RelatedSel("Author").All(&dbPosts) //todo errors
-	mItems := posts.DBHotPostsConvert(&dbPosts)
-	c.Data["json"] = mItems
+	start := c.Ctx.Input.Param(":start")
+	topic_id := c.Ctx.Input.Param(":topic_id") //no need to int
+	c.Data["json"] = posts.LoadPostsByTopicId(topic_id, start)
 	c.ServeJSON()
 }
+
 func (this *TopicController) Slug() {
 	slug := this.Ctx.Input.Param(":slug")
 	topic := m.Topic{}
-	err := database.O.QueryTable("topic").Filter("slug", slug).One(&topic)
+	err := database.O.QueryTable("topic").Filter("slug", slug).One(&topic) //todo remove deletedAt
 	if err == nil {
 		data, err_ := json.Marshal(&topic)
 		if err_ == nil {

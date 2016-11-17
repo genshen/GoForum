@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"html/template"
 	"encoding/json"
-	"github.com/qiniu/api.v7/kodo"
+	"qiniupkg.com/api.v7/kodo"
 	"gensh.me/goforum/components/event"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/components/context/posts"
