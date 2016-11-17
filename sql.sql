@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 100109
 File Encoding         : 65001
 
-Date: 2016-09-18 15:05:24
+Date: 2016-11-17 20:47:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -61,7 +61,7 @@ PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-AUTO_INCREMENT=5
+AUTO_INCREMENT=6
 
 ;
 
@@ -69,7 +69,7 @@ AUTO_INCREMENT=5
 -- Records of feedback
 -- ----------------------------
 BEGIN;
-INSERT INTO `feedback` VALUES ('4', '34', '0', 'wwwww', 'wwwww', '2016-08-07 00:23:10', '2016-08-07 00:23:10', null);
+INSERT INTO `feedback` VALUES ('4', '34', '0', 'wwwww', 'wwwww', '2016-08-07 00:23:10', '2016-08-07 00:23:10', null), ('5', '0', '0', 'wenti 1', '', '2016-09-22 00:37:23', '2016-09-22 00:37:23', null);
 COMMIT;
 
 -- ----------------------------
@@ -111,7 +111,7 @@ PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-AUTO_INCREMENT=1
+AUTO_INCREMENT=2
 
 ;
 
@@ -119,6 +119,7 @@ AUTO_INCREMENT=1
 -- Records of notification
 -- ----------------------------
 BEGIN;
+INSERT INTO `notification` VALUES ('1', '33', '34', '0', 0x7B22757365726E616D65223A2267656E7368227D, '0', '2016-09-22 01:35:21', '2016-09-22 01:35:21', null);
 COMMIT;
 
 -- ----------------------------
@@ -265,7 +266,7 @@ AUTO_INCREMENT=4
 -- Records of swipe
 -- ----------------------------
 BEGIN;
-INSERT INTO `swipe` VALUES ('1', 'https://baidu.com', 'static/img/swipe1.jpeg', 'no', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null), ('2', 'https://baidu.com', 'static/img/swipe2.jpeg', 'no', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null), ('3', 'https://baidu.com', 'static/img/swipe3.jpeg', 'no', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null);
+INSERT INTO `swipe` VALUES ('1', 'https://baidu.com', 'static/img/swipe2.jpg', 'no', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null), ('2', 'https://baidu.com', 'static/img/swipe1.jpg', 'no', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null), ('3', 'https://baidu.com', 'static/img/swipe3.jpg', 'no', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null);
 COMMIT;
 
 -- ----------------------------
@@ -314,7 +315,7 @@ PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-AUTO_INCREMENT=3
+AUTO_INCREMENT=4
 
 ;
 
@@ -322,7 +323,7 @@ AUTO_INCREMENT=3
 -- Records of topic
 -- ----------------------------
 BEGIN;
-INSERT INTO `topic` VALUES ('1', '聊天', 'chat', 'chat', null, '#f44336', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null), ('2', '讨论', 'slug', 'discus', null, '#673ab7', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null);
+INSERT INTO `topic` VALUES ('1', '服装创意区', '把握创意,做自己的导演', 'chat', '/static/img/topics/topic1.png', '#f44336', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null), ('2', '灌水闲聊区', '一个嬉戏打闹、畅所欲言的港湾', 'discus', '/static/img/topics/topic2.png', '#673ab7', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null), ('3', '情感故事区', '用有温度的文字记录温暖的感情', 'story', '/static/img/topics/topic3.png', '#673ab7', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', null);
 COMMIT;
 
 -- ----------------------------
@@ -364,12 +365,12 @@ ALTER TABLE `comment` AUTO_INCREMENT=110;
 -- ----------------------------
 -- Auto increment value for feedback
 -- ----------------------------
-ALTER TABLE `feedback` AUTO_INCREMENT=5;
+ALTER TABLE `feedback` AUTO_INCREMENT=6;
 
 -- ----------------------------
 -- Auto increment value for notification
 -- ----------------------------
-ALTER TABLE `notification` AUTO_INCREMENT=1;
+ALTER TABLE `notification` AUTO_INCREMENT=2;
 
 -- ----------------------------
 -- Auto increment value for post_message
@@ -394,7 +395,7 @@ ALTER TABLE `tag` AUTO_INCREMENT=1;
 -- ----------------------------
 -- Auto increment value for topic
 -- ----------------------------
-ALTER TABLE `topic` AUTO_INCREMENT=3;
+ALTER TABLE `topic` AUTO_INCREMENT=4;
 
 -- ----------------------------
 -- Auto increment value for user

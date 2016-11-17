@@ -27,6 +27,7 @@ func init() {
 	beego.Router("message/notifications", &controllers.MessageController{}, "get:Notifications")
 
 	beego.Router("topic/:slug([\\w]+)", &controllers.TopicController{}, "get:Slug")  //topic and tag
+	beego.Router("topic/:topic_id([\\w]+)/:start([0-9]+)", &controllers.TopicController{}, "get:Posts")  //load posts match to the topic id
 
 	beego.Router("post/:id([0-9]+)", &controllers.PostController{}, "get:View")
 	beego.Router("post/create/jump", &controllers.PostController{}, "get:CreateJump")

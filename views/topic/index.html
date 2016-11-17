@@ -57,24 +57,23 @@
 <!-- Material Design for Bootstrap -->
 <script src="/static/dist/js/material.min.js"></script>
 <script src="/static/dist/js/ripples.min.js"></script>
-<script src="/static/dist/js/vue.js"></script>
+<script src="https://unpkg.com/vue@2.0.5/dist/vue.js"></script>
 <script>
-    var posts = JSON.parse("<<<.post_items>>>");
-    var slug = "<<<.slug>>>";
+    var posts = [];
+    var topicDetail = "<<<.topic_detail>>>";
     Vue.component('posts-grid', {
         template: '#posts-template',
         props: {
             posts: JSON
         }
     });
-    var vue = new Vue({
-        el: "html",
+    new Vue({
+        el: "#app",
         data: {
             posts: posts,
-            slug: "slug"
+            topic: topicDetail
         }
     });
 </script>
-
 </body>
 </html>
