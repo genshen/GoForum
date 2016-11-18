@@ -6,7 +6,6 @@
 # Folders
 _obj
 _test
-.idea/*
 .idea
 temp
 
@@ -19,12 +18,13 @@ temp
 _cgo_defun.c
 _cgo_gotypes.go
 _cgo_export.*
+sql_gorm.sql
 
 _testmain.go
 
 goforum
 *.exe~
 *.exe
-*.exe~
 *.test
 *.prof
+
