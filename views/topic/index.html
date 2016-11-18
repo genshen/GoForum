@@ -40,7 +40,7 @@
     <div class="container">
         <div v-if="posts.length || sticky.length" class="row">
             <div class="col-md-8 sticky-block">
-                <div v-for="s in sticky">
+                <div class="sticky-item" v-for="s in sticky">
                     <span class="label label-primary">置顶</span>
                     <a :href="'/post/'+s.id" class="sticky-title" v-text="s.title"></a>
                 </div>

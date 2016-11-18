@@ -529,6 +529,9 @@ html, body {
     padding-bottom:1rem;
     margin-bottom: 1.8rem;
 }
+.sticky-block .sticky-item{
+        margin-top: 0.4rem;
+}
 .sticky-title{
     overflow: hidden;
     white-space: nowrap;

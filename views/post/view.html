@@ -330,6 +330,9 @@
                         type: 'GET',
                         url: "/comment/" + ID + "/" + start,
                         success: function (data) {
+                            if(data == null){
+                                data = [];
+                            }
                             if (data.length < Config.listMax.comment) {
                                 self.load_text = "没有更多内容了";
                                 self.loading_enable = false;
