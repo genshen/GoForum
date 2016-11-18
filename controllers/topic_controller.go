@@ -12,24 +12,31 @@ type TopicController struct {
 }
 
 var topic_rules = map[string]int{
+
 }
 
 func (this *TopicController) getRules(action string) int {
 	return post_rules[action]
 }
 
+func (c *TopicController) Posts() {
+	start := c.Ctx.Input.Param(":start")
+	topic_id := c.Ctx.Input.Param(":topic_id") //no need to int
+	c.Data["json"] = posts.LoadPostsByTopicId(topic_id, start)
+	c.ServeJSON()
+}
+
 func (this *TopicController) Slug() {
-	slug := this.Ctx.Input.Param("slug")
-	start := 0
-	dbPosts :=  []m.Posts{}
-	database.O.QueryTable("posts").Filter("visible", true).Limit(20,uint(start)).RelatedSel("Author").All(&dbPosts);
-	mItems := posts.DBHotPostsConvert(&dbPosts)
-	this.Data["slug"] = slug
-	json,err := json.Marshal(mItems)
+	slug := this.Ctx.Input.Param(":slug")
+	topic := m.Topic{}
+	err := database.O.QueryTable("topic").Filter("slug", slug).One(&topic) //todo remove deletedAt
 	if err == nil {
-		this.Data["post_items"] = string(json)
-		this.TplName = "topic/index.html"
-		return
+		data, err_ := json.Marshal(&topic)
+		if err_ == nil {
+			this.Data["topic_detail"] = string(data)
+			this.TplName = "topic/index.html"
+			return
+		}
 	}
 	this.Abort("404")
 }

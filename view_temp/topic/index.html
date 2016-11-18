@@ -1,50 +1,126 @@
 {{define "content"}}{{template "header" .}}{{template "header_foo" .}}
 <main id="app">
-    <h2>slug</h2>
-    <posts-grid :posts="posts"></posts-grid>
-    <a href="/post/create/jump" class="btn btn-warning btn-fab"  style="position:fixed;right:20px;bottom:20px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 topic-detail topic-detail-header">
+                <img class="topic-detail-cover" :src="topic.Icon">
+                <div class="topic-detail-right-ref">
+                    <a class="title" :href="'/topic/'+topic.Slug">{{"{{topic.Name}}"}}</a><br>
+                    <span class="text-info">{{"{{topic.Describe}}"}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <posts-grid></posts-grid>
+    <a href="/post/create/jump" class="btn btn-warning btn-fab" style="position:fixed;right:20px;bottom:20px;">
         <i class="material-icons">add</i>
     </a>
 </main>
 <script type="text/x-template" id="posts-template">
     <div class="container">
-        <div v-for="post in posts" class="list-group">
-            <div class="list-group-item">
-                <div class="row-picture">
-                    <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
-                </div>
-                <div class="row-content">
-                    <span> {{"{{post.Name}}"}}</span> <!--class="list-group-item-heading"-->
-                    <span class="glyphicon glyphicon-eye-open"></span><span>{{"{{post.ViewCount}}"}}</span>
-                    <span class="glyphicon glyphicon-dashboard"></span><span>{{"{{post.CommentCount}}"}}</span>
-                    <p class="list-group-item-text">
-                        <a v-bind:href="'/post/'+post.PostID">{{"{{post.Title}}"}}</a>
-                    </p>
+        <div v-if="posts.length || sticky.length" class="row">
+            <div class="col-md-8 sticky-block">
+                <div class="sticky-item" v-for="s in sticky">
+                    <span class="label label-primary">置顶</span>
+                    <a :href="'/post/'+s.id" class="sticky-title" v-text="s.title"></a>
                 </div>
             </div>
-            <div class="list-group-separator"></div>
+            <div class="col-md-8 mdl-list-group">
+                <template v-for="post in posts">
+                    <div class="mdl-list-group-item">
+                        <div class="row-picture">
+                            <a :href="'/person/'+post.author_id"><img class="circle" :src="post.avatar" alt="Avatar"/></a>
+                        </div>
+                        <div class="row-content without-arrow">
+                            <div class="home-list-top-info"><!--class="list-group-item-heading"-->
+                                <a :href="'/person/'+post.author_id" class="hot-list-author">
+                                    <small>{{"{{post.name}}"}}</small>
+                                </a>
+                                <small class="pull-right">
+                                    <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{"{{post.view_count}}"}}&nbsp;&nbsp;</span>
+                                    <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{"{{post.comment_count}}"}}&nbsp;&nbsp;</span>
+                                </small>
+                            </div>
+                            <p class="hot-list-item-date">
+                                <small>{{"{{post.created_at|format_time}}"}}</small>
+                            </p>
+                            <h5 class="list-group-item-text" style="margin-top:0;">
+                                <a :href="'/post/'+post.id">{{"{{post.title}}"}}</a>
+                            </h5>
+                        </div><!--class="row-content"-->
+                    </div><!--class="list-group-item"-->
+                    <div class="list-group-separator"></div>
+                </template>
+            </div><!--calss="mdl-list-group"-->
+        </div> <!--/row-->
+        <div v-else>该话题下暂无内容...</div>
+        <div class="center-block text-center">
+            <button @click="loadPosts" :disabled="loadStatus>=2" href="javascript:void(0)" class="btn btn-primary">
+                <span v-text="loadText"></span>
+            </button>
         </div>
-        <a href="javascript:void(0)" class="btn btn-primary">
-            <span>加载更多</span>
-        </a>
     </div>
 </script>
 {{template "script" .}}
-<script src="/static/dist/js/vue.js"></script>
+<script src="https://unpkg.com/vue@2.0.5/dist/vue.js"></script>
+<script src="/static/js/util.js"></script>
 <script>
-    var posts = JSON.parse("<<<.post_items>>>");
-    var slug = "<<<.slug>>>";
+    var start = 0;
+    var topicDetail = JSON.parse("<<<.topic_detail>>>");
     Vue.component('posts-grid', {
         template: '#posts-template',
-        props: {
-            posts: JSON
+        data: function () {
+            return {posts:[],sticky:[],loadStatus: 0, loadText: "点击加载"};  //,-1加载失败;0未加载,1加载更多,2正在加载,3完成，没有更多
+        }, filters: {
+            format_time: Util.formatTime
+        }, methods: {
+            loadPosts: function () {
+                this.loadStatus = 2;
+                var self = this;
+                $.ajax({
+                    type: 'GET',
+                    url: "/topic/" + topicDetail.Id + "/" + start,
+                    success: function (data) {
+                        if(data == null){
+                            data = [];
+                        }
+                        if (data instanceof Array) {
+                            start += data.length;
+                            if (data.length < 20) {
+                                self.loadStatus = 3;
+                                self.loadText = "没有更多内容了";
+                            } else {
+                                self.loadStatus = 1;
+                                self.loadText = "没有更多内容了";
+                            }
+                            data.forEach(function (e) {
+                                if (parseInt(e.sticky)) {
+                                    self.sticky.push(e);
+                                } else {
+                                    self.posts.push(e);
+                                }
+                            });
+                        } else {
+                            self.loadStatus = -1;
+                            self.loadText = "加载失败,请重试";
+                            $.snackbar({content: "加载失败,请<a href='#'>重试</a>", timeout: 2000});
+                        }
+                    }, error: function (e) {
+                        self.loadStatus = -1;
+                        self.loadText = "加载失败,请重试";
+                        $.snackbar({content: "加载失败,请<a href='#'>重试</a>", timeout: 2000});
+                    }
+                });
+            }
+        }, created: function () {
+            this.loadPosts();
         }
     });
-    var vue = new Vue({
-        el: "html",
+
+    new Vue({
+        el: "#app",
         data: {
-            posts: posts,
-            slug: "slug"
+            topic: topicDetail
         }
     });
 </script>

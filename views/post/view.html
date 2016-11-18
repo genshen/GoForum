@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/static/img/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="theme-color" content="#1ba10f">
     <title v-text='"X Froum--"+Post.Title'>X Froum--正在加载</title>
     <!-- Material Design fonts -->
     <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">  -->
-     <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css" rel="stylesheet">
      <!-- Bootstrap -->
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <!--<link href="/static/dist/css/material/base.min.css" rel="stylesheet">-->
@@ -68,11 +68,15 @@
         background-color: #ffffff;
         padding: 20px 30px 10px 20px;
     }
+
+    /*post-content*/
+    #post-content img {
+        max-width: 100%;
+    }
 </style>
 </head>
 <body>
 <main id="app">
-
     <div class="modal fade" id="discard-confirm">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -93,7 +97,8 @@
     </div><!-- /.modal -->
 
     <div class="container">
-        <post-grid :post="Post" :is_login="IsLogin" :author="Author" :start.sync="start" :comments="Comments"></post-grid>
+        <post-grid :post="Post" :is_login="IsLogin" :author="Author" :start.sync="start"
+                   :comments="Comments"></post-grid>
     </div>
 
     <div id="shell-box">
@@ -129,9 +134,7 @@
                             <div class="form-group" style="margin-top: 0">
                                 <!--<label for="editor-box" class="col-md-2 control-label">Textarea</label>-->
                                 <div class="col-md-12">
-                                    <textarea class="form-control" id="editor-box" placeholder="Enter Reply"
-                                              style="height:250px"></textarea>
-                                    <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span>
+                                    <textarea class="form-control" id="editor-box" placeholder="Enter Reply" style="height:250px"></textarea>
                                 </div>
                             </div>  <!--/form-group-->
                         </div>   <!--col-sm-11-->
@@ -150,11 +153,29 @@
     </div>
 </main>
 <!-- component template -->
-<script type="text/x-template" id="grid-template">
+<script type="text/x-template" id="post-grid-template">
     <div class="row">
         <div class="col-md-12">
-            <h2>{{post.Title}}</h2>
-            {{post.Content}}
+            <div class="row mdl-list-group post-detail-author">
+                <div class="mdl-list-group-item">
+                    <div class="row-picture">
+                         <a :href="'/person/'+author.ID"><img class="circle" :src="author.Avatar"/></a>
+                    </div>
+                    <div class="row-content">
+                        <span class="withripple label label-info action-secondary">楼主</span>
+                        <h6 class="single-line list-group-item-heading">
+                            <a :href="'/person/'+author.ID"><span>{{author.Name}}</span></a>
+                        </h6>
+                        <p class="list-group-item-text">
+                            <span>{{post.CreatedAt|format_time}}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h2><b>{{post.Title}}</b></h2>
+            <article id="post-content" v-html="post.Content">正在加载...</article>
         </div>
 
         <div class="col-md-12 hr-block">
@@ -165,12 +186,23 @@
                     class="glyphicon glyphicon-comment"></span>{{post.CommentCount}}评论</a>
             <a href="javascript:void(0)" style="color:#607fa6;"><span
                     class="glyphicon glyphicon-eye-open"></span>{{post.ViewCount}}浏览</a>
+            <a class="pull-right post-detail-bookmark withripple"  data-original-title="收藏" data-toggle="tooltip" data-placement="top" title="" href="javascript:void(0)">
+                <i class="material-icons">bookmark_border</i></a>
         </div>
     </div>
     <div class="row">
         <div v-for="com in comments" class="col-md-12 hr-block">
-            <span>{{com.ID}}</span>
-            <article>{{com.Content}}</article>
+            <div class="comment-author">
+                <div class="comment-author-avatar">
+                    <a :href="'/person/'+com.author_id"><img class="circle" :src="com.avatar"></a>
+                </div>
+                <div class="comment-author-refer">
+                    <a :href="'/person/'+com.author_id">{{com.name}}</a><br>
+                    <span>{{com.created_at| format_time}}</span>
+                </div>
+                <div class="comment-author-href"><span class="badge" v-text="$index+1"></span></div>
+            </div>
+            <article style="padding: 8px 0;">{{com.content}}</article>
             <a href="javascript:replyRep(this)">回复</a>
         </div>
         <p class="text-center">
@@ -188,10 +220,13 @@
 <script src="/static/dist/js/material.min.js"></script>
 <script src="/static/dist/js/ripples.min.js"></script>
 <script src="/static/dist/js/vue.js"></script>
+<script src="/static/dist/js/xss.min.js"></script>
 <script src="/static/js/util.js"></script>
 <script>
     var D = JSON.parse("<<<.data>>>");
     var ID = D.Post.ID;
+    D.Post.Content = D.Post.Content.replace("#BASE_URL#", "http://7xtb5x.com1.z0.glb.clouddn.com/");
+    D.Post.Content = filter(D.Post.Content);//filter xss
 
     $.material.init();
     var loginOptions = {content: "请<a href='/account/signin?next=/post/" + ID + "'>登录</a>后回复", timeout: 4000};
@@ -209,12 +244,16 @@
         }
     }
 
+    function filter(s) {
+        return filterXSS(s);
+    }
+
     function submit() {
         var value = $("#editor-box").val();
         if (value) {
             if (D.IsLogin) {
-                value = value.replace(/</g, "&nbs");
-                value = value.replace(/>/g, "&nbs");
+                value = value.replace(/</g, "&lt");
+                value = value.replace(/>/g, "&gt");
                 try { //cookie may be null or something else bad data
                     xsrf = base64_decode(Cookies.get('_xsrf').split("|")[0]);
                 } catch (err) {
@@ -231,13 +270,13 @@
                                 onSuccess: function () {
                                     var options = {content: "发布成功", timeout: 2000};
                                     $.snackbar(options);
-                                    D.Comments.push({Content: value, ID: data.Addition});
+                                    D.Comments.push({content: value, id: data.Addition}); //todo
                                     D.start++; //todo bug here:如果后面还有未加载的,会隐藏一条.如果没有未加载的则正确.
                                     replyBox.close(false);
-                                },errorCallback:function (msg) {
-                                    $.snackbar( {content: msg, timeout: 2000});
+                                }, errorCallback: function (msg) {
+                                    $.snackbar({content: msg, timeout: 2000});
                                 },
-                                onUnAuth:function () {
+                                onUnAuth: function () {
                                     $.snackbar(loginOptions);
                                 }
                             });
@@ -260,7 +299,7 @@
 </script>
 <script>
     Vue.component('post-grid', {
-        template: '#grid-template',
+        template: '#post-grid-template',
         props: {
             is_login: Boolean,
             start: Number,
@@ -268,8 +307,13 @@
             post: JSON,
             author: JSON
         },
+        filters: {
+            format_time: Util.formatTime
+        },
         ready: function () {
             this.loadMore();
+            $(".post-detail-bookmark").tooltip();
+            $.material.ripples('.withripple');
         },
         data: function () {
             return {
@@ -281,22 +325,24 @@
         methods: {
             loadMore: function (btn) {
                 var self = this;
-
                 function loadComments(start) {
                     $.ajax({
                         type: 'GET',
                         url: "/comment/" + ID + "/" + start,
                         success: function (data) {
-                            if (data.length == 0) {
+                            if(data == null){
+                                data = [];
+                            }
+                            if (data.length < Config.listMax.comment) {
                                 self.load_text = "没有更多内容了";
                                 self.loading_enable = false;
-                                return;
+                            } else {
+                                self.load_text = "加载更多";
+                                self.loading_enable = true;
                             }
                             data.forEach(function (e) {
                                 self.comments.push(e);
                             });
-                            self.load_text = "加载更多";
-                            self.loading_enable = true;
                             self.start += data.length;
                         }, error: function (err) {
                             self.load_text = "加载失败,重新加载";
@@ -305,6 +351,7 @@
                         }
                     });
                 }
+
                 loadComments(this.start);
                 this.load_text = "正在加载";
                 this.loading_enable = false;

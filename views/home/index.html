@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/static/img/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="theme-color" content="#1ba10f">
     <title>首页</title>
     <!-- Material Design fonts -->
     <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">  -->
-     <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/material-design-icons/2.2.3/iconfont/material-icons.css" rel="stylesheet">
      <!-- Bootstrap -->
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <!--<link href="/static/dist/css/material/base.min.css" rel="stylesheet">-->
@@ -19,92 +19,146 @@
     <link href="/static/dist/css/ripples.min.css" rel="stylesheet">
     <link href="/static/css/main.css" rel="stylesheet"></head>
 <body>
-<main id="app" style="margin-bottom:72px"> <!--footer:60px-->
-    <home-grid :home="home"></home-grid>
-    <category-grid :category="category"></category-grid>
-    <message-grid :active="message.active" :tab_index.sync="message.tab_index"></message-grid>
-    <user-grid :user="me"></user-grid>
-</main>
+<div id="app" >
+    <!--footer:60px-->
+        <router-view ref="app"></router-view>
+    </main>
+    
+<footer class="footer-tab-bar">
+    <div class="container-fluid">
+        <ul class="row tab-bar text-center">
+            <li class="col-xs-3" :class="{'active':compareRouter('home')}">
+                <router-link :to="{name:'home'}">
+                    <span class="glyphicon glyphicon-home"></span><br>
+                    <span class="footer-text">首页</span>
+                </router-link>
+            </li>
+            <li class="col-xs-3" :class="{'active':compareRouter('category')}">
+                <router-link :to="{name:'category'}">
+                    <span class="glyphicon glyphicon-search"></span><br>
+                    <span class="footer-text">发现</span>
+                </router-link>
+            </li>
+            <li class="col-xs-3"  :class="{'active':compareRouter('message')}">
+                <router-link  :to="{name:'message'}">
+                    <span class="glyphicon glyphicon-comment"></span><br>
+                    <span class="footer-text">消息</span>
+                </router-link>
+            </li>
+            <li class="col-xs-3"  :class="{'active':compareRouter('user')}">
+                <router-link :to="{name:'user'}">
+                    <span class="glyphicon glyphicon-user"></span><br>
+                    <span class="footer-text">我</span>
+                </router-link>
+            </li>
+        </ul>
+    </div>
+
+</footer>
+</div>
 <!--home template-->
 <script type="text/x-template" id="home-template">
-    <div class="container" v-show="home.active">
+    <main class="home-main-container">
         <div v-show="home.loaded">
-            <h1>Home</h1>
-            <div class="row">
-                <!-- Carousel Card -->
-                <div id="home-owl" class="owl-carousel">
-                    <div v-for="swipe in home.swipes">
-                        <a :href=" swipe.Url" target="_blank">
-                        <img :src=" swipe.Img" alt="Awesome Image">
-                        </a>
-                    </div>
-                </div>  <!--owl-carousel-->
-            </div>  <!--/row--->
-            <div class="row">
-                <div class="col-md-8 mdl-list-group">
-                    <template v-for="hot in home.hot_posts">
-                        <div class="mdl-list-group-item">
-                            <div class="row-picture">
-                                <a :href="'/person/'+hot.ID"><img class="circle" :src="hot.Avatar" alt="Avatar"/></a>
-                            </div>
-                            <div class="row-content without-arrow">
-                                <div class="home-list-top-info"><!--class="list-group-item-heading"-->
-                                    <a :href="'/person/'+hot.ID" class="hot-list-author">
-                                        <small>{{hot.Name}}</small>
-                                    </a>
-                                    <small class="pull-right">
-                                        <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{hot.ViewCount}}&nbsp;&nbsp;</span>
-                                        <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{hot.CommentCount}}&nbsp;&nbsp;</span>
-                                    </small>
-                                </div>
-                                <p class="hot-list-item-date">
-                                    <small>2016.7.11</small>
-                                </p>
-                                <h5 class="list-group-item-text" style="margin-top:0;">
-                                    <a :href="'/post/'+hot.PostID">{{hot.Title}}</a>
-                                </h5>
-                            </div><!--class="row-content"-->
-                        </div><!--class="list-group-item"-->
-                        <div class="list-group-separator"></div>
-                    </template>
-                </div><!--calss="list-group"-->
+            <div class="home-logo">
+                <img class="logo-bg" :src="config.cover">
+                <img class="logo-icon" :src="config.logo">
+                <div class="title">
+                    <p class="primary-title" v-text="config.title"></p>
+                    <p class="subtitle" v-text="config.subtitle"></p>
+                </div>
+                <div href="javascript:void(0)" class="sign-action-box">
+                    <i class="material-icons">insert_invitation</i>
+                    <span>签到</span>
+                </div>
             </div>
-            <a @click="loadMore" :disabled="!home.loading_enable">{{home.hot_loading_text}}</a>
+            <div  class="container">
+                <div class="row">
+                    <!-- Carousel Card -->
+                    <div id="home-owl" class="owl-carousel">
+                        <div v-for="swipe in home.swipes">
+                            <a :href="swipe.Url" target="_blank">
+                            <img :src="swipe.Img" alt="Awesome Image">
+                            </a>
+                        </div>
+                    </div>  <!--owl-carousel-->
+                </div>  <!--/row--->
+            </div>  <!--/container--->
+            <div  class="container">
+                <div class="row">
+                    <div class="col-md-8 mdl-list-group">
+                        <template v-for="hot in home.hot_posts">
+                            <div class="mdl-list-group-item">
+                                <div class="row-picture">
+                                    <a :href="'/person/'+hot.author_id"><img class="circle" :src="hot.avatar" alt="Avatar"/></a>
+                                </div>
+                                <div class="row-content without-arrow">
+                                    <div class="home-list-top-info"><!--class="list-group-item-heading"-->
+                                        <a :href="'/person/'+hot.author_id" class="hot-list-author">
+                                            <small>{{hot.name}}</small>
+                                        </a>
+                                        <small class="pull-right">
+                                            <span class="glyphicon glyphicon-eye-open"></span><span>&nbsp;&nbsp;{{hot.view_count}}&nbsp;&nbsp;</span>
+                                            <span class="glyphicon glyphicon-dashboard"></span><span>&nbsp;&nbsp;{{hot.comment_count}}&nbsp;&nbsp;</span>
+                                        </small>
+                                    </div>
+                                    <p class="hot-list-item-date">
+                                        <small>{{hot.created_at|format_time}}</small>
+                                    </p>
+                                    <h5 class="list-group-item-text" style="margin-top:0;">
+                                        <a :href="'/post/'+hot.id">{{hot.title}}</a>
+                                    </h5>
+                                </div><!--class="row-content"-->
+                            </div><!--class="list-group-item"-->
+                            <div class="list-group-separator"></div>
+                        </template>
+                    </div><!--calss="mdl-list-group"-->
+                </div> <!--/row-->
+                <a class="center-block text-center" @click="loadMore" :disabled="!home.loading_enable">{{home.hot_loading_text}}</a>
+            </div><!--container-->
         </div>
-        <div v-show="!home.loaded">
+        <div class="container" v-show="!home.loaded">
             <span>正在加载...</span>
         </div> <!--/home.loaded-->
-    </div>  <!--/home.active-->
+    </main>
 </script>
 <!--category template-->
 <script type="text/x-template" id="category-template">
-    <div class="container" v-show="category.active">
-        <div v-show="category.loaded">
-            <h1>category</h1>
-            <h4>热门标签</h4>
-            <div class="tag-container">
-                <a v-for="tag in category.tags" class="category-tag" :style="{background:tag.Color}">
-                    {{tag.Name}}
-                </a>
-            </div>
-            <h4>话题</h4>
-            <div class="topic-container">
-                <div v-for="topic in category.topics" :style="{background:topic.Color}"
-                     class="col-md-3 col-md-4 col-sm-6 category-topic">
-                    <h4><a :href="'/topic/'+topic.Slug">{{topic.Name}}</a></h4>
-                    <span class="text-info">{{topic.Describe}}</span>
+    <main class="home-main-container">
+        <div class="container" v-show="category.loaded">
+            <div v-if="false" class="row">
+                <h4 class="category-primary-title text-muted">热门标签</h4>
+                <div class="tag-container">
+                    <a v-for="tag in category.tags" class="category-tag" :style="{background:tag.Color}">
+                        {{tag.Name}}
+                    </a>
                 </div>
-            </div>  <!--/topic-container-->
-        </div>
-        <div v-show="!category.loaded">
+            </div>
+            <div class="row">
+                <h4 v-if="false" class="category-primary-title text-muted">话题</h4>
+                <div class="topic-container">
+                    <div v-for="topic in category.topics" class="col-md-3 col-md-4 col-sm-6 category-topic">
+                        <img class="topic-cover" :src="topic.Icon">
+                        <div class="topic-right-ref">
+                            <a class="title" :href="'/topic/'+topic.Slug">{{topic.Name}}</a>
+                            <span class="text-info">{{topic.Describe}}</span>
+                        </div>
+                        <div class="topic-right-nav">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </div>
+                    </div>
+                </div>  <!--/topic-container-->
+            </div>  <!---/row--->
+        </div>   <!---/v-show="category.loaded"--->
+        <div class="container" v-show="!category.loaded">
             正在加载...
         </div> <!--/category.loaded-->
-    </div> <!--/category.active-->
+    </main>
 </script>
 <!--message template-->
 <script type="text/x-template" id="message-template">
-    <div class="container" v-show="active">
-        <div class="row">
+    <main class="home-main-container">
+        <div class="container row">
             <nav class="tab-nav" id="message-tab-nav">
                 <ul class="nav nav-justified">
                     <li><a data-toggle="tab" href="#m-message">消息</a></li>
@@ -120,7 +174,7 @@
                         </a>
                     </div>
                     <div class="row mdl-list-group message-list">
-                        <template v-for="msg in message_data.messages | orderBy 'IsRead' -1">
+                        <template v-for="msg in orderReadMessage">
                             <div class="mdl-list-group-item">
                                 <div class="row-picture message-list-icon">
                                     <i class="material-icons">reply</i>
@@ -157,7 +211,7 @@
                         </a>
                     </div>
                     <div class="row mdl-list-group message-list">
-                        <template v-for="msg in message_data.notifications | orderBy 'IsRead' -1">
+                        <template v-for="msg in orderReadNotification">
                             <div class="mdl-list-group-item">
                                 <div class="row-picture message-list-icon">
                                     <i class="material-icons">poll</i>
@@ -178,11 +232,11 @@
                 </div>
             </div> <!--/tab-content-->
         </div>
-    </div>
+    </main>
 </script>
 <!--me template-->
 <script type="text/x-template" id="user-template">
-    <div class="container" v-show="user.active">
+    <div class="container">
         <ul class="row cell-menu-list list-unstyled">
             <li class="me-profile withripple" @click="toProfile">
                 <a>
@@ -204,38 +258,6 @@
         </ul>
     </div>
 </script>
-
-<footer class="footer-tab-bar">
-    <div class="container-fluid">
-        <ul class="row tab-bar text-center">
-            <li class="col-xs-3" :class="{'active':home.active}" @click="greetHome"  data-toggle="tab">
-                <a href="#home">
-                    <span class="glyphicon glyphicon-home"></span><br>
-                    <span class="footer-text">首页</span>
-                </a>
-            </li>
-            <li class="col-xs-3" :class="{'active':category.active}" @click="greetCategory"  data-toggle="tab">
-                <a href="#category">
-                    <span class="glyphicon glyphicon-search"></span><br>
-                    <span class="footer-text">发现</span>
-                </a>
-            </li>
-            <li class="col-xs-3"  :class="{'active':message.active}" @click="greetMessage" data-toggle="tab">
-                <a href="#message">
-                    <span class="glyphicon glyphicon-comment"></span><br>
-                    <span class="footer-text">消息</span>
-                </a>
-            </li>
-            <li class="col-xs-3"  :class="{'active':me.active}" @click="greetMe" data-toggle="tab">
-                <a>
-                    <span class="glyphicon glyphicon-user"></span><br>
-                    <span class="footer-text">我</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-</footer>
 <!-- jQuery -->
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
 <!-- Twitter Bootstrap -->
@@ -244,48 +266,74 @@
 <!-- Material Design for Bootstrap -->
 <script src="/static/dist/js/material.min.js"></script>
 <script src="/static/dist/js/ripples.min.js"></script>
-<script src="/static/dist/js/vue.js"></script>
+<script src="https://unpkg.com/vue@2.0.5/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router@2.0.1"></script>
 <script src="/static/dist/js/owl.carousel.min.js"></script>
 <script src="/static/js/util.js"></script>
 <script>
     $.material.init();
-    var SHOW_HOME = 1,
-            SHOW_CATEGORY = 2,
-            SHOW_MESSAGE = 4,
-            SHOW_ME = 8;
     var Message_Tab_Nav = ["m-message", "m-notification"];
 
-    Vue.component('home-grid', {
+    var commonData = {
+        title: "首页",
+        home: {loaded: false, swipes: [], hot_posts: [],
+            hot_start: 0, hot_loading_text: "加载更多", hot_loading_enable: true},
+        category: {loaded: false, tags: [], topics: []},
+        message: {message_loaded:false, tab_index: 0,message_data:{messages: [], notifications: []}},
+        user: {loaded: false, id: 0, isLogin: false, name: "点击登录", avatar: "/static/img/avatars/avatar-green.jpg"},
+        setting: {}
+    };
+
+    const Home = Vue.extend({
         template: '#home-template',
-        props: {
-            home: JSON
+        data:function(){
+            return {config:Config.home,home:commonData.home};
+        },
+        filters: {
+            format_time: Util.formatTime
         },
         methods: {
             loadMore: function () {
                 requestHotPosts(this, this.home.hot_start);
+            },
+            initOwlCarousel:function(){
+                $("#home-owl").owlCarousel({
+                    autoPlay: 4000,
+                    stopOnHover: true,
+                    pagination: true,
+                    slideSpeed: 300,
+                    paginationSpeed: 400,
+                    singleItem: true
+                }); //初始化轮播图
+                // $("#home-owl").owlCarousel({autoplay:true,autoplayTimeout:5000,autoplayHoverPause:true,center: true,loop:true,autoWidth:true,items:1});   //2.0初始化轮播图
+            }
+        },
+        mounted:function(){
+            if (!this.home.loaded) {
+                requestHomeData(this);
+            }else{
+                this.initOwlCarousel();
             }
         }
     });
 
-    Vue.component('category-grid', {
+    const Category = Vue.extend({
         template: '#category-template',
-        props: {
-            category: JSON
+        data:function(){
+            return {category:commonData.category};
         },
-        methods: {}
+        methods: {},
+        mounted:function(){
+            if (!this.category.loaded) {
+                requestCategoryData(this);
+            }
+        }
     });
 
-    Vue.component('message-grid', {
+    const Message =  Vue.extend({
         template: '#message-template',
         data: function () {
-            return {
-                message_data: {messages: [], notifications: []},
-                message_loaded: 0
-            }
-        },
-        props: {
-            tab_index: Number,
-            active: Boolean
+            return commonData.message
         },
         computed: {
             unread_messages: function () {
@@ -293,6 +341,14 @@
             },
             unread_notifications: function () {
                 return this.countUnRead(this.message_data.notifications);
+            },
+            orderReadMessage:function(){
+//                return this.orderBy(this.message_data.messages,"IsRead", "desc");
+                return this.message_data.messages;
+            },
+            orderReadNotification:function(){
+//                return this.orderBy(this.message_data.notifications,"IsRead", "desc");
+                return this.message_data.notifications;
             }
         },
         methods: {
@@ -306,7 +362,7 @@
                 return count;
             }
         },
-        ready: function () {
+        mounted: function () {
             var self = this;
             var indexs = ["messages", "notifications"];
             var urls = ["messages", "notifications"];
@@ -318,16 +374,15 @@
                     loadMessageData(self, urls[index], indexs[index], index);
                 }
             });
+            $('#message-tab-nav a[href="#' + Message_Tab_Nav[this.tab_index] + '"]').tab('show');
         }
     });
 
-    Vue.component('user-grid', {
+    const User = Vue.extend({
         template: '#user-template',
-        props: {
-            user: JSON
-        },
         data: function () {
             return {
+                user:commonData.user,
                 lists: [
                     {is_space: true},
                     {is_space: false, islast: false, name: "我的帖子", icon: "glyphicon-home", link: "#1"},
@@ -346,8 +401,8 @@
                         icon: "glyphicon-star-empty",
                         link: "/profile/collection"
                     },
-                    {is_space: true},
-                    {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
+//                    {is_space: true},
+//                    {is_space: false, islast: true, name: "设置", icon: "glyphicon-cog", link: "#1"},
                     {is_space: true},
                     {is_space: false, islast: false, name: "关于我们", icon: "glyphicon-info-sign", link: "/about"},
                     {is_space: false, islast: true, name: "意见反馈", icon: "glyphicon-phone-alt", link: "/about/feedback"}]
@@ -360,92 +415,35 @@
                     jumpDelay("/account/signin");
                 }
             }
-        }
-    });
-
-    var vue = new Vue({
-        el: "html",
-        data: {
-            title: "首页",
-            home: {
-                loaded: false,
-                active: true,
-                swipes: [],
-                hot_posts: [],
-                hot_start: 0,
-                hot_loading_text: "加载更多",
-                hot_loading_enable: true
-            },
-            category: {loaded: false, active: false, tags: [], topics: []},
-            message: {active: false, tab_index: 0},
-            me: {loaded: false, active: false, id: 0, isLogin: false, name: "点击登录", avatar: "default.png"},
-            setting: {}
         },
-        ready: function () {
-            var hash = window.location.hash;
-            var self = this;
-            this.initByHash(hash, false);
-            $(window).on("popstate", function (event) {
-//              console.log(window.location.hash);
-                self.initByHash(window.location.hash, true);
-            });
-        },
-        methods: {
-            initByHash: function (hash, ispop) {
-                if (hash == "" || hash == "#home") {
-                    this.greetHome(ispop);
-                } else if (hash == "#category") {
-                    this.greetCategory(ispop);
-                } else if (hash == "#message") {
-                    this.greetMessage(ispop);
-                } else if (hash == "#me") {
-                    this.greetMe(ispop);
-                }
-            },
-            //status = 1/2/4/8 only
-            show: function (status) {
-                this.home.active = (status & SHOW_HOME) == SHOW_HOME;
-                this.category.active = (status & SHOW_CATEGORY) == SHOW_CATEGORY;
-                this.message.active = (status & SHOW_MESSAGE) == SHOW_MESSAGE;
-                this.me.active = (status & SHOW_ME) == SHOW_ME;
-            },
-            //初始化与点击tab时,history.pushState;
-            greetHome: function (ispop) {
-                if (ispop !== true) {
-                    history.pushState(null, "home", "#home");
-                }
-                this.show(SHOW_HOME);
-                if (!this.home.loaded) {
-                    requestHomeData(this);
-                }
-            },
-            greetCategory: function (ispop) {
-                if (ispop !== true) {
-                    history.pushState(null, "home", "#category");
-                }
-                this.show(SHOW_CATEGORY);
-                if (!this.category.loaded) {
-                    requestCategoryData(this);
-                }
-            },
-            greetMessage: function (ispop) {
-                if (ispop !== true) {
-                    history.pushState(null, "home", "#message");
-                }
-                this.show(SHOW_MESSAGE);
-                $('#message-tab-nav a[href="#' + Message_Tab_Nav[this.message.tab_index] + '"]').tab('show');
-            },
-            greetMe: function (ispop) {
-                if (ispop !== true) {
-                    history.pushState(null, "home", "#me");
-                }
-                this.show(SHOW_ME);
-                if (!this.me.loaded) {
-                    getUserStatus(this);
-                }
+        mounted:function(){
+            if (!this.user.loaded) {
+                getUserStatus(this);
             }
         }
     });
+
+    const router = new VueRouter({
+        routes:[
+            { path: '/',name: 'home', component: Home },
+            { path: '/category',name: 'category', component: Category },
+            { path: '/message',name: 'message', component: Message },
+            { path: '/user',name: 'user', component: User }
+        ]
+    });
+
+    const app = new Vue({
+        router: router,
+        data: {
+            title: "首页", setting: {}
+        },
+        methods: {
+            //初始化与点击tab时,history.pushState;
+            compareRouter:function (name) {
+                return this.$route.name == name;
+            }
+        }
+    }).$mount('#app');
 
     //第一次加载失败(swipt 与 hot),可以通过点击首页重试
     function requestHomeData(self) {
@@ -460,8 +458,10 @@
                 data.forEach(function (e) {
                     self.home.swipes.push(e);
                 });
-                self.home.hot_loading_text = "正在加载";
-                self.home.hot_loading_enable = false;
+                setTimeout(function(){
+                   self.initOwlCarousel();
+                },10);
+
                 requestHotPosts(self, self.home.hot_start);
             }, error: function (err) {
                 // 加载失败,重新加载
@@ -475,31 +475,27 @@
     //请求热门帖子的数据
     //第一次由父组件调用,以后加载更多及失败的重试都由子组件负责
     function requestHotPosts(self, start) {
+        self.home.hot_loading_text = "正在加载";
+        if(!self.home.hot_loading_enable){
+            return;
+        }
+        self.home.hot_loading_enable = false;
         $.ajax({
             type: 'GET',
             url: "/home/hot/" + start,
             success: function (data) { //todo use try catch: data may be not json format
-                if (data.length == 0) { //todo
-                    self.home.hot_loading_enable = false;
-                    self.home.hot_loading_text = "没有更多内容了";
-                    return;
-                }
                 data.forEach(function (e) {
                     self.home.hot_posts.push(e);
                 });
                 self.home.hot_start += data.length;
                 self.home.loaded = true;
-                self.home.hot_loading_text = "加载更多";
-                self.home.hot_loading_enable = true;
-                $("#home-owl").owlCarousel({
-                    autoPlay: 4000,
-                    stopOnHover: true,
-                    pagination: true,
-                    slideSpeed: 300,
-                    paginationSpeed: 400,
-                    singleItem: true
-                }); //初始化轮播图
-                // $("#home-owl").owlCarousel({autoplay:true,autoplayTimeout:5000,autoplayHoverPause:true,center: true,loop:true,autoWidth:true,items:1});   //2.0初始化轮播图
+                if (data.length < Config.listMax.hot_post) { //todo
+                    self.home.hot_loading_enable = false;
+                    self.home.hot_loading_text = "没有更多内容了";
+                }else{
+                    self.home.hot_loading_text = "加载更多";
+                    self.home.hot_loading_enable = true;
+                }
             }, error: function (err) {
                 self.home.hot_loading_enable = true;
                 self.home.hot_loading_text = "加载失败,请重试";
@@ -535,7 +531,7 @@
         });
     }
 
-    //加载消息页面数据
+    //加载消页面息数据
     function loadMessageData(self, url, index, position) {
         $.ajax({
             type: 'GET',
@@ -563,14 +559,18 @@
             type: 'GET',
             url: "/home/me/",
             success: function (data) {
-                self.me.isLogin = data.IsLogin;
-                if (data.IsLogin) {
-                    self.me.id = data.ID;
-                    self.me.name = data.Name;
-                    self.me.avatar = data.Avatar;
+                try{
+                    self.user.isLogin = data.IsLogin;
+                    if (data.IsLogin) {
+                        self.user.id = data.ID;
+                        self.user.name = data.Name;
+                        self.user.avatar = data.Avatar;
+                    }
+                    self.user.loaded = true;
+                    $.material.ripples('.withripple'); //set ripple
+                }catch (e){
+                    $.snackbar({content: "加载失败,请<a href='#'>重试</a>", timeout: 2000});
                 }
-                self.me.loaded = true;
-                $.material.ripples('.withripple'); //set ripple
             }, error: function (err) {
                 var options = {content: "加载失败,请<a href='#'>重试</a>", timeout: 2000};
                 $.snackbar(options);

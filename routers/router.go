@@ -27,6 +27,7 @@ func init() {
 	beego.Router("message/notifications", &controllers.MessageController{}, "get:Notifications")
 
 	beego.Router("topic/:slug([\\w]+)", &controllers.TopicController{}, "get:Slug")  //topic and tag
+	beego.Router("topic/:topic_id([0-9]+)/:start([0-9]+)", &controllers.TopicController{}, "get:Posts")  //load posts match to the topic id
 
 	beego.Router("post/:id([0-9]+)", &controllers.PostController{}, "get:View")
 	beego.Router("post/create/jump", &controllers.PostController{}, "get:CreateJump")
@@ -39,5 +40,6 @@ func init() {
 
 	/*about */
 	beego.Router("about", &controllers.AboutController{}, "get:Index")
+	beego.Router("about/agreement", &controllers.AboutController{}, "get:Agreement")
 	beego.Router("about/feedback", &controllers.AboutController{}, "get:Feedback;post:POST_Feedback")
 }

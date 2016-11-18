@@ -38,7 +38,7 @@ func (this *SignInForm)SignInVerify() ([]*validation.Error, uint) {
 func (this *SignInForm) validPassword(v *validation.Validation) uint {
 	u := m.User{};
 	database.O.QueryTable("user").Filter("email", this.Username).
-	Filter("password_hash", auth.Hash(this.Password)).Limit(1).One(&u)
+		Filter("password_hash", auth.Hash(this.Password)).Limit(1).One(&u)
 	//RW database.DB.Where("email = ? AND password_hash = ?", this.Username,.First(&u)
 	if u.Id == 0 {
 		v.SetError("name", "用户名或密码错误")
@@ -79,6 +79,7 @@ func (this *SignUpForm)validOrSave(v *validation.Validation) {
 		if id, err := database.O.Insert(&user); err == nil {
 			profile := m.Profile{Id:uint(id), UserRefer:&m.User{Id:uint(id)}, Name:this.Nickname, Avatar:"/static/img/default.png"}
 			if _, err := database.O.Insert(&profile); err == nil {
+				OnAccountCreated(this.Email, this.Nickname, this.UserID)
 				return
 			}
 		}

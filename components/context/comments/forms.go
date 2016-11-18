@@ -21,7 +21,7 @@ func (this *CommentCreateForm)Create(user_id uint, username string) (result *uti
 	o.Begin()
 	//tx := database.DB.Begin()
 	if (p.Exist(this.PostID) ) {
-		comment := m.Comment{PostId:this.PostID, Author:user_id, Content:this.Content}
+		comment := m.Comment{PostId:this.PostID,Visible:true, Author:&m.Profile{Id:user_id}, Content:this.Content}
 		if id, err := o.Insert(&comment); err != nil {
 			err = o.Rollback()
 			result = &utils.SimpleJsonResponse{Status:0, Addition:"添加回复失败,请重试!"}

@@ -1,10 +1,10 @@
 package m
 
 import (
-	"gensh.me/goforum/models/database"
-	"github.com/astaxie/beego/orm"
 	"time"
 	"strconv"
+	"gensh.me/goforum/models/database"
+	"github.com/astaxie/beego/orm"
 )
 
 func init() {
@@ -14,7 +14,6 @@ func init() {
 	orm.RegisterModel(new(Swipe), new(Feedback))
 	database.O = orm.NewOrm()
 }
-
 
 //User         User `gorm:"ForeignKey:Author"`
 type Posts struct {
@@ -56,8 +55,8 @@ func (p *Posts) GetPostById(id string) (err error) {
 }
 
 func (p *Posts) Exist(id uint) bool {
-	database.O.QueryTable("posts").Filter("id",id).Limit(1).
-	One(p,"id", "author_id","summary","title","comment_count")
+	database.O.QueryTable("posts").Filter("id", id).Limit(1).
+		One(p, "id", "author_id", "summary", "title", "comment_count")
 	//database.O.Select("id,author_id,summary,title,comment_count").First(&p, id)
 	return p.Id != 0
 }
@@ -69,21 +68,14 @@ type Comment struct {
 	DeletedAt time.Time
 
 	PostId    uint
-	Author    uint
-	Parent    uint   `orm:"default(0)"`
+	Author    *Profile `orm:"rel(fk)"`
+	Parent    uint     `orm:"default(0)"`
 	Content   string
 	Visible   bool   `orm:"default(true)"`
 }
 
 func (c *Comment) TableName() string {
 	return "comment"
-}
-
-func LoadComments(id int, offset int) []Comment {
-	var comments []Comment
-	database.O.QueryTable("comment").Filter("post_id", id).Offset(uint(offset)).Limit(20).All(&comments)
-	//database.DB.Where("post_id = ?", id).Offset(uint(offset)).Limit(20).Find(&comments)
-	return comments
 }
 
 type Topic struct {
@@ -97,6 +89,7 @@ type Topic struct {
 	Slug      string
 	Visible   bool    `orm:"default(true)"`
 	Color     string
+	Icon      string
 }
 
 func (this *Topic) TableName() string {

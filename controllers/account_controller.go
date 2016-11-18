@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"gensh.me/goforum/components/utils"
-	"gensh.me/goforum/components/event"
 	"gensh.me/goforum/components/context/account"
 )
 
@@ -80,7 +79,6 @@ func (this *AccountController) POST_SignUp() {
 		flash := beego.NewFlash()
 		flash.Success(email)
 		flash.Store(&this.Controller)
-		event.OnAccountCreated(email, nickname, sign_up_form.UserID) //todo
 	} else {
 		s := utils.NewInstant(errs, map[string]string{"email":  email, "password": ""})
 		this.Data["json"] = &utils.SimpleJsonResponse{Status:0, Error:&s}

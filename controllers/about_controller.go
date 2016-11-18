@@ -30,6 +30,10 @@ func (this *AboutController) Index() {
 	this.TplName = "about/index.html"
 }
 
+func (this *AboutController) Agreement() {
+	this.TplName = "about/agreement.html"
+}
+
 func (this *AboutController) Feedback() {
 	this.TplName = "about/feedback.html"
 }

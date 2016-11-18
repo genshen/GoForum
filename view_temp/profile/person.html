@@ -18,6 +18,10 @@
             padding: 0 50px;
         }
 
+        .profile-division{
+            border-bottom: solid #fff 1px;
+            margin: 1.2rem 10%;
+        }
         .profile-summary {
             text-align: center;
         }
@@ -48,6 +52,11 @@
             position: absolute;
             right: 20px;
         }
+
+        .profile-division{
+            border-bottom: none;
+            margin: 1.2rem 10%;
+        }
     }
 
     .profile-username a, .profile-username a:hover, .profile-username a:active, .profile-username a:visited, .profile-username a:focus {
@@ -77,6 +86,14 @@
 
     .follow-action:active, .follow-action:focus {
         color: white;
+    }
+
+    .profile-summary-item{
+        color:#fff;
+        display: inline-block;
+        margin-left:1.2rem;
+        margin-right:1.2rem;
+        text-align: center;
     }
 </style>
 <main id="app">
@@ -113,15 +130,26 @@
                     </div>
                 </div>
             </div>
+            <div class="row profile-division"></div>
             <div class="row">
                 <div class="col-xs-12 profile-summary">
-                    <button v-text="person.PostCount+'帖子'" class="btn btn-success btn-raised">正在加载</button>
-                    <button v-text="person.FollowedCount+'粉丝'" class="btn btn-success btn-raised">正在加载</button>
-                    <button v-text="person.FollowingCount+'关注'" class="btn btn-success btn-raised">正在加载</button>
+                    <div class="profile-summary-item">
+                        <span v-text="person.PostCount">正在加载</span><br>
+                        <span>帖子</span>
+                    </div>
+                    <div class="profile-summary-item">
+                        <span v-text="person.FollowedCount">正在加载</span><br>
+                        <span>粉丝</span>
+                    </div>
+                    <div class="profile-summary-item">
+                        <span v-text="person.FollowingCount">正在加载</span><br>
+                        <span>关注</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <!----
     <div class="container-fluid">
         <div class="row">
             <div class="panel panel-default">
@@ -135,9 +163,10 @@
                         </div>
                     </div>
                 </div>
-            </div><!---panel-default-->
+            </div><!---panel-default
         </div>
     </div> <!---/container-fluid--->
+    <div style="height:2.2rem"></div>
     <div class="container">
         <div class="row">
             <div class="panel panel-success">

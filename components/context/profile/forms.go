@@ -22,7 +22,7 @@ func (this *FollowAddForm)Add(my_id uint) (result *utils.SimpleJsonResponse, isA
 		return
 	}
 	u := m.User{}
-	database.O.QueryTable("user").Filter("id", this.PersonID).Filter("status", utils.STATUS_ACTIVE).Limit(1).One(&u, "id") //todo FREEZING
+	database.O.QueryTable("user").Filter("id", this.PersonID).Exclude("status", utils.FREEZING).Limit(1).One(&u, "id")
 	if u.Id == 0 {
 		result = &utils.SimpleJsonResponse{Status:0, Error:"对应用户不存在"}
 	} else {

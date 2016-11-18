@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"strconv"
-	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/components/utils"
 	"gensh.me/goforum/components/context/comments"
 )
@@ -29,14 +28,16 @@ type Comment struct {
 id post id;  start:comment offset  */
 func (this *CommentController) Comment() {
 	//todo ([]m.Comment) to []Comment
-	id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))
-	offset, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
-	dbComments := m.LoadComments(id, offset)
-	mComments := make([]Comment, 0, len(dbComments))  //m.Comments to Comments
-	for _, comment := range dbComments {
-		mComments = append(mComments, Comment{Content:comment.Content, ID:comment.Id});
-	}
-	this.Data["json"] = &mComments
+	//id, _ := strconv.Atoi(this.Ctx.Input.Param(":id"))
+	//offset, _ := strconv.Atoi(this.Ctx.Input.Param(":start"))
+	//dbComments := comments.LoadComments(id, offset)
+	//mComments := make([]Comment, 0, len(dbComments))  //m.Comments to Comments
+	//for _, comment := range dbComments {
+	//	mComments = append(mComments, Comment{Content:comment.Content, ID:comment.Id});
+	//}
+	id := this.Ctx.Input.Param(":id")
+	offset := this.Ctx.Input.Param(":start")
+	this.Data["json"] = comments.LoadComments(id,offset)
 	this.ServeJSON()
 }
 

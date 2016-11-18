@@ -16,14 +16,14 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-type Data struct {
-	Title string `json:"title"`
+type Template struct {
+	Data map[string]interface{}   `json:"data"`
 }
 
 type WatchConfig struct {
-	Layouts      []string  `json:"layouts"`
-	Templates    map[string]Data     `json:"template"`
-	WatchFolders []WatchFolder  `json:"watched_folder"`
+	Layouts      []string  		    `json:"layouts"`
+	Templates    map[string]Template    `json:"template"`
+	WatchFolders []WatchFolder          `json:"watched_folder"`
 }
 
 type WatchFolder struct {
@@ -133,18 +133,18 @@ func generateTemplate(event fsnotify.Event, isCreate bool) {
 		log.Println("modified file:", filePath)
 	}
 	fileName := strings.Replace(filePath, view_temp, "", 1)
-	generate(filePath, view_out + fileName, watch_config.Templates[fileName])
+	generate(filePath, view_out + fileName, watch_config.Templates[fileName].Data)
 	log.Println("released file: ", view_out + fileName)
 }
 
 func generateAllTemplate() {
-	for name, data := range watch_config.Templates {
+	for name, template := range watch_config.Templates{
 		log.Println("released file: ", view_temp + name)
-		generate(view_temp + name, view_out + name, data)
+		generate(view_temp + name, view_out + name, template.Data)
 	}
 }
 
-func generate(container string, out string, data Data) {
+func generate(container string, out string, data map[string]interface{} ) {
 	s1, _ := template.ParseFiles(container)
 	for _, layout := range watch_config.Layouts {
 		s1.ParseFiles(view_temp + layout)

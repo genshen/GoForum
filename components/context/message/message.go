@@ -23,7 +23,7 @@ type PostMessage struct {
 	IsRead          bool
 }
 
-func FindLatestNotifications(uid uint, types []int) ([]Notification) {
+func FindLatestNotifications(uid uint, types []int) ([]Notification) { //todo 指针
 	//todo user id
 	notices := []m.Notification{}
 	database.O.QueryTable("notification").Filter("subject_type__in", types).All(&notices)

@@ -1,21 +1,10 @@
 package posts
 
 import (
+	"time"
 	"gensh.me/goforum/models/m"
 	"gensh.me/goforum/components/utils"
-	"gensh.me/goforum/models/database"
-	"time"
 )
-
-//<post item >
-type PostItem struct {
-	utils.Person
-	PostID       uint
-	Title        string
-	ViewCount    int
-	CommentCount int
-}
-
 
 /**<used for Post detail> */
 type PostDetail struct {
@@ -52,18 +41,6 @@ type PostView struct {
 }
 /*</used for Post detail> */
 
-func DBHotPostsConvert(dbHotPosts *[]m.Posts) (*[]PostItem) {
-	postItems := make([]PostItem, 0, len(*dbHotPosts))  //dbHotPosts to mHotPosts
-	for _, db_hot := range *dbHotPosts {
-		postItems = append(postItems, PostItem{PostID:db_hot.Id, Title:db_hot.Title,
-			ViewCount:db_hot.ViewCount, CommentCount:db_hot.CommentCount,
-			Person:utils.Person{ID:db_hot.Author.Id, Name:db_hot.Author.Name, Avatar:db_hot.Author.Avatar}});
-	}
-	return &postItems
-}
-//</post item >
-
-
 // <structs for Category >
 //type Tag struct {
 //
@@ -72,15 +49,3 @@ func DBHotPostsConvert(dbHotPosts *[]m.Posts) (*[]PostItem) {
 //type Topic struct {
 //
 //}
-
-type Category struct {
-	Tags   []m.Tag
-	Topics []m.Topic
-}
-
-func (this *Category)NewInstant() {
-	database.O.QueryTable("topic").Filter("visible", true).All(&this.Topics)
-	database.O.QueryTable("tag").Filter("visible", true).All(&this.Tags)
-	//RW database.DB.Where("visible = ?", true).Find(&this.Topics)
-	//RW database.DB.Where("visible = ?", true).Find(&this.Tags)
-}
